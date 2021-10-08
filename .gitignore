@@ -1,0 +1,63 @@
+#eclipse
+.cproject
+.project
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+*.x86
+*.x64
+*.arm
+
+#Eclipse setting
+.settings
+
+#Visual Studio Code setting
+.metadata/
+.vscode
+.settings
+
+#gdb debugger
+.gdb_history
+.gdb_*
+
+#direcory
+TouchstoNet/build/CMakeCache.txt
+TouchstoNet/build/CMakeFiles/
+TouchstoNet/build/Makefile
+TouchstoNet/build/cmake_install.cmake
+
+UnitTests/build/CMakeCache.txt
+UnitTests/build/CMakeFiles/
+UnitTests/build/Makefile
+UnitTests/build/cmake_install.cmake
+
