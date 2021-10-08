@@ -120,6 +120,11 @@ bool tnet_create_client_socket_address(struct tnet_new_test** new_test) {
 
 bool tnet_bind_to_socket(struct tnet_new_test* new_test) {
 
+	if (new_test == NULL) {
+		tnet_debug("%s", "Struct tnet_new_test is NULL!");
+		return false;
+	}
+
     if ( bind(new_test->socket_fd, (const struct sockaddr *)new_test->server_socket_address_stuct,
             sizeof(struct sockaddr_in)) < 0 )
     {
