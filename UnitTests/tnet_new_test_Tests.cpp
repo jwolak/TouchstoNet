@@ -36,6 +36,17 @@ public:
 		shutdown(new_test->socket_fd, SHUT_RDWR);
 	}
 
+	void CreateServerSocketAddressTest(struct tnet_new_test** new_test) {
+		(*new_test)->server_socket_address_stuct = (struct sockaddr_in*)malloc(sizeof(struct sockaddr_in));
+		(*new_test)->server_socket_address_stuct->sin_family = AF_INET;
+		(*new_test)->server_socket_address_stuct->sin_addr.s_addr = INADDR_ANY;
+		(*new_test)->server_socket_address_stuct->sin_port = htons(kTestPortNumber);
+	}
+
+	void CreateSocketTest(struct tnet_new_test* new_test) {
+		new_test->socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+	}
+
 	void TearDown() override {
 	}
 };
@@ -97,4 +108,22 @@ TEST_F(TnetNewTestTests, Cretate_New_Client_Socket_Address_Struct_And_Struct_Is_
 	CreateNewTest(&new_test);
 	tnet_create_client_socket_address(&new_test);
 	ASSERT_TRUE(new_test->client_socket_address_stuct);
+}
+
+TEST_F(TnetNewTestTests, Try_Bind_To_Proper_Socket_And_True_Returned) {
+	CreateNewTest(&new_test);
+	CreateServerSocketAddressTest(&new_test);
+	CreateSocketTest(new_test);
+	ASSERT_TRUE(tnet_bind_to_socket(new_test));
+	CloseSocketTest(new_test);
+}
+
+TEST_F(TnetNewTestTests, Try_Bind_To_Improper_Socket_And_False_Returned) {
+	CreateNewTest(&new_test);
+	CreateSocketTest(new_test);
+	ASSERT_FALSE(tnet_bind_to_socket(new_test));
+}
+
+TEST_F(TnetNewTestTests, Try_Bind_For_Null_New_Test_Struct_And_False_Returned) {
+	ASSERT_FALSE(tnet_bind_to_socket(new_test));
 }
