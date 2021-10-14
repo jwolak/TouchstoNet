@@ -45,6 +45,6 @@ bool tnet_bind_to_socket(struct tnet_new_test* new_test);
 
 void tnet_receive_data(struct tnet_new_test* new_test);
 
-void tnet_send_data(struct tnet_new_test* new_test);
+void tnet_send_data(struct tnet_new_test* new_test, char* message, int32_t msg_length);
 
 #endif /* SRC_TNET_NEW_TEST_H_ */

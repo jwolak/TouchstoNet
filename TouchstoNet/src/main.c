@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
 	} while(false);
 
 	if (!tnet_free_new_test(new_test))
-		perror("Free new test failed!");
+		tnet_error("%s", "Free new test failed!");
 
     return 0;
 }

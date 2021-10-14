@@ -20,45 +20,27 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#define PORT     8080
+#define PORT    8080
 #define MAXLINE 1024
 
+#include "tnet_debug.h"
 #include "tnet_create_client.h"
 
-bool tnet_create_client(struct tnet_new_test* new_test) {
+bool tnet_create_client(struct tnet_new_test *new_test) {
 
-	int sockfd;
-	    char buffer[MAXLINE];
-	    char *hello = "Hello from client";
-	    struct sockaddr_in     servaddr;
+	if (!tnet_create_socket_fd(new_test, AF_INET, SOCK_DGRAM, 0)) {
+		tnet_debug("%s", "Create socket failed");
+		return false;
+	}
 
-	    // Creating socket file descriptor
-	    if ( (sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0 ) {
-	        perror("socket creation failed");
-	        exit(EXIT_FAILURE);
-	    }
+	if (!tnet_create_server_socket_address(&new_test, AF_INET, INADDR_ANY,
+			PORT)) {
+		tnet_debug("%s", "Create server address struct failed");
+		return false;
+	}
 
-	    memset(&servaddr, 0, sizeof(servaddr));
-
-	    // Filling server information
-	    servaddr.sin_family = AF_INET;
-	    servaddr.sin_port = htons(PORT);
-	    servaddr.sin_addr.s_addr = INADDR_ANY;
-
-	    int n, len;
-
-	    sendto(sockfd, (const char *)hello, strlen(hello),
-	        MSG_CONFIRM, (const struct sockaddr *) &servaddr,
-	            sizeof(servaddr));
-	    printf("Hello message sent.\n");
-
-	    n = recvfrom(sockfd, (char *)buffer, MAXLINE,
-	                MSG_WAITALL, (struct sockaddr *) &servaddr,
-	                &len);
-	    buffer[n] = '\0';
-	    printf("Server : %s\n", buffer);
-
-	    close(sockfd);
+	tnet_send_data(new_test, "Hello from client", strlen("Hello from client"));
+	tnet_receive_data(new_test);
 
 	return true;
 }
