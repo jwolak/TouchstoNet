@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 #include "tnet_debug.h"
 
@@ -25,6 +26,7 @@ static bool tnet_allocate_socket_address_struct(struct sockaddr_in** socket_addr
 static void tnet_set_server_address_values(struct sockaddr_in* socket_address, int16_t addr_family, uint32_t addr_type, uint16_t addr_port);
 static bool tnet_free_address_struct(struct sockaddr_in* socket_address);
 static void tnet_reset_address_struct(struct sockaddr_in* socket_address);
+static void tnet_send(struct sockaddr_in* socket_address_stuct, int32_t sock_fd, char* message, int32_t msg_length);
 
 bool tnet_create_new_test(struct tnet_new_test** new_test) {
 
@@ -135,7 +137,6 @@ bool tnet_bind_to_socket(struct tnet_new_test* new_test) {
 	return true;
 }
 
-
 void tnet_receive_data(struct tnet_new_test* new_test) {
 
 	char buffer[MAXLINE];
@@ -148,25 +149,33 @@ void tnet_receive_data(struct tnet_new_test* new_test) {
 	MSG_WAITALL, (struct sockaddr*) new_test->client_socket_address_stuct,
 			&len);
 	buffer[n] = '\0';
-	printf("Client : %s\n", buffer);
+
+	tnet_debug("%s %s", "Received:", buffer);
 
 }
 
-void tnet_send_data(struct tnet_new_test* new_test) {
+void tnet_send_data(struct tnet_new_test* new_test, char* message, int32_t msg_length) {
 
-	char *hello = "Hello from server";
+	if (new_test->role == SERVER) {
+		tnet_send(new_test->client_socket_address_stuct, new_test->socket_fd, message, msg_length);
+	} else {
+		tnet_send(new_test->server_socket_address_stuct, new_test->socket_fd, message, msg_length);
+	}
 
-	sendto(new_test->socket_fd, (const char*) hello, strlen(hello),
-	MSG_CONFIRM, (const struct sockaddr*) new_test->client_socket_address_stuct,
-			sizeof(struct sockaddr));
-	printf("Hello message sent.\n");
+	tnet_debug("%s %s", "Sent:", message);
 }
 
 /*### static methods ###*/
 
+static void tnet_send(struct sockaddr_in* socket_address_stuct, int32_t sock_fd, char* message, int32_t msg_length) {
+
+	sendto(sock_fd, (const char*) message, msg_length,
+	MSG_CONFIRM, (const struct sockaddr*) socket_address_stuct, sizeof(struct sockaddr));
+}
+
 static bool tnet_close_socket_fd(struct tnet_new_test *new_test) {
 
-	if (shutdown(new_test->socket_fd, SHUT_RDWR) != 0) {
+	if (close(new_test->socket_fd) != 0) {
 		tnet_debug("%s", "Close socket failed!");
 		return false;
 	}
