@@ -21,12 +21,13 @@
 #include <netinet/in.h>
 
 #define PORT    8080
-#define MAXLINE 1024
 
 #include "tnet_debug.h"
 #include "tnet_create_client.h"
 
 bool tnet_create_client(struct tnet_new_test *new_test) {
+
+	char *hello_message_client = "Hello from client";
 
 	if (!tnet_create_socket_fd(new_test, AF_INET, SOCK_DGRAM, 0)) {
 		tnet_debug("%s", "Create socket failed");
@@ -39,7 +40,7 @@ bool tnet_create_client(struct tnet_new_test *new_test) {
 		return false;
 	}
 
-	tnet_send_data(new_test, "Hello from client", strlen("Hello from client"));
+	tnet_send_data(new_test, hello_message_client, strlen(hello_message_client));
 	tnet_receive_data(new_test);
 
 	return true;
