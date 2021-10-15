@@ -20,26 +20,25 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#define PORT    8080
-#define MAXLINE 1024
-
 #include "tnet_debug.h"
 #include "tnet_create_client.h"
 
 bool tnet_create_client(struct tnet_new_test *new_test) {
+
+	char *hello_message_client = "Hello from client";
 
 	if (!tnet_create_socket_fd(new_test, AF_INET, SOCK_DGRAM, 0)) {
 		tnet_debug("%s", "Create socket failed");
 		return false;
 	}
 
-	if (!tnet_create_server_socket_address(&new_test, AF_INET, INADDR_ANY,
-			PORT)) {
+	if (!tnet_create_server_socket_address(&new_test, AF_INET, /*inet_addr("127.0.0.1")*/INADDR_ANY,
+			new_test->port_no)) {
 		tnet_debug("%s", "Create server address struct failed");
 		return false;
 	}
 
-	tnet_send_data(new_test, "Hello from client", strlen("Hello from client"));
+	tnet_send_data(new_test, hello_message_client, strlen(hello_message_client));
 	tnet_receive_data(new_test);
 
 	return true;

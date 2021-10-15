@@ -21,24 +21,19 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#define PORT     8080
-
-
 #include "tnet_create_server.h"
 #include "tnet_debug.h"
 
 bool tnet_create_server(struct tnet_new_test* new_test) {
 
-		int sockfd;
-	    char *hello = "Hello from server";
-	    struct sockaddr_in servaddr, cliaddr;
+	    char *hello_message_server = "Hello from server";
 
 	    if (!tnet_create_socket_fd(new_test, AF_INET, SOCK_DGRAM, 0)) {
 	    	tnet_debug("%s", "Create socket failed");
 	    	return false;
 	    }
 
-	    if (!tnet_create_server_socket_address(&new_test, AF_INET, INADDR_ANY, PORT)) {
+	    if (!tnet_create_server_socket_address(&new_test, AF_INET, INADDR_ANY, new_test->port_no)) {
 	    	tnet_debug("%s", "Create server address struct failed");
 	    	return false;
 	    }
@@ -54,7 +49,7 @@ bool tnet_create_server(struct tnet_new_test* new_test) {
 
 	    tnet_receive_data(new_test);
 
-	    tnet_send_data(new_test, "Hello from server", strlen("Hello from server"));
+	    tnet_send_data(new_test, hello_message_server, strlen(hello_message_server));
 
 
 	return true;
