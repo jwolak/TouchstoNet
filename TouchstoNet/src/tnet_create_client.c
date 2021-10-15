@@ -20,8 +20,6 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
-#define PORT    8080
-
 #include "tnet_debug.h"
 #include "tnet_create_client.h"
 
@@ -34,8 +32,8 @@ bool tnet_create_client(struct tnet_new_test *new_test) {
 		return false;
 	}
 
-	if (!tnet_create_server_socket_address(&new_test, AF_INET, INADDR_ANY,
-			PORT)) {
+	if (!tnet_create_server_socket_address(&new_test, AF_INET, /*inet_addr("127.0.0.1")*/INADDR_ANY,
+			new_test->port_no)) {
 		tnet_debug("%s", "Create server address struct failed");
 		return false;
 	}
