@@ -30,6 +30,7 @@ struct tnet_new_test {
 	struct sockaddr_in* server_socket_address_stuct;
 	struct sockaddr_in* client_socket_address_stuct;
 	int32_t port_no;
+	in_addr_t ip_address;
 };
 
 bool tnet_create_new_test(struct tnet_new_test** new_test);
