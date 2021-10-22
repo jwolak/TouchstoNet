@@ -32,7 +32,7 @@ bool tnet_create_client(struct tnet_new_test *new_test) {
 		return false;
 	}
 
-	if (!tnet_create_server_socket_address(&new_test, AF_INET, /*inet_addr("127.0.0.1")*/INADDR_ANY,
+	if (!tnet_create_server_socket_address(&new_test, AF_INET, new_test->ip_address,
 			new_test->port_no)) {
 		tnet_debug("%s", "Create server address struct failed");
 		return false;
