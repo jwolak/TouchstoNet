@@ -47,10 +47,12 @@ bool tnet_parse_arguments(struct tnet_new_test* new_test, int32_t argc, char **a
 		switch (flag) {
 		case 's':
 			new_test->role = SERVER;
+			tnet_debug("%s", "Server mode is set");
 			break;
 
 		case 'c':
 			new_test->role = CLIENT;
+			tnet_debug("%s", "Client mode is set");
 			break;
 
 		case 'p':
@@ -72,11 +74,7 @@ bool tnet_parse_arguments(struct tnet_new_test* new_test, int32_t argc, char **a
 
 		case 'h':
 		default:
-			printf("\nHelp:\n");
-			printf("Use: -s for Server mode\n");
-			printf("Use: -c for Client mode\n");
-			printf("Use: -a for target IP address\n");
-			printf("Use: -p for listening/send port number\n");
+			printf("%s","\nHelp:\n");
 			break;
 		}
 	}
