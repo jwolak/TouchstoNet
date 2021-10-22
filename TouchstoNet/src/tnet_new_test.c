@@ -14,12 +14,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <sys/socket.h>
 #include <unistd.h>
+#include <fcntl.h>
+#include <signal.h>
 
 #include "tnet_debug.h"
+#include "tnet_error.h"
 
-#define MAXLINE 1024
+#define MAXLINE 		1024
+#define PID_BUFFER_SIZE	8
 
 static bool tnet_close_socket_fd(struct tnet_new_test* new_test);
 static bool tnet_allocate_socket_address_struct(struct sockaddr_in** socket_address);
@@ -163,6 +168,64 @@ void tnet_send_data(struct tnet_new_test* new_test, char* message, int32_t msg_l
 	}
 
 	tnet_debug("%s %s", "Sent:", message);
+}
+
+bool tnet_create_pid_file(struct tnet_new_test *new_test) {
+
+	int32_t fd;
+	char pid_buffer[PID_BUFFER_SIZE];
+	pid_t pid;
+
+	if (new_test->pidfile) {
+		fd = open(new_test->pidfile, O_RDONLY, 0);
+		if (fd >= 0) {
+			if (read(fd, pid_buffer, sizeof(pid_buffer) - 1) >= 0) {
+
+				pid = atoi(pid_buffer);
+				if (pid > 0) {
+
+					if (kill(pid, 0) == 0) {
+						free(new_test->pidfile);
+						new_test->pidfile = NULL;
+						tnet_error("%s", "Another instance of iperf3 appears to be running");
+
+						return false;
+					}
+				}
+			}
+		}
+
+		fd = open(new_test->pidfile, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+		if (fd < 0) {
+			tnet_debug("%s", "Open pid file descriptor failed");
+			return false;
+		}
+		snprintf(pid_buffer, sizeof(pid_buffer), "%d", getpid());
+		tnet_debug("%s %s", "New process PID:", pid_buffer);
+		if (write(fd, pid_buffer, strlen(pid_buffer)) < 0) {
+			tnet_debug("%s", "Write to pid file descriptor failed");
+			return false;
+		}
+
+		if (close(fd) < 0) {
+			tnet_debug("%s", "Close pid file descriptor failed");
+			return false;
+		}
+	}
+
+	tnet_debug("%s", "Pid file created");
+	return true;
+}
+
+bool tnet_delete_pid_file(struct tnet_new_test* new_test) {
+	if (new_test->pidfile) {
+		if (unlink(new_test->pidfile) < 0) {
+			tnet_debug("%s", "Delete pid file failed");
+			return false;
+		}
+	}
+	tnet_debug("%s", "Delete pid file successful");
+	return true;
 }
 
 /*### static methods ###*/

@@ -48,7 +48,6 @@ bool tnet_create_server(struct tnet_new_test* new_test) {
 	    }
 
 	    tnet_receive_data(new_test);
-
 	    tnet_send_data(new_test, hello_message_server, strlen(hello_message_server));
 
 

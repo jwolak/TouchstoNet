@@ -18,6 +18,7 @@
 #include "tnet_create_server.h"
 #include "tnet_create_client.h"
 #include "tnet_error.h"
+#include "tnet_debug.h"
 
 
 int main(int argc, char **argv) {
@@ -35,17 +36,34 @@ int main(int argc, char **argv) {
 		}
 
 		if (new_test->role == SERVER) {
-			if (!tnet_create_server(new_test)) {
-				tnet_error("%s", "Create server failed");
+			if (!tnet_create_pid_file(new_test)) {
+				tnet_debug("%s", "Create pid file failed");
 				break;
 			}
+
+			if (!tnet_create_server(new_test)) {
+				tnet_error("%s", "Create server failed");
+				tnet_delete_pid_file(new_test);
+				break;
+			}
+
+			tnet_delete_pid_file(new_test);
+
 		}
 
 		if (new_test->role == CLIENT) {
-			if (!tnet_create_client(new_test)) {
-				tnet_error("%s", "Create client failed");
+			if (!tnet_create_pid_file(new_test)) {
+				tnet_debug("%s", "Create pid file failed");
 				break;
 			}
+
+			if (!tnet_create_client(new_test)) {
+				tnet_error("%s", "Create client failed");
+				tnet_delete_pid_file(new_test);
+				break;
+			}
+
+			tnet_delete_pid_file(new_test);
 		}
 	} while(false);
 

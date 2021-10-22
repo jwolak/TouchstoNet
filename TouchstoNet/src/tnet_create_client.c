@@ -38,8 +38,10 @@ bool tnet_create_client(struct tnet_new_test *new_test) {
 		return false;
 	}
 
+
 	tnet_send_data(new_test, hello_message_client, strlen(hello_message_client));
 	tnet_receive_data(new_test);
+
 
 	return true;
 }
