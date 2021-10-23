@@ -54,4 +54,8 @@ bool tnet_create_pid_file(struct tnet_new_test* new_test);
 
 bool tnet_delete_pid_file(struct tnet_new_test* new_test);
 
+void tnet_catch_sigend(void (*handler)(int));
+
+void tnet_signal_handler(struct tnet_new_test* new_test);
+
 #endif /* SRC_TNET_NEW_TEST_H_ */
