@@ -228,6 +228,17 @@ bool tnet_delete_pid_file(struct tnet_new_test* new_test) {
 	return true;
 }
 
+void tnet_catch_sigend(void (*handler)(int))
+{
+    signal(SIGINT, handler);
+}
+
+void tnet_signal_handler(struct tnet_new_test* new_test) {
+	tnet_delete_pid_file(new_test);
+	tnet_free_new_test(new_test);
+	exit(0);
+}
+
 /*### static methods ###*/
 
 static void tnet_send(struct sockaddr_in* socket_address_stuct, int32_t sock_fd, char* message, int32_t msg_length) {
