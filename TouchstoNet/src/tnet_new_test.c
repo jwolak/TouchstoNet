@@ -230,7 +230,15 @@ bool tnet_delete_pid_file(struct tnet_new_test* new_test) {
 
 void tnet_catch_sigend(void (*handler)(int))
 {
+#ifdef SIGINT
     signal(SIGINT, handler);
+#endif
+#ifdef SIGTERM
+    signal(SIGTERM, handler);
+#endif
+#ifdef SIGHUP
+    signal(SIGHUP, handler);
+#endif
 }
 
 void tnet_signal_handler(struct tnet_new_test* new_test) {
