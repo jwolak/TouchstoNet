@@ -19,6 +19,8 @@
 
 #include "tnet_new_test.h"
 
+#define MAX_TEST_DURATION_TIME	3600
+
 
 bool tnet_parse_arguments(struct tnet_new_test* new_test, int32_t argc, char **argv);
 

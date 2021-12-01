@@ -32,6 +32,7 @@ struct tnet_new_test {
 	int32_t 			port_no;
 	in_addr_t 			ip_address;
 	char				*pidfile;
+	uint32_t			test_duration;
 };
 
 bool tnet_create_new_test(struct tnet_new_test** new_test);
