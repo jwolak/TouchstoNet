@@ -28,12 +28,15 @@
 
 static bool tnet_validate_port_number(int32_t port_number);
 static bool tnet_validate_ip_address(struct tnet_new_test* new_test, char* ip_addr);
+static bool tnet_validate_test_duration_time(uint32_t test_duration_time);
+static bool tnet_validate_aguments_by_mode(struct tnet_new_test* new_test);
 
 bool tnet_parse_arguments(struct tnet_new_test* new_test, int32_t argc, char **argv) {
 
 	int flag;
 	int32_t portno;
 	char address_parameter[TNET_IP_ADDRESS_BUFFER_SIZE];
+	uint32_t test_time;
 
 	static struct option longopts[] = {
 			{"help", no_argument, NULL, 'h' },
@@ -41,9 +44,10 @@ bool tnet_parse_arguments(struct tnet_new_test* new_test, int32_t argc, char **a
 			{"client", no_argument, NULL, 'c' },
 			{"port", required_argument, NULL, 'p'},
 			{"address", required_argument, NULL, 'a'},
+			{"time", required_argument, NULL, 't'},
 	};
 
-	while ((flag = getopt_long(argc, argv, "hscp:a:", longopts, NULL)) != -1) {
+	while ((flag = getopt_long(argc, argv, "hscp:a:t:", longopts, NULL)) != -1) {
 		switch (flag) {
 		case 's':
 			new_test->role = SERVER;
@@ -72,12 +76,23 @@ bool tnet_parse_arguments(struct tnet_new_test* new_test, int32_t argc, char **a
 			tnet_debug("%s %s", "IP address set:", address_parameter);
 			break;
 
+		case 't':
+			test_time = atoi(optarg);
+			if (!tnet_validate_test_duration_time(test_time)) {
+				return false;
+			}
+			new_test->test_duration = test_time;
+			tnet_debug("%s %d", "Test duration set to: ", test_time);
+			break;
+
 		case 'h':
 		default:
 			printf("%s","\nHelp:\n");
 			break;
 		}
 	}
+
+	tnet_validate_aguments_by_mode(new_test);
 
 	return true;
 }
@@ -106,4 +121,18 @@ static bool tnet_validate_ip_address(struct tnet_new_test* new_test, char* ip_ad
 	new_test->ip_address = ip_address;
 
 	return true;
+}
+
+static bool tnet_validate_test_duration_time(uint32_t test_duration_time) {
+
+	if (MAX_TEST_DURATION_TIME > test_duration_time) {
+		tnet_error("%s %d [s]", "Set test time longer than: ", MAX_TEST_DURATION_TIME);
+		return false;
+	}
+
+	return true;
+}
+
+static bool tnet_validate_aguments_by_mode(struct tnet_new_test* new_test) {
+
 }
