@@ -1,5 +1,4 @@
-/* #include "LoggerC-Console-Tests.c" */
-
+#include "TouchstoNetTests/TouchstoNet-Settings-Tests.c"
 
 #include "unity.h"
 
@@ -19,6 +18,6 @@ int main(void) {
   SET_LOG_LOGGER_OUTPUT(CONSOLE_AND_FILE);
 
     UNITY_BEGIN();
-    /*RUN_TEST(Log_Message_ERROR);*/
+    RUN_TEST(get_role_test);
     return UNITY_END();
 }
