@@ -43,16 +43,19 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "TouchstoNet-Settings.h"
+
 struct TouchstoNetAgrumentsParser {
 
   /*public*/
   bool(*parse_arguments)(struct TouchstoNetAgrumentsParser* this, int32_t argc, char **argv);
 
  /* private*/
+  struct TouchstoNetSettings* tnet_settings_;
 };
 
 extern const struct TouchstoNetAgrumentsParserClass {
-  struct TouchstoNetAgrumentsParser (*new)();
+  struct TouchstoNetAgrumentsParser (*new)(struct TouchstoNetSettings* tnet_settings_injected);
 } TouchstoNetAgrumentsParser;
 
 

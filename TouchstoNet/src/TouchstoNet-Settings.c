@@ -41,6 +41,13 @@
 
 #include "LoggerC.h"
 
+#include <arpa/inet.h>
+
+#define TNET_MAX_PORT_NUMBER          65535
+#define TNET_MIN_PORT_NUMBER          1
+#define TNET_MAX_TEST_DURATION        3600
+#define TNET_MIN_TEST_DURATION        1
+
 
 enum tnet_role get_role(struct TouchstoNetSettings* this) {
 
@@ -62,27 +69,60 @@ int32_t get_test_duration (struct TouchstoNetSettings* this) {
   return this->test_duration_;
 }
 
-void set_role (struct TouchstoNetSettings* this, enum tnet_role role_to_set) {
+bool set_role (struct TouchstoNetSettings* this, enum tnet_role role_to_set) {
+
+  if (role_to_set > SERVER || role_to_set < CLIENT) {
+
+    LOG_ERROR("%s", "Invalid role provided");
+    return false;
+  }
+
+  this->role_ = role_to_set;
 
   LOG_DEBUG("%s%s", "Role set to: ", role_to_set ? "server" : "client");
-  this->role_ = role_to_set;
+  return true;
 }
 
-void set_port_number (struct TouchstoNetSettings* this, int32_t port_no_to_set) {
+bool set_port_number (struct TouchstoNetSettings* this, int32_t port_no_to_set) {
+
+  if (port_no_to_set < TNET_MIN_PORT_NUMBER || port_no_to_set > TNET_MAX_PORT_NUMBER) {
+
+    LOG_ERROR("%s%d", "Invalid port number: ", port_no_to_set);
+    return false;
+  }
+
+  this->port_number_ = port_no_to_set;
 
   LOG_DEBUG("%s%d", "port number set to: ", port_no_to_set);
-  this->port_number_ = port_no_to_set;
+  return true;
 }
 
-void set_ip_address (struct TouchstoNetSettings* this, in_addr_t ip_address_to_set) {
+bool set_ip_address (struct TouchstoNetSettings* this, char* ip_address_to_set) {
 
-  this->ip_address_ = ip_address_to_set;
+  in_addr_t ip_address;
+
+  if ((ip_address = inet_addr(ip_address_to_set)) < 0) {
+
+    LOG_ERROR("%s", "Invalid IP address");
+    return false;
+  }
+
+  this->ip_address_ = ip_address;
+  return true;
 }
 
-void set_test_duration (struct TouchstoNetSettings* this, int32_t test_duration_to_set) {
+bool set_test_duration(struct TouchstoNetSettings *this, int32_t test_duration_to_set) {
 
-  LOG_DEBUG("%s%d%s", "Test duration set to: ", test_duration_to_set, " [s]");
+  if (test_duration_to_set < TNET_MIN_TEST_DURATION || test_duration_to_set > TNET_MAX_TEST_DURATION) {
+
+    LOG_ERROR("%s%d%s%d%s%d", "Invalid test duration: ", test_duration_to_set, "Minimum time is: ", TNET_MIN_TEST_DURATION, "Maximum is:",
+              TNET_MAX_TEST_DURATION);
+    return false;
+  }
+
   this->test_duration_ = test_duration_to_set;
+  LOG_DEBUG("%s%d%s", "Test duration set to: ", test_duration_to_set, " [s]");
+  return true;
 }
 
 static struct TouchstoNetSettings new() {

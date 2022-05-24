@@ -38,14 +38,104 @@
  */
 
 #include "TouchstoNet-Agruments-Parser.h"
+#include "LoggerC.h"
+
+#include <getopt.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define TNET_IP_ADDRESS_BUFFER_SIZE   16
 
 bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char **argv) {
 
+  int flag;
+  int32_t portno;
+  char address_parameter[TNET_IP_ADDRESS_BUFFER_SIZE];
+  uint32_t test_time;
+
+  static struct option longopts[] = {
+      {"help",    no_argument, NULL, 'h' },
+      {"server",  no_argument, NULL, 's' },
+      {"client",  no_argument, NULL, 'c' },
+      {"port",    required_argument, NULL, 'p'},
+      {"address", required_argument, NULL, 'a'},
+      {"time",    required_argument, NULL, 't'},
+  };
+
+  while ((flag = getopt_long(argc, argv, "hscp:a:t:", longopts, NULL)) != -1) {
+    switch (flag) {
+    case 's':
+      if (!this->tnet_settings_->set_role(this->tnet_settings_, SERVER)) {
+
+        LOG_ERROR("%s", "Role parse failed");
+        return false;
+      }
+
+      LOG_DEBUG("%s", "Server mode is set");
+      break;
+
+    case 'c':
+      if (this->tnet_settings_->set_role(this->tnet_settings_, CLIENT)) {
+
+        LOG_ERROR("%s", "Role parse failed");
+        return false;
+      }
+
+      LOG_DEBUG("%s", "Client mode is set");
+      break;
+
+    case 'p':
+      portno = atoi(optarg);
+
+      if (!this->tnet_settings_->set_port_number(this->tnet_settings_, portno)) {
+
+        LOG_ERROR("%s", "Port number parse failed");
+        return false;
+      }
+
+      LOG_DEBUG("%s%d", "Port number set:", portno);
+      break;
+
+    case 'a':
+      strncpy(address_parameter, optarg, TNET_IP_ADDRESS_BUFFER_SIZE);
+
+      if (!this->tnet_settings_->set_ip_address(this->tnet_settings_, address_parameter)) {
+
+        LOG_ERROR("%s", "IP address parse failed");
+        return false;
+      }
+
+      LOG_DEBUG("%s%s", "IP address set:", address_parameter);
+      break;
+
+    case 't':
+      test_time = atoi(optarg);
+
+      if (!this->tnet_settings_->set_test_duration(this->tnet_settings_, test_time)) {
+
+        LOG_ERROR("%s", "Test duration time parse failed");
+        return false;
+      }
+
+      LOG_DEBUG("%s%d", "Test duration set to: ", test_time);
+      break;
+
+    case 'h':
+    default:
+     /* printf("%s","\nHelp:\n");*/
+      break;
+    }
+  }
+
+  LOG_DEBUG("%s", "Parse settings successful");
   return true;
 }
 
-static struct TouchstoNetAgrumentsParser new() {
-  return (struct TouchstoNetAgrumentsParser) {.parse_arguments = &parse_arguments };
+static struct TouchstoNetAgrumentsParser new(struct TouchstoNetSettings* tnet_settings_injected) {
+  return (struct TouchstoNetAgrumentsParser) {
+    .parse_arguments = &parse_arguments,
+    .tnet_settings_ = tnet_settings_injected
+  };
 }
 const struct TouchstoNetAgrumentsParserClass TouchstoNetAgrumentsParser = { .new = &new };
 

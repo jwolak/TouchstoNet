@@ -58,10 +58,10 @@ struct TouchstoNetSettings {
   in_addr_t(*get_ip_address)(struct TouchstoNetSettings* this);
   int32_t(*get_test_duration)(struct TouchstoNetSettings* this);
 
-  void(*set_role)(struct TouchstoNetSettings* this, enum tnet_role role_to_set);
-  void(*set_port_number)(struct TouchstoNetSettings* this, int32_t port_no_to_set);
-  void(*set_ip_address)(struct TouchstoNetSettings* this, in_addr_t ip_address_to_set);
-  void(*set_test_duration)(struct TouchstoNetSettings* this, int32_t test_duration_to_set);
+  bool(*set_role)(struct TouchstoNetSettings* this, enum tnet_role role_to_set);
+  bool(*set_port_number)(struct TouchstoNetSettings* this, int32_t port_no_to_set);
+  bool(*set_ip_address)(struct TouchstoNetSettings* this, char* ip_address_to_set);
+  bool(*set_test_duration)(struct TouchstoNetSettings* this, int32_t test_duration_to_set);
 
  /* private*/
   enum tnet_role role_;
