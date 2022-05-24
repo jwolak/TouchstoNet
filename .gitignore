@@ -51,6 +51,8 @@
 .gdb_*
 
 #direcory
+EquinoxC-Logger/*
+
 TouchstoNet/build/CMakeCache.txt
 TouchstoNet/build/CMakeFiles/
 TouchstoNet/build/Makefile

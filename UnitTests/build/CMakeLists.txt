@@ -1,13 +1,13 @@
-cmake_minimum_required(VERSION 2.6)
-set(CMAKE_CXX_STANDARD 11)
-project (UnitTestsOfTouchstoNet) 
-# Locate GTest
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIRS})
+cmake_minimum_required(VERSION 2.8.9)
+set(CMAKE_C_STANDARD 11)
+project (TouchstoneNetTests)
+include_directories(../UnityTestFramework/Unity/src)
+link_directories(../UnityTestFramework/Unity)
 
+include_directories(${CMAKE_SOURCE_DIR}/../../EquinoxC-Logger/EquinoxC-Logger/src)
+link_directories(${CMAKE_SOURCE_DIR}/../../EquinoxC-Logger/EquinoxC-Logger/build)
 
-# Link runTests with what we want to test and the GTest and pthread library
-add_executable(UnitTestsOfTouchstoNet.x86 ../Main-Tests-Run.cpp)
+add_executable(TouchstoneNetTests.x86 ../Main-Tests-Run.c)
 
-target_link_libraries(UnitTestsOfTouchstoNet.x86 ${GTEST_LIBRARIES} pthread)
-target_link_libraries(UnitTestsOfTouchstoNet.x86 ${GTEST_LIBRARIES} gmock)
+target_link_libraries(TouchstoneNetTests.x86 libunity.a)
+target_link_libraries(TouchstoneNetTests.x86 libEquinoxCLogger.a)
