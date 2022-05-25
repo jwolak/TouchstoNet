@@ -54,7 +54,7 @@ bool stop_server(struct TouchstoNetServer* this) {
   return true;
 }
 
-static struct TouchstoNetServer new() {
+static struct TouchstoNetServer newServer() {
   return (struct TouchstoNetServer) {
     .inject_settings_to_server = &inject_settings_to_server,
     .start_server = &start_server,
@@ -62,4 +62,4 @@ static struct TouchstoNetServer new() {
   };
 }
 
-const struct TouchstoNetServerClass TouchstoNetServer = { .new = &new };
+const struct TouchstoNetServerClass TouchstoNetServer = { .new = &newServer };

@@ -38,17 +38,37 @@
  */
 
 #include "TouchstoNet-Time-Counter.h"
+#include "LoggerC.h"
+
+#include <unistd.h>
+
+#define TIME_IN_SEC_PATTERN 1
 
 bool start_timer(struct TouchstoNetTimeCounter *this, struct TouchstoNetInstance* tnet_instance, int32_t time_period) {
 
-  /*call to stop when time is elapsed*/
-  this->timer_stop_callback(tnet_instance);
+  int32_t seconds_counter = 0;
 
+  while (seconds_counter < time_period && !this->stop_timer_flag_) {
+    /*no high resolution needed*/
+    sleep(TIME_IN_SEC_PATTERN);
+    ++seconds_counter;
+  }
+
+  if (!this->timer_stop_callback(tnet_instance)) {
+
+    LOG_ERROR("%s", "Filed to call callback after time is elapsed");
+    return false;
+  }
+
+  LOG_DEBUG("%s", "Time has elapsed");
   return true;
 }
 
 bool stop_timer(struct TouchstoNetTimeCounter *this) {
 
+  LOG_DEBUG("%s", "Time counting has been interrupted");
+
+  this->stop_timer_flag_ = true;
   return true;
 }
 
@@ -59,12 +79,13 @@ bool set_stop_callback (struct TouchstoNetTimeCounter* this, bool(*callback)(str
 }
 
 
-static struct TouchstoNetTimeCounter new() {
+static struct TouchstoNetTimeCounter newTimeCounter() {
   return (struct TouchstoNetTimeCounter) {
     .start_timer = &start_timer,
     .stop_timer = &stop_timer,
-    .set_stop_callback = &set_stop_callback
+    .set_stop_callback = &set_stop_callback,
+    .stop_timer_flag_ = false,
   };
 }
 
-const struct TouchstoNetTimeCounterClass TouchstoNetTimeCounter = { .new = &new };
+const struct TouchstoNetTimeCounterClass TouchstoNetTimeCounter = { .new = &newTimeCounter };

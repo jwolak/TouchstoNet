@@ -125,7 +125,7 @@ bool set_test_duration(struct TouchstoNetSettings *this, int32_t test_duration_t
   return true;
 }
 
-static struct TouchstoNetSettings new() {
+static struct TouchstoNetSettings newSettings() {
   return (struct TouchstoNetSettings) {
     .get_role = &get_role,
     .get_port_number = &get_port_number,
@@ -137,6 +137,6 @@ static struct TouchstoNetSettings new() {
     .set_test_duration = &set_test_duration
   };
 }
-const struct TouchstoNetSettingsClass TouchstoNetSettings = { .new = &new };
+const struct TouchstoNetSettingsClass TouchstoNetSettings = { .new = &newSettings };
 
 

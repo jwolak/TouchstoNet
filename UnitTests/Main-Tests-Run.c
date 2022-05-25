@@ -1,4 +1,5 @@
 #include "TouchstoNetTests/TouchstoNet-Settings-Tests.c"
+#include "TouchstoNetTests/TouchstoNet-Time-Counter-Tests.c"
 
 #include "unity.h"
 
@@ -19,5 +20,8 @@ int main(void) {
 
     UNITY_BEGIN();
     RUN_TEST(get_role_test);
+    RUN_TEST(set_callback_and_callback_function_is_called_after_timeout);
+    RUN_TEST(set_timeout_and_set_time_is_elapsed);
+    RUN_TEST(set_longer_timeout_and_set_time_is_elapsed);
     return UNITY_END();
 }

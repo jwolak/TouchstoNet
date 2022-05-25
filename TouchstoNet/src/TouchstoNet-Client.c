@@ -54,7 +54,7 @@ bool stop_client(struct TouchstoNetClient* this) {
   return true;
 }
 
-static struct TouchstoNetClient new() {
+static struct TouchstoNetClient newClient() {
   return (struct TouchstoNetClient) {
     .inject_settings_to_client = &inject_settings_to_client,
     .start_client = &start_client,
@@ -62,4 +62,4 @@ static struct TouchstoNetClient new() {
   };
 }
 
-const struct TouchstoNetClientClass TouchstoNetClient = { .new = &new };
+const struct TouchstoNetClientClass TouchstoNetClient = { .new = &newClient };

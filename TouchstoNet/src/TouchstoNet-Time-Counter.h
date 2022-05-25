@@ -54,6 +54,8 @@ struct TouchstoNetTimeCounter {
 
   /*private*/
   bool(*timer_stop_callback)(struct TouchstoNetInstance* tnet_instance);
+  /*no mutex needed*/
+  bool stop_timer_flag_;
 };
 
 extern const struct TouchstoNetTimeCounterClass {
