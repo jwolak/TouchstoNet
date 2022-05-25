@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Instance.h
+ * TouchstoNet-Client.c
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,31 +37,29 @@
  *
  */
 
-#ifndef SRC_TOUCHSTONET_INSTANCE_H_
-#define SRC_TOUCHSTONET_INSTANCE_H_
-
-#include <stdbool.h>
-
-#include "TouchstoNet-Settings.h"
 #include "TouchstoNet-Client.h"
-#include "TouchstoNet-Server.h"
 
-struct TouchstoNetInstance {
+bool inject_settings_to_client (struct TouchstoNetClient* this, struct TouchstoNetSettings* tnet_settings_to_injected) {
 
-  /*public*/
-  bool(*start_instance)(struct TouchstoNetInstance* this);
-  bool(*stop_instance)(struct TouchstoNetInstance* this);
-  bool(*inject_settings_to_instance)(struct TouchstoNetInstance* this, struct TouchstoNetSettings* tnet_settings_to_injected);
+  return true;
+}
 
-  /*private*/
-  struct TouchstoNetSettings* tnet_settings_;
-  struct TouchstoNetClient tnet_client_;
-  struct TouchstoNetServer tnet_server_;
+bool start_client(struct TouchstoNetClient* this) {
 
-};
+  return true;
+}
 
-extern const struct TouchstoNetInstanceClass {
-  struct TouchstoNetInstance (*new)();
-} TouchstoNetInstance;
+bool stop_client(struct TouchstoNetClient* this) {
 
-#endif /* SRC_TOUCHSTONET_INSTANCE_H_ */
+  return true;
+}
+
+static struct TouchstoNetClient new() {
+  return (struct TouchstoNetClient) {
+    .inject_settings_to_client = &inject_settings_to_client,
+    .start_client = &start_client,
+    .stop_client = &stop_client,
+  };
+}
+
+const struct TouchstoNetClientClass TouchstoNetClient = { .new = &new };

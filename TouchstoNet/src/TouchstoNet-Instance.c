@@ -38,19 +38,81 @@
  */
 
 #include "TouchstoNet-Instance.h"
+#include "LoggerC.h"
 
   bool start_instance (struct TouchstoNetInstance* this) {
+
+  if (this->tnet_settings_->get_role(this->tnet_settings_) == CLIENT) {
+
+    LOG_DEBUG("%s", "Client instance is started");
+
+    if (!this->tnet_client_.inject_settings_to_client(&this->tnet_client_, this->tnet_settings_)) {
+
+      LOG_DEBUG("%s", "Failed to inject settings to client");
+      return false;
+    }
+
+    if (!this->tnet_client_.start_client(&this->tnet_client_)) {
+
+      LOG_ERROR("%s", "Failed to start client");
+      return false;
+    }
+
+  } else {
+
+    LOG_DEBUG("%s", "Server instance is started");
+
+    if (!this->tnet_server_.inject_settings_to_server(&this->tnet_server_, this->tnet_settings_)) {
+
+      LOG_DEBUG("%s", "Failed to inject settings to server");
+      return false;
+    }
+
+    if (!this->tnet_server_.start_server(&this->tnet_server_)) {
+
+      LOG_ERROR("%s", "Failed to start server");
+      return false;
+    }
+  }
 
     return true;
   }
 
   bool stop_instance (struct TouchstoNetInstance* this) {
 
+    if (this->tnet_settings_->get_role(this->tnet_settings_) == CLIENT) {
+
+      LOG_DEBUG("%s", "Client instance is stopped");
+
+      if (!this->tnet_client_.stop_client(&this->tnet_client_)) {
+
+        LOG_ERROR("%s", "Failed to stop client");
+        return false;
+      }
+
+    } else {
+
+      if (this->tnet_server_.stop_server(&this->tnet_server_)) {
+
+        LOG_ERROR("%s", "Failed to stop server");
+        return false;
+      }
+
+      LOG_DEBUG("%s", "Server instance is stopped");
+    }
+
     return true;
   }
 
   bool inject_settings_to_instance (struct TouchstoNetInstance* this, struct TouchstoNetSettings* tnet_settings_to_injected) {
 
+    if (!tnet_settings_to_injected) {
+
+      LOG_DEBUG("%", "Pointer to settings for TouchstoNetInstance is null");
+      return false;
+    }
+
+    this->tnet_settings_ = tnet_settings_to_injected;
     return true;
   }
 
@@ -59,7 +121,9 @@ static struct TouchstoNetInstance new() {
   return (struct TouchstoNetInstance) {
     .start_instance = &start_instance,
     .stop_instance = &stop_instance,
-    .inject_settings_to_instance = &inject_settings_to_instance
+    .inject_settings_to_instance = &inject_settings_to_instance,
+    .tnet_client_ = TouchstoNetClient.new(),
+    .tnet_server_ = TouchstoNetServer.new(),
   };
 }
 

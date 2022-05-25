@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Instance.h
+ * TouchstoNet-Server.h
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,31 +37,28 @@
  *
  */
 
-#ifndef SRC_TOUCHSTONET_INSTANCE_H_
-#define SRC_TOUCHSTONET_INSTANCE_H_
+#ifndef SRC_TOUCHSTONET_SERVER_H_
+#define SRC_TOUCHSTONET_SERVER_H_
+
+#include "TouchstoNet-Settings.h"
 
 #include <stdbool.h>
 
-#include "TouchstoNet-Settings.h"
-#include "TouchstoNet-Client.h"
-#include "TouchstoNet-Server.h"
-
-struct TouchstoNetInstance {
+struct TouchstoNetServer {
 
   /*public*/
-  bool(*start_instance)(struct TouchstoNetInstance* this);
-  bool(*stop_instance)(struct TouchstoNetInstance* this);
-  bool(*inject_settings_to_instance)(struct TouchstoNetInstance* this, struct TouchstoNetSettings* tnet_settings_to_injected);
+  bool(*inject_settings_to_server)(struct TouchstoNetServer* this, struct TouchstoNetSettings* tnet_settings_to_injected);
+  bool(*start_server)(struct TouchstoNetServer* this);
+  bool(*stop_server)(struct TouchstoNetServer* this);
 
   /*private*/
   struct TouchstoNetSettings* tnet_settings_;
-  struct TouchstoNetClient tnet_client_;
-  struct TouchstoNetServer tnet_server_;
-
 };
 
-extern const struct TouchstoNetInstanceClass {
-  struct TouchstoNetInstance (*new)();
-} TouchstoNetInstance;
+extern const struct TouchstoNetServerClass {
+  struct TouchstoNetServer(*new)();
+} TouchstoNetServer;
 
-#endif /* SRC_TOUCHSTONET_INSTANCE_H_ */
+
+
+#endif /* SRC_TOUCHSTONET_SERVER_H_ */

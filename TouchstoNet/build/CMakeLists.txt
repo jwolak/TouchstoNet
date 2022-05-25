@@ -13,6 +13,9 @@ ${SOURCE_FILES_DIR}/TouchstoNet-Settings.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Engine.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Time-Counter.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Instance.c
+${SOURCE_FILES_DIR}/TouchstoNet-Server.c
+${SOURCE_FILES_DIR}/TouchstoNet-Client.c
+#${SOURCE_FILES_DIR}/
 #${SOURCE_FILES_DIR}/
 #${SOURCE_FILES_DIR}/
 )
