@@ -41,6 +41,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #include "../../TouchstoNet/src/TouchstoNet-Time-Counter.c"
 #include "../../TouchstoNet/src/TouchstoNet-Instance.c"
@@ -111,5 +113,42 @@ void set_longer_timeout_and_set_time_is_elapsed() {
   TEST_ASSERT_EQUAL((int)time_diff, LONGER_TEST_TIME);
 }
 
+void *test(struct TouchstoNetTimeCounter* tc) {
+
+  int32_t time_counter = 0;
+
+  while (time_counter < 5) {
+    sleep(1);
+    ++time_counter;
+  }
+
+  tc->stop_timer_flag_ = true;
+
+}
+
+void thread() {
+
+  time_t time_start;
+  time_t time_end;
+  double time_diff = 0.0;
+
+  pthread_t thread_id;
+
+  struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
+  struct TouchstoNetTimeCounter tnet_time_counter = TouchstoNetTimeCounter.new();
+  tnet_time_counter.set_stop_callback(&tnet_time_counter, &test_callback);
+
+  pthread_create(&thread_id, NULL, test, &tnet_time_counter);
+  pthread_detach(thread_id);
+
+  time (&time_start);
+  tnet_time_counter.start_timer(&tnet_time_counter, &tnet_instance, LONGER_TEST_TIME);
+  time (&time_end);
+  time_diff = difftime (time_end, time_start);
+  LOG_DEBUG("%s%d%s","Your timer counted ", (int)time_diff, " [s]" );
+
+  TEST_ASSERT_EQUAL((int)time_diff, 5);
+
+}
 
 

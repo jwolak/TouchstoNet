@@ -11,3 +11,4 @@ add_executable(TouchstoneNetTests.x86 ../Main-Tests-Run.c)
 
 target_link_libraries(TouchstoneNetTests.x86 libunity.a)
 target_link_libraries(TouchstoneNetTests.x86 libEquinoxCLogger.a)
+target_link_libraries(TouchstoneNetTests.x86 pthread)

@@ -23,5 +23,6 @@ int main(void) {
     RUN_TEST(set_callback_and_callback_function_is_called_after_timeout);
     RUN_TEST(set_timeout_and_set_time_is_elapsed);
     RUN_TEST(set_longer_timeout_and_set_time_is_elapsed);
+    RUN_TEST(thread);
     return UNITY_END();
 }
