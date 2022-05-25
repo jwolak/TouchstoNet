@@ -46,6 +46,20 @@
 
 #define TNET_IP_ADDRESS_BUFFER_SIZE   16
 
+bool inject_settings_to_args_parser(struct TouchstoNetAgrumentsParser* this, struct TouchstoNetSettings* tnet_settings_to_injected){
+
+  if(!tnet_settings_to_injected) {
+
+    LOG_ERROR("%s", "settings pointer is null");
+    return false;
+  }
+
+  this->tnet_settings_ = tnet_settings_to_injected;
+
+  LOG_DEBUG("%s", "Settings injected successfully");
+  return true;
+}
+
 bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char **argv) {
 
   int flag;
@@ -131,10 +145,10 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
   return true;
 }
 
-static struct TouchstoNetAgrumentsParser new(struct TouchstoNetSettings* tnet_settings_injected) {
+static struct TouchstoNetAgrumentsParser new() {
   return (struct TouchstoNetAgrumentsParser) {
     .parse_arguments = &parse_arguments,
-    .tnet_settings_ = tnet_settings_injected
+    .inject_settings_to_args_parser = &inject_settings_to_args_parser
   };
 }
 const struct TouchstoNetAgrumentsParserClass TouchstoNetAgrumentsParser = { .new = &new };

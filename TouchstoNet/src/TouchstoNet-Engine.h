@@ -43,6 +43,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "TouchstoNet-Settings.h"
+#include "TouchstoNet-Agruments-Parser.h"
+
 struct TouchstoNetEngine {
 
   /*public*/
@@ -51,6 +54,8 @@ struct TouchstoNetEngine {
 
 
   /*private*/
+  struct TouchstoNetSettings touchstonet_settings_;
+  struct TouchstoNetAgrumentsParser touchstonenet_parser_;
 };
 
 extern const struct TouchstoNetEngineClass {

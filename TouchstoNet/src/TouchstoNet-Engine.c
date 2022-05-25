@@ -38,8 +38,15 @@
  */
 
 #include "TouchstoNet-Engine.h"
+#include "LoggerC.h"
 
 bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
+
+  if (!this->touchstonenet_parser_.inject_settings_to_args_parser(&this->touchstonenet_parser_, &this->touchstonet_settings_)) {
+
+    LOG_ERROR("%s", "Settings injection failed");
+    return false;
+  }
 
   return true;
 }
@@ -49,11 +56,12 @@ bool stop(struct TouchstoNetEngine* this) {
   return true;
 }
 
-
 static struct TouchstoNetEngine new() {
   return (struct TouchstoNetEngine) {
     .start = &start,
-    .stop = &stop
+    .stop = &stop,
+    .touchstonet_settings_ = TouchstoNetSettings.new(),
+    .touchstonenet_parser_ = TouchstoNetAgrumentsParser.new()
   };
 }
 const struct TouchstoNetEngineClass TouchstoNetEngine = { .new = &new };

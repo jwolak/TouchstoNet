@@ -49,13 +49,14 @@ struct TouchstoNetAgrumentsParser {
 
   /*public*/
   bool(*parse_arguments)(struct TouchstoNetAgrumentsParser* this, int32_t argc, char **argv);
+  bool(*inject_settings_to_args_parser)(struct TouchstoNetAgrumentsParser* this, struct TouchstoNetSettings* tnet_settings_to_injected);
 
  /* private*/
   struct TouchstoNetSettings* tnet_settings_;
 };
 
 extern const struct TouchstoNetAgrumentsParserClass {
-  struct TouchstoNetAgrumentsParser (*new)(struct TouchstoNetSettings* tnet_settings_injected);
+  struct TouchstoNetAgrumentsParser (*new)();
 } TouchstoNetAgrumentsParser;
 
 
