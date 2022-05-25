@@ -10,6 +10,8 @@ add_executable(TouchstoNet.x86
 ${SOURCE_FILES_DIR}/main.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Agruments-Parser.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Settings.c
+${SOURCE_FILES_DIR}/TouchstoNet-Engine.c
+#${SOURCE_FILES_DIR}/
 )
 
 target_link_libraries(TouchstoNet.x86 libEquinoxCLogger.a)
