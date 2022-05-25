@@ -53,6 +53,9 @@
 #direcory
 EquinoxC-Logger/*
 
+TouchstoNet/build/*.log
+UnitTests/build/*.log
+
 TouchstoNet/build/CMakeCache.txt
 TouchstoNet/build/CMakeFiles/
 TouchstoNet/build/Makefile

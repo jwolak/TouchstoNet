@@ -11,6 +11,9 @@ ${SOURCE_FILES_DIR}/main.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Agruments-Parser.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Settings.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Engine.c
+${SOURCE_FILES_DIR}/TouchstoNet-Time-Counter.c
+${SOURCE_FILES_DIR}/TouchstoNet-Instance.c
+#${SOURCE_FILES_DIR}/
 #${SOURCE_FILES_DIR}/
 )
 

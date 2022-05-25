@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Engine.h
+ * TouchstoNet-Instance.c
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,34 +37,30 @@
  *
  */
 
-#ifndef SRC_TOUCHSTONET_ENGINE_H_
-#define SRC_TOUCHSTONET_ENGINE_H_
-
-#include <stdbool.h>
-#include <stdint.h>
-
-#include "TouchstoNet-Settings.h"
-#include "TouchstoNet-Agruments-Parser.h"
-#include "TouchstoNet-Time-Counter.h"
 #include "TouchstoNet-Instance.h"
 
-struct TouchstoNetEngine {
+  bool start_instance (struct TouchstoNetInstance* this) {
 
-  /*public*/
-  bool(*start)(struct TouchstoNetEngine* this, int32_t argc, char **argv);
-  bool(*stop)(struct TouchstoNetEngine* this);
+    return true;
+  }
 
+  bool stop_instance (struct TouchstoNetInstance* this) {
 
-  /*private*/
-  struct TouchstoNetSettings tnet_settings_;
-  struct TouchstoNetAgrumentsParser tnet_parser_;
-  struct TouchstoNetInstance tnet_intsnace_;
-  struct TouchstoNetTimeCounter tnet_time_counter_;
-};
+    return true;
+  }
 
-extern const struct TouchstoNetEngineClass {
-  struct TouchstoNetEngine (*new)();
-} TouchstoNetEngine;
+  bool inject_settings_to_instance (struct TouchstoNetInstance* this, struct TouchstoNetSettings* tnet_settings_to_injected) {
+
+    return true;
+  }
 
 
-#endif /* SRC_TOUCHSTONET_ENGINE_H_ */
+static struct TouchstoNetInstance new() {
+  return (struct TouchstoNetInstance) {
+    .start_instance = &start_instance,
+    .stop_instance = &stop_instance,
+    .inject_settings_to_instance = &inject_settings_to_instance
+  };
+}
+
+const struct TouchstoNetInstanceClass TouchstoNetInstance = { .new = &new };

@@ -42,17 +42,51 @@
 
 bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
 
-  if (!this->touchstonenet_parser_.inject_settings_to_args_parser(&this->touchstonenet_parser_, &this->touchstonet_settings_)) {
+  if (!this->tnet_parser_.inject_settings_to_args_parser(&this->tnet_parser_, &this->tnet_settings_)) {
 
-    LOG_ERROR("%s", "Settings injection failed");
+    LOG_DEBUG("%s", "Settings injection to to arguments parser failed");
     return false;
   }
 
+  if (!this->tnet_intsnace_.inject_settings_to_instance(&this->tnet_intsnace_,  &this->tnet_settings_)) {
+
+    LOG_DEBUG("%s", "Settings injection to TouchstoNet instance failed");
+    return false;
+  }
+
+  if (!this->tnet_time_counter_.set_stop_callback(&this->tnet_time_counter_, this->tnet_intsnace_.stop_instance)) {
+
+    LOG_DEBUG("%s", "Set stop callback for timer counter failed");
+    return false;
+  }
+
+  if (!this->tnet_intsnace_.start_instance(&this->tnet_intsnace_)) {
+
+    LOG_ERROR("%s", "Failed to start TouchstoNet test instance");
+    return false;
+  }
+
+  if (!this->tnet_time_counter_.start_timer(&this->tnet_time_counter_, &this->tnet_intsnace_, this->tnet_settings_.get_test_duration(&this->tnet_settings_))) {
+
+    this->tnet_intsnace_.stop_instance(&this->tnet_intsnace_);
+
+    LOG_ERROR("%s", "Failed to start time counter");
+    return false;
+  }
+
+  LOG_DEBUG("%s", "Start TouchstoNet engine successful");
   return true;
 }
 
 bool stop(struct TouchstoNetEngine* this) {
 
+  if (!this->tnet_intsnace_.stop_instance(&this->tnet_intsnace_)) {
+
+    LOG_ERROR("%s", "Stop TouchstoNet engine failed");
+    return false;
+  }
+
+  LOG_DEBUG("%s", "Stop TouchstoNet engine successful");
   return true;
 }
 
@@ -60,8 +94,10 @@ static struct TouchstoNetEngine new() {
   return (struct TouchstoNetEngine) {
     .start = &start,
     .stop = &stop,
-    .touchstonet_settings_ = TouchstoNetSettings.new(),
-    .touchstonenet_parser_ = TouchstoNetAgrumentsParser.new()
+    .tnet_settings_ = TouchstoNetSettings.new(),
+    .tnet_parser_ = TouchstoNetAgrumentsParser.new(),
+    .tnet_intsnace_ = TouchstoNetInstance.new(),
+    .tnet_time_counter_ = TouchstoNetTimeCounter.new()
   };
 }
 const struct TouchstoNetEngineClass TouchstoNetEngine = { .new = &new };

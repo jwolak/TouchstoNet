@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Engine.h
+ * TouchstoNet-Time-Counter.c
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,34 +37,34 @@
  *
  */
 
-#ifndef SRC_TOUCHSTONET_ENGINE_H_
-#define SRC_TOUCHSTONET_ENGINE_H_
-
-#include <stdbool.h>
-#include <stdint.h>
-
-#include "TouchstoNet-Settings.h"
-#include "TouchstoNet-Agruments-Parser.h"
 #include "TouchstoNet-Time-Counter.h"
-#include "TouchstoNet-Instance.h"
 
-struct TouchstoNetEngine {
+bool start_timer(struct TouchstoNetTimeCounter *this, struct TouchstoNetInstance* tnet_instance, int32_t time_period) {
 
-  /*public*/
-  bool(*start)(struct TouchstoNetEngine* this, int32_t argc, char **argv);
-  bool(*stop)(struct TouchstoNetEngine* this);
+  /*call to stop when time is elapsed*/
+  this->timer_stop_callback(tnet_instance);
+
+  return true;
+}
+
+bool stop_timer(struct TouchstoNetTimeCounter *this) {
+
+  return true;
+}
+
+bool set_stop_callback (struct TouchstoNetTimeCounter* this, bool(*callback)(struct TouchstoNetInstance* tnet_instance)) {
+
+  this->timer_stop_callback = callback;
+  return true;
+}
 
 
-  /*private*/
-  struct TouchstoNetSettings tnet_settings_;
-  struct TouchstoNetAgrumentsParser tnet_parser_;
-  struct TouchstoNetInstance tnet_intsnace_;
-  struct TouchstoNetTimeCounter tnet_time_counter_;
-};
+static struct TouchstoNetTimeCounter new() {
+  return (struct TouchstoNetTimeCounter) {
+    .start_timer = &start_timer,
+    .stop_timer = &stop_timer,
+    .set_stop_callback = &set_stop_callback
+  };
+}
 
-extern const struct TouchstoNetEngineClass {
-  struct TouchstoNetEngine (*new)();
-} TouchstoNetEngine;
-
-
-#endif /* SRC_TOUCHSTONET_ENGINE_H_ */
+const struct TouchstoNetTimeCounterClass TouchstoNetTimeCounter = { .new = &new };

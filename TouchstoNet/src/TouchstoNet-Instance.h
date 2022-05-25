@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Engine.h
+ * TouchstoNet-Instance.h
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,34 +37,27 @@
  *
  */
 
-#ifndef SRC_TOUCHSTONET_ENGINE_H_
-#define SRC_TOUCHSTONET_ENGINE_H_
+#ifndef SRC_TOUCHSTONET_INSTANCE_H_
+#define SRC_TOUCHSTONET_INSTANCE_H_
 
 #include <stdbool.h>
-#include <stdint.h>
 
 #include "TouchstoNet-Settings.h"
-#include "TouchstoNet-Agruments-Parser.h"
-#include "TouchstoNet-Time-Counter.h"
-#include "TouchstoNet-Instance.h"
 
-struct TouchstoNetEngine {
+struct TouchstoNetInstance {
 
   /*public*/
-  bool(*start)(struct TouchstoNetEngine* this, int32_t argc, char **argv);
-  bool(*stop)(struct TouchstoNetEngine* this);
-
+  bool(*start_instance)(struct TouchstoNetInstance* this);
+  bool(*stop_instance)(struct TouchstoNetInstance* this);
+  bool(*inject_settings_to_instance)(struct TouchstoNetInstance* this, struct TouchstoNetSettings* tnet_settings_to_injected);
 
   /*private*/
-  struct TouchstoNetSettings tnet_settings_;
-  struct TouchstoNetAgrumentsParser tnet_parser_;
-  struct TouchstoNetInstance tnet_intsnace_;
-  struct TouchstoNetTimeCounter tnet_time_counter_;
+  struct TouchstoNetSettings* tnet_settings_;
+
 };
 
-extern const struct TouchstoNetEngineClass {
-  struct TouchstoNetEngine (*new)();
-} TouchstoNetEngine;
+extern const struct TouchstoNetInstanceClass {
+  struct TouchstoNetInstance (*new)();
+} TouchstoNetInstance;
 
-
-#endif /* SRC_TOUCHSTONET_ENGINE_H_ */
+#endif /* SRC_TOUCHSTONET_INSTANCE_H_ */

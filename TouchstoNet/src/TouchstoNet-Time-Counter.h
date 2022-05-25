@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Engine.h
+ * TouchstoNet-Time-Counter.h
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,34 +37,30 @@
  *
  */
 
-#ifndef SRC_TOUCHSTONET_ENGINE_H_
-#define SRC_TOUCHSTONET_ENGINE_H_
+#ifndef SRC_TOUCHSTONET_TIME_COUNTER_H_
+#define SRC_TOUCHSTONET_TIME_COUNTER_H_
 
-#include <stdbool.h>
 #include <stdint.h>
+#include <stdbool.h>
 
-#include "TouchstoNet-Settings.h"
-#include "TouchstoNet-Agruments-Parser.h"
-#include "TouchstoNet-Time-Counter.h"
 #include "TouchstoNet-Instance.h"
 
-struct TouchstoNetEngine {
+struct TouchstoNetTimeCounter {
 
   /*public*/
-  bool(*start)(struct TouchstoNetEngine* this, int32_t argc, char **argv);
-  bool(*stop)(struct TouchstoNetEngine* this);
-
+  bool(*start_timer)(struct TouchstoNetTimeCounter* this, struct TouchstoNetInstance* tnet_instance, int32_t time_period);
+  bool(*stop_timer)(struct TouchstoNetTimeCounter* this);
+  bool(*set_stop_callback)(struct TouchstoNetTimeCounter* this, bool(*callback)(struct TouchstoNetInstance* tnet_instance));
 
   /*private*/
-  struct TouchstoNetSettings tnet_settings_;
-  struct TouchstoNetAgrumentsParser tnet_parser_;
-  struct TouchstoNetInstance tnet_intsnace_;
-  struct TouchstoNetTimeCounter tnet_time_counter_;
+  bool(*timer_stop_callback)(struct TouchstoNetInstance* tnet_instance);
 };
 
-extern const struct TouchstoNetEngineClass {
-  struct TouchstoNetEngine (*new)();
-} TouchstoNetEngine;
+extern const struct TouchstoNetTimeCounterClass {
+  struct TouchstoNetTimeCounter(*new)();
+} TouchstoNetTimeCounter;
 
 
-#endif /* SRC_TOUCHSTONET_ENGINE_H_ */
+
+
+#endif /* SRC_TOUCHSTONET_TIME_COUNTER_H_ */
