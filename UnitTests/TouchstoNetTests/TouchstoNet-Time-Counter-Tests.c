@@ -149,7 +149,7 @@ void start_counter_for_14_seconds_and_stop_it_after_5_seconds() {
   time_diff = difftime (time_end, time_start);
   LOG_DEBUG("%s%d%s","Your timer counted ", (int)time_diff, " [s]" );
 
-  TEST_ASSERT_EQUAL((int)time_diff, TIMEOUT_TO_STOP + 1);
+  TEST_ASSERT_TRUE(TIMEOUT_TO_STOP <= (int)time_diff <= TIMEOUT_TO_STOP + 1);
 }
 
 

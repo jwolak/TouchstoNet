@@ -41,18 +41,40 @@
 #include "LoggerC.h"
 
 #include <unistd.h>
+#include <stdbool.h>
 
 #define TIME_IN_SEC_PATTERN 1
 
-bool start_timer(struct TouchstoNetTimeCounter *this, struct TouchstoNetInstance* tnet_instance, int32_t time_period) {
+struct ThreadLoopArgs {
+  int32_t period;
+  bool *stop_flag;
+};
+
+static void *timer_loop_thread(void* settings) {
 
   int32_t seconds_counter = 0;
+  int32_t time_period = ((struct ThreadLoopArgs*)settings)->period;
 
-  while (seconds_counter < time_period && !this->stop_timer_flag_) {
-    /*no high resolution needed*/
+  LOG_DEBUG("%s%d%s", "Timer loop thread launched for: ", time_period, " [s]");
+
+  while (seconds_counter < time_period && !(*((struct ThreadLoopArgs*)settings)->stop_flag)) {
+    /*no high resolution time needed*/
     sleep(TIME_IN_SEC_PATTERN);
     ++seconds_counter;
   }
+
+  LOG_DEBUG("%s", "Timer loop thread stopped");
+}
+
+bool start_timer(struct TouchstoNetTimeCounter *this, struct TouchstoNetInstance* tnet_instance, int32_t time_period) {
+
+  struct ThreadLoopArgs thread_loop_args;
+  pthread_t thread_id;
+  thread_loop_args.period = time_period;
+  thread_loop_args.stop_flag = &this->stop_timer_flag_;
+
+  pthread_create(&thread_id, NULL, timer_loop_thread, &thread_loop_args);
+  pthread_join(thread_id, NULL);
 
   if (!this->timer_stop_callback(tnet_instance)) {
 
