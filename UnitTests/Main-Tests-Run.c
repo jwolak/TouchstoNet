@@ -20,9 +20,9 @@ int main(void) {
 
     UNITY_BEGIN();
     RUN_TEST(get_role_test);
-    RUN_TEST(set_callback_and_callback_function_is_called_after_timeout);
-    RUN_TEST(set_timeout_and_set_time_is_elapsed);
-    RUN_TEST(set_longer_timeout_and_set_time_is_elapsed);
-    RUN_TEST(thread);
+    RUN_TEST(set_callback_and_callback_function_is_called_after_2s_timeout);
+    RUN_TEST(set_timeout_2s_and_set_time_is_elapsed);
+    RUN_TEST(set_longer_timeout_14s_and_set_time_is_elapsed);
+    RUN_TEST(start_counter_for_14_seconds_and_stop_it_after_5_seconds);
     return UNITY_END();
 }

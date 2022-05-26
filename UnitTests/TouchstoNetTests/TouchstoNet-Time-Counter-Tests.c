@@ -56,6 +56,7 @@ int32_t global_counter;
 #define TEST_TIME           2
 #define LONGER_TEST_TIME    14
 #define COUNTER_SET_VALUE   21
+#define TIMEOUT_TO_STOP     5
 
 bool test_callback(struct TouchstoNetInstance* tnet_instance) {
 
@@ -65,7 +66,7 @@ bool test_callback(struct TouchstoNetInstance* tnet_instance) {
   return true;
 }
 
-void set_callback_and_callback_function_is_called_after_timeout() {
+void set_callback_and_callback_function_is_called_after_2s_timeout() {
 
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
   struct TouchstoNetTimeCounter tnet_time_counter = TouchstoNetTimeCounter.new();
@@ -75,7 +76,7 @@ void set_callback_and_callback_function_is_called_after_timeout() {
   TEST_ASSERT_EQUAL(global_counter, COUNTER_SET_VALUE);
 }
 
-void set_timeout_and_set_time_is_elapsed() {
+void set_timeout_2s_and_set_time_is_elapsed() {
 
   time_t time_start;
   time_t time_end;
@@ -94,7 +95,7 @@ void set_timeout_and_set_time_is_elapsed() {
   TEST_ASSERT_EQUAL((int)time_diff, TEST_TIME);
 }
 
-void set_longer_timeout_and_set_time_is_elapsed() {
+void set_longer_timeout_14s_and_set_time_is_elapsed() {
 
   time_t time_start;
   time_t time_end;
@@ -113,7 +114,7 @@ void set_longer_timeout_and_set_time_is_elapsed() {
   TEST_ASSERT_EQUAL((int)time_diff, LONGER_TEST_TIME);
 }
 
-void *test(struct TouchstoNetTimeCounter* tc) {
+void *call_stop_counter_after_5_seconds(void* tc) {
 
   int32_t time_counter = 0;
 
@@ -122,23 +123,24 @@ void *test(struct TouchstoNetTimeCounter* tc) {
     ++time_counter;
   }
 
-  tc->stop_timer_flag_ = true;
+  LOG_DEBUG("%s%d%s", "Timer is going to be stopped after: ", TIMEOUT_TO_STOP, " [s]");
+  ((struct TouchstoNetTimeCounter*)tc)->stop_timer((struct TouchstoNetTimeCounter*)tc);
+  LOG_DEBUG("%s", "Timer stopped");
 
 }
 
-void thread() {
+void start_counter_for_14_seconds_and_stop_it_after_5_seconds() {
 
   time_t time_start;
   time_t time_end;
   double time_diff = 0.0;
-
   pthread_t thread_id;
 
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
   struct TouchstoNetTimeCounter tnet_time_counter = TouchstoNetTimeCounter.new();
   tnet_time_counter.set_stop_callback(&tnet_time_counter, &test_callback);
 
-  pthread_create(&thread_id, NULL, test, &tnet_time_counter);
+  pthread_create(&thread_id, NULL, call_stop_counter_after_5_seconds, &tnet_time_counter);
   pthread_detach(thread_id);
 
   time (&time_start);
@@ -147,8 +149,7 @@ void thread() {
   time_diff = difftime (time_end, time_start);
   LOG_DEBUG("%s%d%s","Your timer counted ", (int)time_diff, " [s]" );
 
-  TEST_ASSERT_EQUAL((int)time_diff, 5);
-
+  TEST_ASSERT_EQUAL((int)time_diff, TIMEOUT_TO_STOP + 1);
 }
 
 
