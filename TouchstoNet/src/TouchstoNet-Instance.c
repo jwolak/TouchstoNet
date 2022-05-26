@@ -40,7 +40,13 @@
 #include "TouchstoNet-Instance.h"
 #include "LoggerC.h"
 
-  bool start_instance (struct TouchstoNetInstance* this) {
+bool start_instance(struct TouchstoNetInstance *this) {
+
+  if (!this->tnet_settings_) {
+
+    LOG_DEBUG("%s", "Instance's pointer to Settings is NULL");
+    return false;
+  }
 
   if (this->tnet_settings_->get_role(this->tnet_settings_) == CLIENT) {
 
@@ -75,51 +81,57 @@
     }
   }
 
-    LOG_DEBUG("%s", "Instance started successfully");
-    return true;
+  LOG_DEBUG("%s", "Instance started successfully");
+  return true;
+}
+
+bool stop_instance(struct TouchstoNetInstance *this) {
+
+  if (!this->tnet_settings_) {
+
+    LOG_DEBUG("%s", "Instance's pointer to Settings is NULL");
+    return false;
   }
 
-  bool stop_instance (struct TouchstoNetInstance* this) {
+  if (this->tnet_settings_->get_role(this->tnet_settings_) == CLIENT) {
 
-    if (this->tnet_settings_->get_role(this->tnet_settings_) == CLIENT) {
+    LOG_DEBUG("%s", "Client instance is stopped");
 
-      LOG_DEBUG("%s", "Client instance is stopped");
+    if (!this->tnet_client_.stop_client(&this->tnet_client_)) {
 
-      if (!this->tnet_client_.stop_client(&this->tnet_client_)) {
-
-        LOG_ERROR("%s", "Failed to stop client");
-        return false;
-      }
-
-    } else {
-
-      if (this->tnet_server_.stop_server(&this->tnet_server_)) {
-
-        LOG_ERROR("%s", "Failed to stop server");
-        return false;
-      }
-
-      LOG_DEBUG("%s", "Server instance is stopped");
-    }
-
-    return true;
-  }
-
-  bool inject_settings_to_instance (struct TouchstoNetInstance* this, struct TouchstoNetSettings* tnet_settings_to_injected) {
-
-    if (!tnet_settings_to_injected) {
-
-      LOG_DEBUG("%", "Pointer to settings for TouchstoNetInstance is null");
+      LOG_ERROR("%s", "Failed to stop client");
       return false;
     }
 
-    this->tnet_settings_ = tnet_settings_to_injected;
-    LOG_DEBUG("%s", "Settings injected successfully to Instance");
-    return true;
+  } else {
+
+    if (!this->tnet_server_.stop_server(&this->tnet_server_)) {
+
+      LOG_ERROR("%s", "Failed to stop server");
+      return false;
+    }
+
+    LOG_DEBUG("%s", "Server instance is stopped");
   }
 
+  return true;
+}
 
-static struct TouchstoNetInstance new() {
+bool inject_settings_to_instance(struct TouchstoNetInstance *this, struct TouchstoNetSettings *tnet_settings_to_injected) {
+
+  if (!tnet_settings_to_injected) {
+
+    LOG_DEBUG("%s", "Pointer to settings for TouchstoNetInstance is null");
+    return false;
+  }
+
+  this->tnet_settings_ = tnet_settings_to_injected;
+  LOG_DEBUG("%s", "Settings injected successfully to Instance");
+  return true;
+}
+
+
+static struct TouchstoNetInstance newInstance() {
   return (struct TouchstoNetInstance) {
     .start_instance = &start_instance,
     .stop_instance = &stop_instance,
@@ -129,4 +141,4 @@ static struct TouchstoNetInstance new() {
   };
 }
 
-const struct TouchstoNetInstanceClass TouchstoNetInstance = { .new = &new };
+const struct TouchstoNetInstanceClass TouchstoNetInstance = { .new = &newInstance };
