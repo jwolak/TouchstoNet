@@ -56,7 +56,7 @@ bool inject_settings_to_args_parser(struct TouchstoNetAgrumentsParser* this, str
 
   this->tnet_settings_ = tnet_settings_to_injected;
 
-  LOG_DEBUG("%s", "Settings injected successfully");
+  LOG_DEBUG("%s", "Settings injected successfully to ArgumentsParser");
   return true;
 }
 
@@ -145,11 +145,11 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
   return true;
 }
 
-static struct TouchstoNetAgrumentsParser new() {
+static struct TouchstoNetAgrumentsParser newArgumentsParser() {
   return (struct TouchstoNetAgrumentsParser) {
     .parse_arguments = &parse_arguments,
     .inject_settings_to_args_parser = &inject_settings_to_args_parser
   };
 }
-const struct TouchstoNetAgrumentsParserClass TouchstoNetAgrumentsParser = { .new = &new };
+const struct TouchstoNetAgrumentsParserClass TouchstoNetAgrumentsParser = { .new = &newArgumentsParser };
 

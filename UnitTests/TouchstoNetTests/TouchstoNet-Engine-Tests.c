@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Time-Counter.c
+ * TouchstoNet-Engine-Tests.c
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,56 +37,31 @@
  *
  */
 
-#include "TouchstoNet-Time-Counter.h"
-#include "LoggerC.h"
 
-#include <unistd.h>
+#include "unity.h"
 
-#define TIME_IN_SEC_PATTERN 1
+#include "../../TouchstoNet/src/TouchstoNet-Engine.c"
+#include "../../TouchstoNet/src/TouchstoNet-Agruments-Parser.c"
 
-bool start_timer(struct TouchstoNetTimeCounter *this, struct TouchstoNetInstance* tnet_instance, int32_t time_period) {
+void start_touchstone_engine_and_true_returned() {
 
-  int32_t seconds_counter = 0;
+  char* kTestProgramName = (char*)"TestAppName";
+  uint32_t kNumberOfArgumentsSetToOne   = 1;
+  char* kEmptyCommandLineArgument[] = {kTestProgramName};
 
-  while (seconds_counter < time_period && !this->stop_timer_flag_) {
-    /*no high resolution needed*/
-    sleep(TIME_IN_SEC_PATTERN);
-    ++seconds_counter;
-  }
+  struct TouchstoNetEngine tnet_engine = TouchstoNetEngine.new();
 
-  if (!this->timer_stop_callback(tnet_instance)) {
-
-    LOG_ERROR("%s", "Filed to call callback after time is elapsed");
-    return false;
-  }
-
-  LOG_DEBUG("%s", "Time has elapsed");
-  return true;
+  TEST_ASSERT_TRUE(tnet_engine.start(&tnet_engine, kNumberOfArgumentsSetToOne, kEmptyCommandLineArgument));
 }
 
-bool stop_timer(struct TouchstoNetTimeCounter *this) {
+void start_and_stop_touchstone_engine_and_true_returned() {
 
-  LOG_DEBUG("%s", "Time counting has been interrupted");
+  char* kTestProgramName = (char*)"TestAppName";
+  uint32_t kNumberOfArgumentsSetToOne   = 1;
+  char* kEmptyCommandLineArgument[] = {kTestProgramName};
 
-  this->stop_timer_flag_ = true;
-  return true;
+  struct TouchstoNetEngine tnet_engine = TouchstoNetEngine.new();
+
+  tnet_engine.start(&tnet_engine, kNumberOfArgumentsSetToOne, kEmptyCommandLineArgument);
+  TEST_ASSERT_TRUE(tnet_engine.stop(&tnet_engine));
 }
-
-bool set_stop_callback (struct TouchstoNetTimeCounter* this, bool(*callback)(struct TouchstoNetInstance* tnet_instance)) {
-
-  this->timer_stop_callback = callback;
-  LOG_DEBUG("%s", "Callback set successfully for TimeCounter");
-  return true;
-}
-
-
-static struct TouchstoNetTimeCounter newTimeCounter() {
-  return (struct TouchstoNetTimeCounter) {
-    .start_timer = &start_timer,
-    .stop_timer = &stop_timer,
-    .set_stop_callback = &set_stop_callback,
-    .stop_timer_flag_ = false,
-  };
-}
-
-const struct TouchstoNetTimeCounterClass TouchstoNetTimeCounter = { .new = &newTimeCounter };

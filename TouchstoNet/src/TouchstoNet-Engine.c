@@ -44,7 +44,7 @@ bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
 
   if (!this->tnet_parser_.inject_settings_to_args_parser(&this->tnet_parser_, &this->tnet_settings_)) {
 
-    LOG_DEBUG("%s", "Settings injection to to arguments parser failed");
+    LOG_DEBUG("%s", "Settings injection to arguments parser failed");
     return false;
   }
 
@@ -90,7 +90,7 @@ bool stop(struct TouchstoNetEngine* this) {
   return true;
 }
 
-static struct TouchstoNetEngine new() {
+static struct TouchstoNetEngine newEngine() {
   return (struct TouchstoNetEngine) {
     .start = &start,
     .stop = &stop,
@@ -100,4 +100,4 @@ static struct TouchstoNetEngine new() {
     .tnet_time_counter_ = TouchstoNetTimeCounter.new()
   };
 }
-const struct TouchstoNetEngineClass TouchstoNetEngine = { .new = &new };
+const struct TouchstoNetEngineClass TouchstoNetEngine = { .new = &newEngine };

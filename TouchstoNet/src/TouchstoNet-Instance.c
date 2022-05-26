@@ -75,6 +75,7 @@
     }
   }
 
+    LOG_DEBUG("%s", "Instance started successfully");
     return true;
   }
 
@@ -113,6 +114,7 @@
     }
 
     this->tnet_settings_ = tnet_settings_to_injected;
+    LOG_DEBUG("%s", "Settings injected successfully to Instance");
     return true;
   }
 
