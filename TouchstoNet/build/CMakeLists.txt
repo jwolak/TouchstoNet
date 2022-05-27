@@ -17,7 +17,7 @@ ${SOURCE_FILES_DIR}/TouchstoNet-Server.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Client.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Socket.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Socket-Address.c
-#${SOURCE_FILES_DIR}/
+${SOURCE_FILES_DIR}/TouchstoNet-Socket-Connection.c
 #${SOURCE_FILES_DIR}/
 #${SOURCE_FILES_DIR}/
 )
