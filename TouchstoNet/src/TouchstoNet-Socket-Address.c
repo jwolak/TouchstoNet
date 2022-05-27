@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Socket.c
+ * TouchstoNet-Socket-Address.c
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,69 +37,48 @@
  *
  */
 
-#include "TouchstoNet-Socket.h"
+#include "TouchstoNet-Socket-Address.h"
 
-#include <sys/socket.h>
 
-#include <unistd.h>
+bool set_address_family(struct TouchstoNetSocketAddress *this) {
 
-#include "LoggerC.h"
-
-bool create_udp(struct TouchstoNetSocket *this) {
-
-  LOG_DEBUG("%s", "TouchstoNetSocket creates UDP socket");
-
-  if ((this->socket_fd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-
-    LOG_ERROR("%s", "TouchstoNetSocket UDP socket create failed");
-    return false;
-  }
-
-  LOG_DEBUG("%s", "TouchstoNetSocket UDP socket create successful");
   return true;
 }
 
-bool create_tcp(struct TouchstoNetSocket *this) {
+bool set_ip_port(struct TouchstoNetSocketAddress *this) {
 
-  LOG_DEBUG("%s", "TouchstoNetSocket creates TCP socket");
-
-  if ((this->socket_fd_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-
-    LOG_ERROR("%s", "TouchstoNetSocket TCP socket create failed");
-    return false;
-  }
-
-  LOG_DEBUG("%s", "TouchstoNetSocket TCP socket create successful");
   return true;
 }
 
-bool close_socket(struct TouchstoNetSocket *this) {
+bool set_inet_address(struct TouchstoNetSocketAddress *this) {
 
-  LOG_DEBUG("%s", "TouchstoNetSocket closes socket");
-
-  if (close(this->socket_fd_) != 0) {
-
-    LOG_ERROR("%s", "TouchstoNetSocket socket to close failed");
-    return false;
-  }
-
-  LOG_DEBUG("%s", "TouchstoNetSocket socket closed successful");
   return true;
 }
 
-int get_socket(struct TouchstoNetSocket *this) {
+int16_t get_address_family(struct TouchstoNetSocketAddress *this) {
 
-  return this->socket_fd_;
+  return this->socket_address_.sin_family;
 }
 
-static struct TouchstoNetSocket newSocket() {
-  return (struct TouchstoNetSocket) {
-    .create_udp = &create_udp,
-    .create_tcp = &create_tcp,
-    .close_socket = &close_socket,
-    .get_socket = &get_socket,
+uint16_t get_ip_port(struct TouchstoNetSocketAddress *this) {
+
+  return this->socket_address_.sin_port;
+}
+
+struct in_addr get_inet_address(struct TouchstoNetSocketAddress *this) {
+
+  return this->socket_address_.sin_addr;
+}
+
+static struct TouchstoNetSocketAddress newSocketAddress() {
+  return (struct TouchstoNetSocketAddress) {
+    .set_address_family = &set_address_family,
+    .set_ip_port = &set_ip_port,
+    .set_inet_address = &set_inet_address,
+    .get_address_family = &get_address_family,
+    .get_ip_port = &get_ip_port,
+    .get_inet_address = &get_inet_address,
   };
 }
 
-const struct TouchstoNetSocketClass TouchstoNetSocket = { .new = &newSocket };
-
+const struct TouchstoNetSocketAddressClass TouchstoNetSocketAddress = { .new = &newSocketAddress };
