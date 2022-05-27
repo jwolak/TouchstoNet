@@ -48,13 +48,13 @@
 struct TouchstoNetSocketAddress {
 
   /*public*/
-  bool(*set_address_family)(struct TouchstoNetSocketAddress *this);
-  bool(*set_ip_port)(struct TouchstoNetSocketAddress *this);
-  bool(*set_inet_address)(struct TouchstoNetSocketAddress *this);
+  bool(*set_address_family)(struct TouchstoNetSocketAddress *this, int16_t address_family_to_set);
+  bool(*set_ip_port)(struct TouchstoNetSocketAddress *this, uint16_t port_number_to_set);
+  bool(*set_inet_address)(struct TouchstoNetSocketAddress *this, in_addr_t inet_address_to_set);
 
  int16_t(*get_address_family)(struct TouchstoNetSocketAddress *this);
  uint16_t(*get_ip_port)(struct TouchstoNetSocketAddress *this);
- struct in_addr(*get_inet_address)(struct TouchstoNetSocketAddress *this);
+ in_addr_t(*get_inet_address)(struct TouchstoNetSocketAddress *this);
 
 
   /*private*/

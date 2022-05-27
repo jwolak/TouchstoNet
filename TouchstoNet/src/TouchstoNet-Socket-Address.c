@@ -39,19 +39,36 @@
 
 #include "TouchstoNet-Socket-Address.h"
 
+#include "LoggerC.h"
 
-bool set_address_family(struct TouchstoNetSocketAddress *this) {
 
+bool set_address_family(struct TouchstoNetSocketAddress *this, int16_t address_family_to_set) {
+
+  if (AF_INET != address_family_to_set) {
+
+    LOG_ERROR("%s", "Invalid address family for TouchstoNetSocketAddress");
+    return false;
+  }
+
+  this->socket_address_.sin_family = address_family_to_set;
+
+  LOG_DEBUG("%s%d", "TouchstoNetSocketAddress set address family to AF_INET");
   return true;
 }
 
-bool set_ip_port(struct TouchstoNetSocketAddress *this) {
+bool set_ip_port(struct TouchstoNetSocketAddress *this, uint16_t port_number_to_set) {
 
+  this->socket_address_.sin_port = port_number_to_set;
+
+  LOG_DEBUG("%s%d", "Port number for TouchstoNetSocketAddress set to: ", port_number_to_set);
   return true;
 }
 
-bool set_inet_address(struct TouchstoNetSocketAddress *this) {
+bool set_inet_address(struct TouchstoNetSocketAddress *this, in_addr_t inet_address_to_set) {
 
+  this->socket_address_.sin_addr.s_addr = inet_address_to_set;
+
+  LOG_DEBUG("%s%d", "IP address for TouchstoNetSocketAddress set to: ", inet_address_to_set);
   return true;
 }
 
@@ -65,9 +82,9 @@ uint16_t get_ip_port(struct TouchstoNetSocketAddress *this) {
   return this->socket_address_.sin_port;
 }
 
-struct in_addr get_inet_address(struct TouchstoNetSocketAddress *this) {
+in_addr_t get_inet_address(struct TouchstoNetSocketAddress *this) {
 
-  return this->socket_address_.sin_addr;
+  return this->socket_address_.sin_addr.s_addr;
 }
 
 static struct TouchstoNetSocketAddress newSocketAddress() {
