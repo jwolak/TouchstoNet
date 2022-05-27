@@ -41,6 +41,8 @@
 #define SRC_TOUCHSTONET_SERVER_H_
 
 #include "TouchstoNet-Settings.h"
+#include "TouchstoNet-Socket-Address.h"
+#include "TouchstoNet-Socket-Connection.h"
 
 #include <stdbool.h>
 
@@ -53,6 +55,8 @@ struct TouchstoNetServer {
 
   /*private*/
   struct TouchstoNetSettings* tnet_settings_;
+  struct TouchstoNetSocketAddress tnet_scoket_address_;
+  struct TouchstoNetSocketConnection tnet_socket_connection_;
 };
 
 extern const struct TouchstoNetServerClass {

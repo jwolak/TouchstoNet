@@ -56,6 +56,8 @@ struct TouchstoNetSocketAddress {
  uint16_t(*get_ip_port)(struct TouchstoNetSocketAddress *this);
  in_addr_t(*get_inet_address)(struct TouchstoNetSocketAddress *this);
 
+ struct sockaddr_in*(*get_socket_address)(struct TouchstoNetSocketAddress *this);
+
 
   /*private*/
   struct sockaddr_in socket_address_;

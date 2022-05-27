@@ -87,6 +87,11 @@ in_addr_t get_inet_address(struct TouchstoNetSocketAddress *this) {
   return this->socket_address_.sin_addr.s_addr;
 }
 
+struct sockaddr_in* get_socket_address(struct TouchstoNetSocketAddress *this) {
+
+  return &this->socket_address_;
+}
+
 static struct TouchstoNetSocketAddress newSocketAddress() {
   return (struct TouchstoNetSocketAddress) {
     .set_address_family = &set_address_family,
@@ -95,6 +100,7 @@ static struct TouchstoNetSocketAddress newSocketAddress() {
     .get_address_family = &get_address_family,
     .get_ip_port = &get_ip_port,
     .get_inet_address = &get_inet_address,
+    .get_socket_address = &get_socket_address,
   };
 }
 

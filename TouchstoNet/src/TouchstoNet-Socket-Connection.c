@@ -93,7 +93,7 @@ bool inject_settings_to_socket_connection(struct TouchstoNetSocketConnection *th
   return true;
 }
 
-bool bind_to_socket(struct TouchstoNetSocketConnection *this, struct sockaddr *socket_address_to_bind) {
+bool bind_to_socket(struct TouchstoNetSocketConnection *this, struct sockaddr_in *socket_address_to_bind) {
 
   if (!socket_address_to_bind) {
 
