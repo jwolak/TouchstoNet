@@ -42,12 +42,30 @@
 #include "../../TouchstoNet/src/TouchstoNet-Socket-Address.c"
 #include "../../TouchstoNet/src/TouchstoNet-Socket.c"
 
+#include <stdbool.h>
 
-void start_connection() {
+
+void* test_client_thread() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
-  /////
-/*  struct TouchstoNetSocketConnection tnet_socket_connection = TouchstoNetSocketConnection.new();
+  struct TouchstoNetSocketConnection tnet_socket_connection2 = TouchstoNetSocketConnection.new();
+  tnet_socket_connection2.inject_settings_to_socket_connection(&tnet_socket_connection2, &tnet_settings);
+  tnet_socket_connection2.open_socket(&tnet_socket_connection2);
+  struct sockaddr_in     servaddr;
+  servaddr.sin_family = AF_INET;
+  servaddr.sin_port = htons(8080);
+  servaddr.sin_addr.s_addr = INADDR_ANY;
+
+  char *hello = "Hello Marvell";
+
+  tnet_socket_connection2.create_client_thread(&tnet_socket_connection2, hello, strlen(hello), &servaddr);
+
+}
+
+void* test_server_thread() {
+
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  struct TouchstoNetSocketConnection tnet_socket_connection = TouchstoNetSocketConnection.new();
   tnet_socket_connection.inject_settings_to_socket_connection(&tnet_socket_connection, &tnet_settings);
   tnet_socket_connection.open_socket(&tnet_socket_connection);
 
@@ -59,20 +77,19 @@ void start_connection() {
   tnet_socket_connection.bind_to_socket(&tnet_socket_connection, &socket_address_to_bind);
 
   struct sockaddr_in client;
-  tnet_socket_connection.receive_msg(&tnet_socket_connection, &client);*/
-//////
+  tnet_socket_connection.create_server_thread(&tnet_socket_connection, &client);
+}
 
-  struct TouchstoNetSocketConnection tnet_socket_connection2 = TouchstoNetSocketConnection.new();
-  tnet_socket_connection2.inject_settings_to_socket_connection(&tnet_socket_connection2, &tnet_settings);
-  tnet_socket_connection2.open_socket(&tnet_socket_connection2);
-  struct sockaddr_in     servaddr;
-  servaddr.sin_family = AF_INET;
-  servaddr.sin_port = htons(8080);
-  servaddr.sin_addr.s_addr = INADDR_ANY;
+void start_connection() {
 
-  char *hello = "Hello from client";
+  pthread_t thread_id[2];
+  bool stop_order = false;
 
-  tnet_socket_connection2.send_msg(&tnet_socket_connection2, hello, &servaddr);
+  pthread_create(&thread_id[0], NULL, test_server_thread, NULL);
+  pthread_create(&thread_id[1], NULL, test_client_thread, NULL);
+
+  pthread_join(thread_id[1], NULL);
+  pthread_join(thread_id[0], NULL);
 
 }
 
