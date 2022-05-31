@@ -43,6 +43,8 @@
 
 #include <string.h>
 
+#include <signal.h>
+
 #define MESSAGES_BUFFER_SIZE  1024
 
 struct SendRecvMsgLoopArgs {
@@ -151,7 +153,6 @@ bool create_server_thread(struct TouchstoNetSocketConnection *this, struct socka
   /*create in thread*/
   LOG_DEBUG("%s", "TouchstoNetSocketConnection: receive_msg() launched");
 
-  pthread_t thread_id;
   int len = 0;
   struct SendRecvMsgLoopArgs send_recv_msg_loop_args;
   this->stop_thread_ = false;
@@ -162,12 +163,12 @@ bool create_server_thread(struct TouchstoNetSocketConnection *this, struct socka
   send_recv_msg_loop_args.recv_addr_len = &len;
   send_recv_msg_loop_args.interrrupt_thread = &this->stop_thread_;
 
-  if (pthread_create(&thread_id, NULL, server_recv_and_reply_msg_loop_thread, &send_recv_msg_loop_args) != 0) {
+  if (pthread_create(&this->thread_id_, NULL, server_recv_and_reply_msg_loop_thread, &send_recv_msg_loop_args) != 0) {
 
     LOG_DEBUG("%s", "Failed to launch server_recv_and_reply_msg_loop_thread");
     return false;
   }
-  pthread_join(thread_id, NULL);
+  pthread_join(this->thread_id_, NULL);
 
   return true;
 }
@@ -177,7 +178,6 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
   /*create in thread*/
   LOG_DEBUG("%s", "TouchstoNetSocketConnection: send_msg() launched");
 
-  pthread_t thread_id;
   int len = 0;
   struct SendRecvMsgLoopArgs send_recv_msg_loop_args;
   this->stop_thread_ = false;
@@ -189,13 +189,13 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
   send_recv_msg_loop_args.recv_addr_len = &len;
   send_recv_msg_loop_args.interrrupt_thread = &this->stop_thread_;
 
-  if(pthread_create(&thread_id, NULL, client_send_and_recv_msg_loop_thread, &send_recv_msg_loop_args) != 0){
+  if(pthread_create(&this->thread_id_, NULL, client_send_and_recv_msg_loop_thread, &send_recv_msg_loop_args) != 0){
 
     LOG_DEBUG("%s", "Failed to launch client_send_and_recv_msg_loop_thread");
     return false;
   }
 
-  pthread_join(thread_id, NULL);
+  pthread_join(this->thread_id_, NULL);
 
   return true;
 }
@@ -204,7 +204,7 @@ bool stop_working_thread(struct TouchstoNetSocketConnection *this) {
 
   this->stop_thread_ = true;
   LOG_DEBUG("%s", "TouchstoNetSocketConnection working thread has been stopped");
-  pthread_exit(NULL);
+  pthread_kill(this->thread_id_, SIGKILL);
 }
 
 static struct TouchstoNetSocketConnection newSocketConnection() {

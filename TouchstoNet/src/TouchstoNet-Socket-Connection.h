@@ -66,6 +66,7 @@ struct TouchstoNetSocketConnection {
   struct TouchstoNetSocketAddress tnet_sock_address_;
   /* always one thread for now, so no mutex needed */
   bool stop_thread_;
+  pthread_t thread_id_;
 };
 
 extern const struct TouchstoNetSocketConnectionClass {
