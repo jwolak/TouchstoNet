@@ -44,52 +44,74 @@
 
 #include <stdbool.h>
 
+void* stop_treads(void *args) {
 
-void* test_client_thread() {
+  int time_counter = 0;
 
+  while (time_counter < 5) {
+
+    sleep(1);
+    ++time_counter;
+  }
+
+  ((struct TouchstoNetSocketConnection*)args)->stop_working_thread(((struct TouchstoNetSocketConnection*)args));
+}
+
+void* test_client_thread(void *tnet_socket_connection) {
+
+  struct TouchstoNetSocketConnection *tnet_socket_connection_client = (struct TouchstoNetSocketConnection*)tnet_socket_connection;
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
-  struct TouchstoNetSocketConnection tnet_socket_connection2 = TouchstoNetSocketConnection.new();
-  tnet_socket_connection2.inject_settings_to_socket_connection(&tnet_socket_connection2, &tnet_settings);
-  tnet_socket_connection2.open_socket(&tnet_socket_connection2);
+  tnet_socket_connection_client->inject_settings_to_socket_connection(tnet_socket_connection_client, &tnet_settings);
+  tnet_socket_connection_client->open_socket(tnet_socket_connection_client);
   struct sockaddr_in     servaddr;
   servaddr.sin_family = AF_INET;
   servaddr.sin_port = htons(8080);
   servaddr.sin_addr.s_addr = INADDR_ANY;
 
-  char *hello = "Hello Marvell";
+  char *hello = "Hello Touchstonet";
 
-  tnet_socket_connection2.create_client_thread(&tnet_socket_connection2, hello, strlen(hello), &servaddr);
+  tnet_socket_connection_client->create_client_thread(tnet_socket_connection_client, hello, strlen(hello), &servaddr);
 
 }
 
-void* test_server_thread() {
+void* test_server_thread(void *tnet_socket_connection) {
 
+  struct TouchstoNetSocketConnection *tnet_socket_connection_server = (struct TouchstoNetSocketConnection*)tnet_socket_connection;
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
-  struct TouchstoNetSocketConnection tnet_socket_connection = TouchstoNetSocketConnection.new();
-  tnet_socket_connection.inject_settings_to_socket_connection(&tnet_socket_connection, &tnet_settings);
-  tnet_socket_connection.open_socket(&tnet_socket_connection);
+  tnet_socket_connection_server->inject_settings_to_socket_connection(tnet_socket_connection_server, &tnet_settings);
+  tnet_socket_connection_server->open_socket(tnet_socket_connection_server);
 
   struct sockaddr_in socket_address_to_bind;
   socket_address_to_bind.sin_family    = AF_INET;
   socket_address_to_bind.sin_addr.s_addr = INADDR_ANY;
   socket_address_to_bind.sin_port = htons(8080);
 
-  tnet_socket_connection.bind_to_socket(&tnet_socket_connection, &socket_address_to_bind);
+  tnet_socket_connection_server->bind_to_socket(tnet_socket_connection_server, &socket_address_to_bind);
 
   struct sockaddr_in client;
-  tnet_socket_connection.create_server_thread(&tnet_socket_connection, &client);
+  tnet_socket_connection_server->create_server_thread(tnet_socket_connection_server, &client);
 }
+
 
 void start_connection() {
 
-  pthread_t thread_id[2];
+  struct TouchstoNetSocketConnection tnet_socket_connection_for_client_thread = TouchstoNetSocketConnection.new();
+  struct TouchstoNetSocketConnection tnet_socket_connection_for_server_thread = TouchstoNetSocketConnection.new();
+
+
+  pthread_t thread_id[4];
   bool stop_order = false;
 
-  pthread_create(&thread_id[0], NULL, test_server_thread, NULL);
-  pthread_create(&thread_id[1], NULL, test_client_thread, NULL);
+  pthread_create(&thread_id[0], NULL, test_server_thread, &tnet_socket_connection_for_server_thread);
+  pthread_create(&thread_id[1], NULL, test_client_thread, &tnet_socket_connection_for_client_thread);
+  pthread_create(&thread_id[2], NULL, stop_treads, &tnet_socket_connection_for_client_thread);
+  pthread_create(&thread_id[3], NULL, stop_treads, &tnet_socket_connection_for_server_thread);
 
-  pthread_join(thread_id[1], NULL);
   pthread_join(thread_id[0], NULL);
+  pthread_join(thread_id[1], NULL);
+  pthread_join(thread_id[2], NULL);
+
+  pthread_exit(NULL);
 
 }
 
