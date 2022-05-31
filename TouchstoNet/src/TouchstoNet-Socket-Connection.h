@@ -53,14 +53,20 @@ struct TouchstoNetSocketConnection {
   /*public*/
   bool(*inject_settings_to_socket_connection)(struct TouchstoNetSocketConnection* this, struct TouchstoNetSettings* tnet_settings_to_injected);
   bool(*bind_to_socket)(struct TouchstoNetSocketConnection *this, struct sockaddr_in *socket_address_to_bind);
-  bool(*receive_msg)(struct TouchstoNetSocketConnection *this, struct sockaddr *socket_address_to_recv);
-  bool(*send_msg)(struct TouchstoNetSocketConnection *this, void *msg_to_send_buffer, struct sockaddr *socket_address_to_send);
+  bool(*open_socket)(struct TouchstoNetSocketConnection *this);
+  bool(*close_connection)(struct TouchstoNetSocketConnection *this);
+  bool(*create_server_thread)(struct TouchstoNetSocketConnection *this, struct sockaddr_in *socket_server_address);
+  bool(*create_client_thread)(struct TouchstoNetSocketConnection *this, void *msg_to_send_buffer, int32_t msg_send_size, struct sockaddr_in *socket_client_address);
+  bool(*stop_working_thread)(struct TouchstoNetSocketConnection *this);
 
   /*private*/
   struct TouchstoNetSettings* tnet_settings_;
   char recv_msg_buffer_[MAXLINE];
   struct TouchstoNetSocket tnet_socket_;
   struct TouchstoNetSocketAddress tnet_sock_address_;
+  /* always one thread for now, so no mutex needed */
+  bool stop_thread_;
+  pthread_t thread_id_;
 };
 
 extern const struct TouchstoNetSocketConnectionClass {
