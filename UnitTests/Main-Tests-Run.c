@@ -64,6 +64,6 @@ int main(void) {
     RUN_TEST(stop_instance_in_client_mode_and_it_is_successful_then_true_returned);
     RUN_TEST(stop_instance_in_server_mode_and_it_is_successful_then_true_returned);*/
 
-    RUN_TEST(start_connection);
+    RUN_TEST(start_client_server_connection_and_stop_them_after_5s);
     return UNITY_END();
 }

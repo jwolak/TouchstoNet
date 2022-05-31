@@ -44,11 +44,13 @@
 
 #include <stdbool.h>
 
-void* stop_treads(void *args) {
+#define TEST_THREAD_STOP_TIMEOUT  5
+
+void* stop_threads(void *args) {
 
   int time_counter = 0;
 
-  while (time_counter < 5) {
+  while (time_counter < TEST_THREAD_STOP_TIMEOUT) {
 
     sleep(1);
     ++time_counter;
@@ -68,7 +70,7 @@ void* test_client_thread(void *tnet_socket_connection) {
   servaddr.sin_port = htons(8080);
   servaddr.sin_addr.s_addr = INADDR_ANY;
 
-  char *hello = "Hello Touchstonet";
+  char *hello = "Hello TouchstoNet";
 
   tnet_socket_connection_client->create_client_thread(tnet_socket_connection_client, hello, strlen(hello), &servaddr);
 
@@ -93,7 +95,7 @@ void* test_server_thread(void *tnet_socket_connection) {
 }
 
 
-void start_connection() {
+void start_client_server_connection_and_stop_them_after_5s() {
 
   struct TouchstoNetSocketConnection tnet_socket_connection_for_client_thread = TouchstoNetSocketConnection.new();
   struct TouchstoNetSocketConnection tnet_socket_connection_for_server_thread = TouchstoNetSocketConnection.new();
@@ -102,16 +104,29 @@ void start_connection() {
   pthread_t thread_id[4];
   bool stop_order = false;
 
+  time_t time_start;
+  time_t time_end;
+  double time_diff = 0.0;
+
+  time (&time_start);
   pthread_create(&thread_id[0], NULL, test_server_thread, &tnet_socket_connection_for_server_thread);
   pthread_create(&thread_id[1], NULL, test_client_thread, &tnet_socket_connection_for_client_thread);
-  pthread_create(&thread_id[2], NULL, stop_treads, &tnet_socket_connection_for_client_thread);
-  pthread_create(&thread_id[3], NULL, stop_treads, &tnet_socket_connection_for_server_thread);
+  pthread_create(&thread_id[2], NULL, stop_threads, &tnet_socket_connection_for_client_thread);
+  pthread_create(&thread_id[3], NULL, stop_threads, &tnet_socket_connection_for_server_thread);
 
   pthread_join(thread_id[0], NULL);
   pthread_join(thread_id[1], NULL);
   pthread_join(thread_id[2], NULL);
+  pthread_join(thread_id[3], NULL);
 
-  pthread_exit(NULL);
+
+  time (&time_end);
+  time_diff = difftime (time_end, time_start);
+  LOG_DEBUG("%s%d%s","Your timer counted ", (int)time_diff, " [s]" );
+
+  TEST_ASSERT_EQUAL((int)time_diff, TEST_THREAD_STOP_TIMEOUT);
+
+  //pthread_exit(NULL);
 
 }
 
