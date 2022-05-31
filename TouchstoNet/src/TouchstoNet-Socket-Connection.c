@@ -204,7 +204,8 @@ bool stop_working_thread(struct TouchstoNetSocketConnection *this) {
 
   this->stop_thread_ = true;
   LOG_DEBUG("%s", "TouchstoNetSocketConnection working thread has been stopped");
-  pthread_kill(this->thread_id_, SIGKILL);
+  //pthread_kill(this->thread_id_, SIGKILL);
+  pthread_cancel(this->thread_id_);
 }
 
 static struct TouchstoNetSocketConnection newSocketConnection() {
