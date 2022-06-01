@@ -58,7 +58,7 @@ int32_t global_counter;
 #define COUNTER_SET_VALUE   21
 #define TIMEOUT_TO_STOP     5
 
-bool test_callback(struct TouchstoNetInstance* tnet_instance) {
+bool test_callback(void* tnet_instance) {
 
   LOG_DEBUG("%s", "Callback called");
   global_counter = COUNTER_SET_VALUE;

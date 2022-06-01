@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Engine.c
+ * TouchstoNet-Message-Model.h
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,52 +37,29 @@
  *
  */
 
-#include "TouchstoNet-Engine.h"
-#include "LoggerC.h"
+#ifndef SRC_TOUCHSTONET_MESSAGE_MODEL_H_
+#define SRC_TOUCHSTONET_MESSAGE_MODEL_H_
 
-bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
+#include <stdint.h>
+#include <stdbool.h>
 
-  if (!this->tnet_parser_.inject_settings_to_args_parser(&this->tnet_parser_, &this->tnet_settings_)) {
+#define MESSAGE_MODEL_BUFFER_SIZE 1024
 
-    LOG_DEBUG("%s", "Settings injection to arguments parser failed");
-    return false;
-  }
+struct TouchstoNetMessageModel {
 
-  if (!this->tnet_intsnace_.inject_settings_to_instance(&this->tnet_intsnace_,  &this->tnet_settings_)) {
+  /*public*/
+  bool(*prepare_message)(struct TouchstoNetMessageModel *this, int32_t msg_size);
+  char* (*get_buffer)(struct TouchstoNetMessageModel *this);
+  int32_t(*get_msg_size)(struct TouchstoNetMessageModel *this);
 
-    LOG_DEBUG("%s", "Settings injection to TouchstoNet instance failed");
-    return false;
-  }
+  /*private*/
+  char message_model_buffer_ [MESSAGE_MODEL_BUFFER_SIZE];
+  int32_t message_size_;
 
-  if (!this->tnet_intsnace_.start_instance(&this->tnet_intsnace_)) {
+};
 
-    LOG_ERROR("%s", "Failed to start TouchstoNet test instance");
-    return false;
-  }
+extern const struct TouchstoNetMessageModelClass {
+  struct TouchstoNetMessageModel(*new)();
+} TouchstoNetMessageModel;
 
-  LOG_DEBUG("%s", "Start TouchstoNet engine successful");
-  return true;
-}
-
-bool stop(struct TouchstoNetEngine* this) {
-
-  if (!this->tnet_intsnace_.stop_instance(&this->tnet_intsnace_)) {
-
-    LOG_ERROR("%s", "Stop TouchstoNet engine failed");
-    return false;
-  }
-
-  LOG_DEBUG("%s", "Stop TouchstoNet engine successful");
-  return true;
-}
-
-static struct TouchstoNetEngine newEngine() {
-  return (struct TouchstoNetEngine) {
-    .start = &start,
-    .stop = &stop,
-    .tnet_settings_ = TouchstoNetSettings.new(),
-    .tnet_parser_ = TouchstoNetAgrumentsParser.new(),
-    .tnet_intsnace_ = TouchstoNetInstance.new(),
-  };
-}
-const struct TouchstoNetEngineClass TouchstoNetEngine = { .new = &newEngine };
+#endif /* SRC_TOUCHSTONET_MESSAGE_MODEL_H_ */

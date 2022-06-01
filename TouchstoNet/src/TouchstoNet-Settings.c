@@ -39,6 +39,8 @@
 
 #include "TouchstoNet-Settings.h"
 
+#include "TouchstoNet-Message-Model.h"
+
 #include "LoggerC.h"
 
 #include <arpa/inet.h>
@@ -67,6 +69,11 @@ in_addr_t get_ip_address (struct TouchstoNetSettings* this) {
 int32_t get_test_duration (struct TouchstoNetSettings* this) {
 
   return this->test_duration_;
+}
+
+int32_t get_msg_bytes_length(struct TouchstoNetSettings* this) {
+
+  return this->msg_bytes_length_;
 }
 
 bool set_role (struct TouchstoNetSettings* this, enum tnet_role role_to_set) {
@@ -125,16 +132,31 @@ bool set_test_duration(struct TouchstoNetSettings *this, int32_t test_duration_t
   return true;
 }
 
+bool set_msg_bytes_length(struct TouchstoNetSettings* this, int32_t msg_bytes_length_to_set) {
+
+  if (MESSAGE_MODEL_BUFFER_SIZE > msg_bytes_length_to_set || msg_bytes_length_to_set <= 0) {
+
+    LOG_ERROR("%s", "Number of bytes to sent exceeded");
+    return false;
+  }
+
+  this->msg_bytes_length_ = msg_bytes_length_to_set;
+
+  return true;
+}
+
 static struct TouchstoNetSettings newSettings() {
   return (struct TouchstoNetSettings) {
     .get_role = &get_role,
     .get_port_number = &get_port_number,
     .get_ip_address = &get_ip_address,
     .get_test_duration = &get_test_duration,
+    .get_msg_bytes_length = &get_msg_bytes_length,
     .set_role = &set_role,
     .set_port_number = &set_port_number,
     .set_ip_address = &set_ip_address,
-    .set_test_duration = &set_test_duration
+    .set_test_duration = &set_test_duration,
+    .set_msg_bytes_length = &set_msg_bytes_length,
   };
 }
 const struct TouchstoNetSettingsClass TouchstoNetSettings = { .new = &newSettings };

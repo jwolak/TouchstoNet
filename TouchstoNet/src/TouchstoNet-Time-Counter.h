@@ -43,19 +43,20 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "TouchstoNet-Instance.h"
+#include <pthread.h>
 
 struct TouchstoNetTimeCounter {
 
   /*public*/
-  bool(*start_timer)(struct TouchstoNetTimeCounter* this, struct TouchstoNetInstance* tnet_instance, int32_t time_period);
+  bool(*start_timer)(struct TouchstoNetTimeCounter* this, void* tnet_instance, int32_t time_period);
   bool(*stop_timer)(struct TouchstoNetTimeCounter* this);
-  bool(*set_stop_callback)(struct TouchstoNetTimeCounter* this, bool(*callback)(struct TouchstoNetInstance* tnet_instance));
+  bool(*set_stop_callback)(struct TouchstoNetTimeCounter* this, bool(*callback)(void* tnet_instance));
 
   /*private*/
-  bool(*timer_stop_callback)(struct TouchstoNetInstance* tnet_instance);
+  bool(*timer_stop_callback)(void* tnet_instance);
   /*no mutex needed*/
   bool stop_timer_flag_;
+  pthread_t thread_id_;
 };
 
 extern const struct TouchstoNetTimeCounterClass {

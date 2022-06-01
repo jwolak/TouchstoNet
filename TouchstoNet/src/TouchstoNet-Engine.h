@@ -59,7 +59,6 @@ struct TouchstoNetEngine {
   struct TouchstoNetSettings tnet_settings_;
   struct TouchstoNetAgrumentsParser tnet_parser_;
   struct TouchstoNetInstance tnet_intsnace_;
-  struct TouchstoNetTimeCounter tnet_time_counter_;
 };
 
 extern const struct TouchstoNetEngineClass {

@@ -81,9 +81,21 @@ bool start_server(struct TouchstoNetServer* this) {
     return false;
   }
 
+  if (!this->tnet_socket_connection_.open_socket(&this->tnet_socket_connection_)) {
+
+    LOG_DEBUG("%s", "TouchstoNetServer: Open socket failed");
+    return false;
+  }
+
   if(!this->tnet_socket_connection_.bind_to_socket(&this->tnet_socket_connection_, this->tnet_scoket_address_.get_socket_address(&this->tnet_scoket_address_))) {
 
     LOG_ERROR("%s", "Server failed bind to the socket");
+    return false;
+  }
+
+  if (!this->tnet_socket_connection_.create_server_thread(&this->tnet_socket_connection_, &this->tnet_scoket_address_.socket_address_)) {
+
+    LOG_DEBUG("%s", "TouchstoNetServer: Create server thread failed");
     return false;
   }
 
@@ -92,6 +104,19 @@ bool start_server(struct TouchstoNetServer* this) {
 
 bool stop_server(struct TouchstoNetServer* this) {
 
+  if (!this->tnet_socket_connection_.stop_working_thread(&this->tnet_socket_connection_)) {
+
+    LOG_DEBUG("%s", "TouchstoNetServer: Stop server thread failed");
+    return false;
+  }
+
+  if (!this->tnet_socket_connection_.close_connection(&this->tnet_socket_connection_)) {
+
+    LOG_DEBUG("%s", "TouchstoNetServer: Close socket failed");
+    return false;
+  }
+
+  LOG_DEBUG("%s", "TouchstoNetServer: Stop server successful");
   return true;
 }
 

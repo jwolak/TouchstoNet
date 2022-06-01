@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Engine.c
+ * TouchstoNet-Message-Model.c
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,52 +37,44 @@
  *
  */
 
-#include "TouchstoNet-Engine.h"
+#include "TouchstoNet-Message-Model.h"
+
 #include "LoggerC.h"
 
-bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
+#include <string.h>
 
-  if (!this->tnet_parser_.inject_settings_to_args_parser(&this->tnet_parser_, &this->tnet_settings_)) {
+bool prepare_message (struct TouchstoNetMessageModel *this, int32_t msg_size) {
 
-    LOG_DEBUG("%s", "Settings injection to arguments parser failed");
+  if (msg_size > MESSAGE_MODEL_BUFFER_SIZE) {
+
+    LOG_ERROR("%s", "TouchstoNetMessageModel: Message size exceeded");
     return false;
   }
 
-  if (!this->tnet_intsnace_.inject_settings_to_instance(&this->tnet_intsnace_,  &this->tnet_settings_)) {
+  memset(this->message_model_buffer_, 0x1, msg_size);
 
-    LOG_DEBUG("%s", "Settings injection to TouchstoNet instance failed");
-    return false;
-  }
+  this->message_size_ = msg_size;
 
-  if (!this->tnet_intsnace_.start_instance(&this->tnet_intsnace_)) {
-
-    LOG_ERROR("%s", "Failed to start TouchstoNet test instance");
-    return false;
-  }
-
-  LOG_DEBUG("%s", "Start TouchstoNet engine successful");
+  LOG_DEBUG("%s%d" "TouchstoNetMessageModel: Prepared message with size: ", msg_size);
   return true;
 }
 
-bool stop(struct TouchstoNetEngine* this) {
+char *get_buffer (struct TouchstoNetMessageModel *this) {
 
-  if (!this->tnet_intsnace_.stop_instance(&this->tnet_intsnace_)) {
-
-    LOG_ERROR("%s", "Stop TouchstoNet engine failed");
-    return false;
-  }
-
-  LOG_DEBUG("%s", "Stop TouchstoNet engine successful");
-  return true;
+  return this->message_model_buffer_;
 }
 
-static struct TouchstoNetEngine newEngine() {
-  return (struct TouchstoNetEngine) {
-    .start = &start,
-    .stop = &stop,
-    .tnet_settings_ = TouchstoNetSettings.new(),
-    .tnet_parser_ = TouchstoNetAgrumentsParser.new(),
-    .tnet_intsnace_ = TouchstoNetInstance.new(),
+int32_t get_msg_size (struct TouchstoNetMessageModel *this) {
+
+  return this->message_size_;
+}
+
+static struct TouchstoNetMessageModel newMessageModel() {
+  return (struct TouchstoNetMessageModel) {
+    .prepare_message = &prepare_message,
+    .get_buffer = &get_buffer,
+    .get_msg_size = &get_msg_size,
   };
 }
-const struct TouchstoNetEngineClass TouchstoNetEngine = { .new = &newEngine };
+
+const struct TouchstoNetMessageModelClass TouchstoNetMessageModel = { .new = &newMessageModel };
