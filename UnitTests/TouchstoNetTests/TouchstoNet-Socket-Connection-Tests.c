@@ -125,9 +125,6 @@ void start_client_server_connection_and_stop_them_after_5s() {
   LOG_DEBUG("%s%d%s","Your timer counted ", (int)time_diff, " [s]" );
 
   TEST_ASSERT_EQUAL((int)time_diff, TEST_THREAD_STOP_TIMEOUT);
-
-  //pthread_exit(NULL);
-
 }
 
 

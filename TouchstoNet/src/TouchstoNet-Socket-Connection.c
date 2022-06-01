@@ -145,6 +145,13 @@ bool open_socket (struct TouchstoNetSocketConnection *this) {
 
 bool close_connection(struct TouchstoNetSocketConnection *this) {
 
+  if (!this->tnet_socket_.close_socket(&this->tnet_socket_)) {
+
+    LOG_DEBUG("%s", "TouchstoNetSocketConnection: Close socket failed");
+    return false;
+  }
+
+  LOG_DEBUG("%s", "TouchstoNetSocketConnection: Close socket successful");
   return true;
 }
 
