@@ -93,8 +93,11 @@ bool start_client(struct TouchstoNetClient* this) {
     return false;
   }
 
-  /*TODO get message size from settings*/
-  this->tnet_message_model_.prepare_message(&this->tnet_message_model_, 100);
+  if (!this->tnet_message_model_.prepare_message(&this->tnet_message_model_, this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_))) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Failed to prepare massage to be send");
+    return false;
+  }
 
   if (!this->tnet_socket_connection_.create_client_thread(&this->tnet_socket_connection_, this->tnet_message_model_.get_buffer(&this->tnet_message_model_) , this->tnet_message_model_.get_msg_size(&this->tnet_message_model_), this->tnet_scoket_address_.get_socket_address(&this->tnet_scoket_address_))) {
 

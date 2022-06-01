@@ -43,18 +43,20 @@
 
 #include <string.h>
 
-void prepare_message (struct TouchstoNetMessageModel *this, int32_t msg_size) {
+bool prepare_message (struct TouchstoNetMessageModel *this, int32_t msg_size) {
 
   if (msg_size > MESSAGE_MODEL_BUFFER_SIZE) {
 
     LOG_ERROR("%s", "TouchstoNetMessageModel: Message size exceeded");
-    return;
+    return false;
   }
 
   memset(this->message_model_buffer_, 0x1, msg_size);
 
   this->message_size_ = msg_size;
+
   LOG_DEBUG("%s%d" "TouchstoNetMessageModel: Prepared message with size: ", msg_size);
+  return true;
 }
 
 char *get_buffer (struct TouchstoNetMessageModel *this) {

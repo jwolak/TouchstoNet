@@ -41,13 +41,14 @@
 #define SRC_TOUCHSTONET_MESSAGE_MODEL_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define MESSAGE_MODEL_BUFFER_SIZE 1024
 
 struct TouchstoNetMessageModel {
 
   /*public*/
-  void(*prepare_message)(struct TouchstoNetMessageModel *this, int32_t msg_size);
+  bool(*prepare_message)(struct TouchstoNetMessageModel *this, int32_t msg_size);
   char* (*get_buffer)(struct TouchstoNetMessageModel *this);
   int32_t(*get_msg_size)(struct TouchstoNetMessageModel *this);
 

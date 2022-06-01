@@ -66,6 +66,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
   int32_t portno;
   char address_parameter[TNET_IP_ADDRESS_BUFFER_SIZE];
   uint32_t test_time;
+  int32_t msg_bytes_length;
 
   static struct option longopts[] = {
       {"help",    no_argument, NULL, 'h' },
@@ -74,9 +75,10 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
       {"port",    required_argument, NULL, 'p'},
       {"address", required_argument, NULL, 'a'},
       {"time",    required_argument, NULL, 't'},
+      {"bytes",  required_argument, NULL, 'l'},
   };
 
-  while ((flag = getopt_long(argc, argv, "hscp:a:t:", longopts, NULL)) != -1) {
+  while ((flag = getopt_long(argc, argv, "hscp:a:t:l:", longopts, NULL)) != -1) {
     switch (flag) {
     case 's':
       if (!this->tnet_settings_->set_role(this->tnet_settings_, SERVER)) {
@@ -132,6 +134,18 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
       }
 
       LOG_DEBUG("%s%d", "Test duration set to: ", test_time);
+      break;
+
+    case 'l':
+      msg_bytes_length = atoi(optarg);
+
+      if (!this->tnet_settings_->set_msg_bytes_length(this->tnet_settings_, msg_bytes_length)) {
+
+        LOG_ERROR("%s", "TouchstoNetAgrumentsParser: Message length in bytes parse failed");
+        return false;
+      }
+
+      LOG_DEBUG("%s%d", "Message length in bytes set to: ", msg_bytes_length);
       break;
 
     case 'h':
