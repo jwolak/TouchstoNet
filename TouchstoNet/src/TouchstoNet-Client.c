@@ -38,6 +38,12 @@
  */
 
 #include "TouchstoNet-Client.h"
+#include "LoggerC.h"
+
+static bool stop_client_wrapper(void* args) {
+
+  return ((struct TouchstoNetSocketConnection*)args)->stop_working_thread((struct TouchstoNetSocketConnection*)args);
+}
 
 bool inject_settings_to_client (struct TouchstoNetClient* this, struct TouchstoNetSettings* tnet_settings_to_injected) {
 
@@ -45,6 +51,20 @@ bool inject_settings_to_client (struct TouchstoNetClient* this, struct TouchstoN
 }
 
 bool start_client(struct TouchstoNetClient* this) {
+
+
+  /*set callback and start timer for client*/
+  if (!this->tnet_time_counter_.set_stop_callback(&this->tnet_time_counter_, &stop_client_wrapper)) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Failed to set time counter callback");
+    return false;
+  }
+
+  if (!this->tnet_time_counter_.start_timer(&this->tnet_time_counter_, &this->tnet_socket_connection_, this->tnet_settings_->get_test_duration(this->tnet_settings_)) ) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Failed to start time counter");
+    return false;
+  }
 
   return true;
 }
@@ -59,6 +79,8 @@ static struct TouchstoNetClient newClient() {
     .inject_settings_to_client = &inject_settings_to_client,
     .start_client = &start_client,
     .stop_client = &stop_client,
+    .tnet_socket_connection_ = TouchstoNetSocketConnection.new(),
+    .tnet_time_counter_ = TouchstoNetTimeCounter.new(),
   };
 }
 

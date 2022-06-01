@@ -54,23 +54,9 @@ bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
     return false;
   }
 
-  if (!this->tnet_time_counter_.set_stop_callback(&this->tnet_time_counter_, this->tnet_intsnace_.stop_instance)) {
-
-    LOG_DEBUG("%s", "Set stop callback for timer counter failed");
-    return false;
-  }
-
   if (!this->tnet_intsnace_.start_instance(&this->tnet_intsnace_)) {
 
     LOG_ERROR("%s", "Failed to start TouchstoNet test instance");
-    return false;
-  }
-
-  if (!this->tnet_time_counter_.start_timer(&this->tnet_time_counter_, &this->tnet_intsnace_, this->tnet_settings_.get_test_duration(&this->tnet_settings_))) {
-
-    this->tnet_intsnace_.stop_instance(&this->tnet_intsnace_);
-
-    LOG_ERROR("%s", "Failed to start time counter");
     return false;
   }
 
@@ -97,7 +83,6 @@ static struct TouchstoNetEngine newEngine() {
     .tnet_settings_ = TouchstoNetSettings.new(),
     .tnet_parser_ = TouchstoNetAgrumentsParser.new(),
     .tnet_intsnace_ = TouchstoNetInstance.new(),
-    .tnet_time_counter_ = TouchstoNetTimeCounter.new()
   };
 }
 const struct TouchstoNetEngineClass TouchstoNetEngine = { .new = &newEngine };

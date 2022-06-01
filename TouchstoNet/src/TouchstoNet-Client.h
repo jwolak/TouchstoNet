@@ -41,6 +41,8 @@
 #define SRC_TOUCHSTONET_CLIENT_H_
 
 #include "TouchstoNet-Settings.h"
+#include "TouchstoNet-Socket-Connection.h"
+#include "TouchstoNet-Time-Counter.h"
 
 #include <stdbool.h>
 
@@ -53,6 +55,9 @@ struct TouchstoNetClient {
 
   /*private*/
   struct TouchstoNetSettings* tnet_settings_;
+  //
+  struct TouchstoNetSocketConnection tnet_socket_connection_;
+  struct TouchstoNetTimeCounter tnet_time_counter_;
 };
 
 extern const struct TouchstoNetClientClass {
