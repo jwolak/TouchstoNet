@@ -41,10 +41,13 @@
 #define SRC_TOUCHSTONET_CLIENT_H_
 
 #include "TouchstoNet-Settings.h"
+#include "TouchstoNet-Socket-Address.h"
 #include "TouchstoNet-Socket-Connection.h"
 #include "TouchstoNet-Time-Counter.h"
 
 #include <stdbool.h>
+
+#define CLIENT_MESSAGES_BUFFER_SIZE 1024
 
 struct TouchstoNetClient {
 
@@ -55,9 +58,11 @@ struct TouchstoNetClient {
 
   /*private*/
   struct TouchstoNetSettings* tnet_settings_;
-  //
   struct TouchstoNetSocketConnection tnet_socket_connection_;
+  struct TouchstoNetSocketAddress tnet_scoket_address_;
   struct TouchstoNetTimeCounter tnet_time_counter_;
+
+  char* messages_buffer [CLIENT_MESSAGES_BUFFER_SIZE];
 };
 
 extern const struct TouchstoNetClientClass {

@@ -106,7 +106,7 @@ bool stop_server(struct TouchstoNetServer* this) {
 
   if (!this->tnet_socket_connection_.stop_working_thread(&this->tnet_socket_connection_)) {
 
-    LOG_DEBUG("%s", "TouchstoNetServer: Stop server thread filed");
+    LOG_DEBUG("%s", "TouchstoNetServer: Stop server thread failed");
     return false;
   }
 

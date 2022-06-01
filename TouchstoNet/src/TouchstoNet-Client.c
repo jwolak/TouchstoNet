@@ -40,6 +40,8 @@
 #include "TouchstoNet-Client.h"
 #include "LoggerC.h"
 
+#include <string.h>
+
 static bool stop_client_wrapper(void* args) {
 
   return ((struct TouchstoNetSocketConnection*)args)->stop_working_thread((struct TouchstoNetSocketConnection*)args);
@@ -47,11 +49,57 @@ static bool stop_client_wrapper(void* args) {
 
 bool inject_settings_to_client (struct TouchstoNetClient* this, struct TouchstoNetSettings* tnet_settings_to_injected) {
 
+  if (!tnet_settings_to_injected) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Settings pointer is null");
+    return false;
+  }
+
+  this->tnet_settings_ = tnet_settings_to_injected;
+
+  LOG_DEBUG("%s", "TouchstoNetClient: Settings injected successfully");
   return true;
 }
 
 bool start_client(struct TouchstoNetClient* this) {
 
+  /*TODO prepare data in the buffer*/
+
+  if (!this->tnet_socket_connection_.inject_settings_to_socket_connection(&this->tnet_socket_connection_, this->tnet_settings_)) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Settings injection to TouchstoNetSocketConnection failed");
+    return false;
+  }
+
+  if (this->tnet_scoket_address_.set_address_family(&this->tnet_scoket_address_, AF_INET)) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Failed to set address family for TouchstoNetSocketAddress in TouchstoNetServer");
+    return false;
+  }
+
+  if (!this->tnet_scoket_address_.set_inet_address(&this->tnet_scoket_address_, INADDR_ANY)) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Failed to set socket address for TouchstoNetSocketAddress in TouchstoNetServer");
+    return false;
+  }
+
+  if (!this->tnet_scoket_address_.set_ip_port(&this->tnet_scoket_address_, this->tnet_settings_->get_port_number(this->tnet_settings_))) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Failed to set port number for TouchstoNetSocketAddress in TouchstoNetServer");
+    return false;
+  }
+
+  if (!this->tnet_socket_connection_.open_socket(&this->tnet_socket_connection_)) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Open socket failed");
+    return false;
+  }
+
+  if (!this->tnet_socket_connection_.create_client_thread(&this->tnet_socket_connection_, this->messages_buffer, strlen(*(this->messages_buffer)), this->tnet_scoket_address_.get_socket_address(&this->tnet_scoket_address_))) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Create client thread failed");
+    return false;
+  }
 
   /*set callback and start timer for client*/
   if (!this->tnet_time_counter_.set_stop_callback(&this->tnet_time_counter_, &stop_client_wrapper)) {
@@ -71,6 +119,24 @@ bool start_client(struct TouchstoNetClient* this) {
 
 bool stop_client(struct TouchstoNetClient* this) {
 
+  if (!this->tnet_socket_connection_.stop_working_thread(&this->tnet_socket_connection_)) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Stop server thread failed");
+    return false;
+  }
+
+  if (!this->tnet_socket_connection_.close_connection(&this->tnet_socket_connection_)) {
+
+    LOG_DEBUG("%s", "TouchstoNetClient: Close socket failed");
+    return false;
+  }
+
+  if (!this->tnet_time_counter_.stop_timer(&this->tnet_time_counter_)) {
+
+    LOG_WARNING("%s", "TouchstoNetClient: Failed to stop time counter");
+  }
+
+  LOG_DEBUG("%s", "TouchstoNetClient: Stop client successful");
   return true;
 }
 
@@ -80,6 +146,7 @@ static struct TouchstoNetClient newClient() {
     .start_client = &start_client,
     .stop_client = &stop_client,
     .tnet_socket_connection_ = TouchstoNetSocketConnection.new(),
+    .tnet_scoket_address_ = TouchstoNetSocketAddress.new(),
     .tnet_time_counter_ = TouchstoNetTimeCounter.new(),
   };
 }
