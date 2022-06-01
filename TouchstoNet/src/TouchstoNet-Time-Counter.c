@@ -69,12 +69,16 @@ static void *timer_loop_thread(void* settings) {
 bool start_timer(struct TouchstoNetTimeCounter *this, void* tnet_instance, int32_t time_period) {
 
   struct ThreadLoopArgs thread_loop_args;
-  pthread_t thread_id;
   thread_loop_args.period = time_period;
   thread_loop_args.stop_flag = &this->stop_timer_flag_;
 
-  pthread_create(&thread_id, NULL, timer_loop_thread, &thread_loop_args);
-  pthread_join(thread_id, NULL);
+  if (pthread_create(&this->thread_id_, NULL, timer_loop_thread, &thread_loop_args) != 0) {
+
+    LOG_DEBUG("%s", "TouchstoNetTimeCounter: Failed to launch timer_loop_thread");
+    return false;
+  }
+
+  pthread_join(this->thread_id_, NULL);
 
   if (!this->timer_stop_callback(tnet_instance)) {
 
@@ -91,6 +95,8 @@ bool stop_timer(struct TouchstoNetTimeCounter *this) {
   LOG_DEBUG("%s", "Time counting has been interrupted");
 
   this->stop_timer_flag_ = true;
+  pthread_cancel(this->thread_id_);
+
   return true;
 }
 

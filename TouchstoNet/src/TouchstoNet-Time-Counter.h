@@ -43,6 +43,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include <pthread.h>
 
 struct TouchstoNetTimeCounter {
 
@@ -55,6 +56,7 @@ struct TouchstoNetTimeCounter {
   bool(*timer_stop_callback)(void* tnet_instance);
   /*no mutex needed*/
   bool stop_timer_flag_;
+  pthread_t thread_id_;
 };
 
 extern const struct TouchstoNetTimeCounterClass {

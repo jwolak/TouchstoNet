@@ -41,6 +41,7 @@
 #include "../../TouchstoNet/src/TouchstoNet-Socket-Connection.c"
 #include "../../TouchstoNet/src/TouchstoNet-Socket-Address.c"
 #include "../../TouchstoNet/src/TouchstoNet-Socket.c"
+#include "../../TouchstoNet/src/TouchstoNet-Message-Model.c"
 
 #include <stdbool.h>
 
