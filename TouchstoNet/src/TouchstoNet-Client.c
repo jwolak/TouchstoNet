@@ -63,8 +63,6 @@ bool inject_settings_to_client (struct TouchstoNetClient* this, struct TouchstoN
 
 bool start_client(struct TouchstoNetClient* this) {
 
-  /*TODO prepare data in the buffer*/
-
   if (!this->tnet_socket_connection_.inject_settings_to_socket_connection(&this->tnet_socket_connection_, this->tnet_settings_)) {
 
     LOG_DEBUG("%s", "TouchstoNetClient: Settings injection to TouchstoNetSocketConnection failed");
@@ -95,7 +93,10 @@ bool start_client(struct TouchstoNetClient* this) {
     return false;
   }
 
-  if (!this->tnet_socket_connection_.create_client_thread(&this->tnet_socket_connection_, this->messages_buffer, strlen(*(this->messages_buffer)), this->tnet_scoket_address_.get_socket_address(&this->tnet_scoket_address_))) {
+  /*TODO get message size from settings*/
+  this->tnet_message_model_.prepare_message(&this->tnet_message_model_, 100);
+
+  if (!this->tnet_socket_connection_.create_client_thread(&this->tnet_socket_connection_, this->tnet_message_model_.get_buffer(&this->tnet_message_model_) , this->tnet_message_model_.get_msg_size(&this->tnet_message_model_), this->tnet_scoket_address_.get_socket_address(&this->tnet_scoket_address_))) {
 
     LOG_DEBUG("%s", "TouchstoNetClient: Create client thread failed");
     return false;
@@ -147,6 +148,7 @@ static struct TouchstoNetClient newClient() {
     .stop_client = &stop_client,
     .tnet_socket_connection_ = TouchstoNetSocketConnection.new(),
     .tnet_scoket_address_ = TouchstoNetSocketAddress.new(),
+    .tnet_message_model_ = TouchstoNetMessageModel.new(),
     .tnet_time_counter_ = TouchstoNetTimeCounter.new(),
   };
 }

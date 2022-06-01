@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Client.h
+ * TouchstoNet-Message-Model.c
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,36 +37,42 @@
  *
  */
 
-#ifndef SRC_TOUCHSTONET_CLIENT_H_
-#define SRC_TOUCHSTONET_CLIENT_H_
-
-#include "TouchstoNet-Settings.h"
-#include "TouchstoNet-Socket-Address.h"
-#include "TouchstoNet-Socket-Connection.h"
-#include "TouchstoNet-Time-Counter.h"
 #include "TouchstoNet-Message-Model.h"
 
-#include <stdbool.h>
+#include "LoggerC.h"
 
-struct TouchstoNetClient {
+#include <string.h>
 
-  /*public*/
-  bool(*inject_settings_to_client)(struct TouchstoNetClient* this, struct TouchstoNetSettings* tnet_settings_to_injected);
-  bool(*start_client)(struct TouchstoNetClient* this);
-  bool(*stop_client)(struct TouchstoNetClient* this);
+void prepare_message (struct TouchstoNetMessageModel *this, int32_t msg_size) {
 
-  /*private*/
-  struct TouchstoNetSettings* tnet_settings_;
-  struct TouchstoNetSocketConnection tnet_socket_connection_;
-  struct TouchstoNetSocketAddress tnet_scoket_address_;
-  struct TouchstoNetMessageModel tnet_message_model_;
-  struct TouchstoNetTimeCounter tnet_time_counter_;
-};
+  if (msg_size > MESSAGE_MODEL_BUFFER_SIZE) {
 
-extern const struct TouchstoNetClientClass {
-  struct TouchstoNetClient(*new)();
-} TouchstoNetClient;
+    LOG_ERROR("%s", "TouchstoNetMessageModel: Message size exceeded");
+    return;
+  }
 
+  memset(this->message_model_buffer_, 0x1, msg_size);
 
+  this->message_size_ = msg_size;
+  LOG_DEBUG("%s%d" "TouchstoNetMessageModel: Prepared message with size: ", msg_size);
+}
 
-#endif /* SRC_TOUCHSTONET_CLIENT_H_ */
+char *get_buffer (struct TouchstoNetMessageModel *this) {
+
+  return this->message_model_buffer_;
+}
+
+int32_t get_msg_size (struct TouchstoNetMessageModel *this) {
+
+  return this->message_size_;
+}
+
+static struct TouchstoNetMessageModel newMessageModel() {
+  return (struct TouchstoNetMessageModel) {
+    .prepare_message = &prepare_message,
+    .get_buffer = &get_buffer,
+    .get_msg_size = &get_msg_size,
+  };
+}
+
+const struct TouchstoNetMessageModelClass TouchstoNetMessageModel = { .new = &newMessageModel };

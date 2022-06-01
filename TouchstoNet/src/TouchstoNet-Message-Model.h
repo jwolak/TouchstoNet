@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Client.h
+ * TouchstoNet-Message-Model.h
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,36 +37,28 @@
  *
  */
 
-#ifndef SRC_TOUCHSTONET_CLIENT_H_
-#define SRC_TOUCHSTONET_CLIENT_H_
+#ifndef SRC_TOUCHSTONET_MESSAGE_MODEL_H_
+#define SRC_TOUCHSTONET_MESSAGE_MODEL_H_
 
-#include "TouchstoNet-Settings.h"
-#include "TouchstoNet-Socket-Address.h"
-#include "TouchstoNet-Socket-Connection.h"
-#include "TouchstoNet-Time-Counter.h"
-#include "TouchstoNet-Message-Model.h"
+#include <stdint.h>
 
-#include <stdbool.h>
+#define MESSAGE_MODEL_BUFFER_SIZE 1024
 
-struct TouchstoNetClient {
+struct TouchstoNetMessageModel {
 
   /*public*/
-  bool(*inject_settings_to_client)(struct TouchstoNetClient* this, struct TouchstoNetSettings* tnet_settings_to_injected);
-  bool(*start_client)(struct TouchstoNetClient* this);
-  bool(*stop_client)(struct TouchstoNetClient* this);
+  void(*prepare_message)(struct TouchstoNetMessageModel *this, int32_t msg_size);
+  char* (*get_buffer)(struct TouchstoNetMessageModel *this);
+  int32_t(*get_msg_size)(struct TouchstoNetMessageModel *this);
 
   /*private*/
-  struct TouchstoNetSettings* tnet_settings_;
-  struct TouchstoNetSocketConnection tnet_socket_connection_;
-  struct TouchstoNetSocketAddress tnet_scoket_address_;
-  struct TouchstoNetMessageModel tnet_message_model_;
-  struct TouchstoNetTimeCounter tnet_time_counter_;
+  char message_model_buffer_ [MESSAGE_MODEL_BUFFER_SIZE];
+  int32_t message_size_;
+
 };
 
-extern const struct TouchstoNetClientClass {
-  struct TouchstoNetClient(*new)();
-} TouchstoNetClient;
+extern const struct TouchstoNetMessageModelClass {
+  struct TouchstoNetMessageModel(*new)();
+} TouchstoNetMessageModel;
 
-
-
-#endif /* SRC_TOUCHSTONET_CLIENT_H_ */
+#endif /* SRC_TOUCHSTONET_MESSAGE_MODEL_H_ */
