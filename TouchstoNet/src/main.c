@@ -23,7 +23,7 @@ static jmp_buf sigend_jmp_buf;
 
 static void __attribute__ ((noreturn)) sigend_handler(int sig)
 {
-    LOG_WARNING("%s%d%s", "Signal", sig, "caught");
+    LOG_WARNING("%s%d%s", "Signal: ", sig, " caught");
     longjmp(sigend_jmp_buf, 1);
 }
 
@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     LOG_ERROR("%s", "Failed to start TouchstoNet engine");
     exit(1);
   } else {
-    LOG_DEBUG("%s", "TouchstoNet started successfully");
+    LOG_DEBUG("%s", "TouchstoNet run session successful");
   }
 
 

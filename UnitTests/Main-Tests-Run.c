@@ -74,5 +74,7 @@ int main(void) {
     RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_buffer_has_128_bytes_allocated);
     RUN_TEST(MessageModelTest_prepare_message_with_test_content_and_buffer_content_is_the_same);
     RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_get_msg_size_returns_size_128_bytes);
+
+    RUN_TEST(EngineTest_start_and_stop_touchstone_engine_and_true_returned);
     return UNITY_END();
 }
