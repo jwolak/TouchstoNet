@@ -43,25 +43,25 @@
 #include "../../TouchstoNet/src/TouchstoNet-Engine.c"
 #include "../../TouchstoNet/src/TouchstoNet-Agruments-Parser.c"
 
-void start_touchstone_engine_and_true_returned() {
+void *start_wrapper(void *arg) {
 
   char* kTestProgramName = (char*)"TestAppName";
   uint32_t kNumberOfArgumentsSetToOne   = 1;
   char* kEmptyCommandLineArgument[] = {kTestProgramName};
+  struct TouchstoNetEngine* tnet_engine = (struct TouchstoNetEngine*)arg;
 
-  struct TouchstoNetEngine tnet_engine = TouchstoNetEngine.new();
-
-  TEST_ASSERT_TRUE(tnet_engine.start(&tnet_engine, kNumberOfArgumentsSetToOne, kEmptyCommandLineArgument));
+  tnet_engine->start(tnet_engine, kNumberOfArgumentsSetToOne, kEmptyCommandLineArgument);
 }
 
-void start_and_stop_touchstone_engine_and_true_returned() {
+void EngineTest_start_and_stop_touchstone_engine_and_true_returned() {
 
-  char* kTestProgramName = (char*)"TestAppName";
-  uint32_t kNumberOfArgumentsSetToOne   = 1;
-  char* kEmptyCommandLineArgument[] = {kTestProgramName};
-
+  pthread_t thread_id;
   struct TouchstoNetEngine tnet_engine = TouchstoNetEngine.new();
 
-  tnet_engine.start(&tnet_engine, kNumberOfArgumentsSetToOne, kEmptyCommandLineArgument);
+  pthread_create( &thread_id, NULL, start_wrapper, &tnet_engine);
+  sleep(2);
+
   TEST_ASSERT_TRUE(tnet_engine.stop(&tnet_engine));
+  pthread_cancel(thread_id);
+
 }

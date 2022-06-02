@@ -43,7 +43,8 @@
 #include <unistd.h>
 #include <stdbool.h>
 
-#define TIME_IN_SEC_PATTERN 1
+#define TIME_IN_SEC_PATTERN     1
+#define TNET_MAX_TIME_PERIOD    3600 /* [s] */
 
 struct ThreadLoopArgs {
   int32_t period;
@@ -71,6 +72,12 @@ bool start_timer(struct TouchstoNetTimeCounter *this, void* tnet_instance, int32
   struct ThreadLoopArgs thread_loop_args;
   thread_loop_args.period = time_period;
   thread_loop_args.stop_flag = &this->stop_timer_flag_;
+
+  if (time_period == 0) {
+
+    LOG_WARNING("%s%d%s", "TouchstoNetTimeCounter: Time period not provided or set to zero. Set maximum value: ", TNET_MAX_TIME_PERIOD, " [s]");
+    time_period = TNET_MAX_TIME_PERIOD;
+  }
 
   if (pthread_create(&this->thread_id_, NULL, timer_loop_thread, &thread_loop_args) != 0) {
 
