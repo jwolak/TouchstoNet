@@ -3,6 +3,7 @@
 #include "TouchstoNetTests/TouchstoNet-Engine-Tests.c"
 #include "TouchstoNetTests/TouchstoNet-Instance-Tests.c"
 #include "TouchstoNetTests/TouchstoNet-Socket-Connection-Tests.c"
+#include "TouchstoNetTests/TouchstoNet-Message-Model-Tests.c"
 
 #include "unity.h"
 
@@ -22,11 +23,10 @@ int main(void) {
   SET_LOG_LOGGER_OUTPUT(CONSOLE_AND_FILE);
 
     UNITY_BEGIN();
-    RUN_TEST(set_callback_and_callback_function_is_called_after_2s_timeout);
+/*  RUN_TEST(set_callback_and_callback_function_is_called_after_2s_timeout);
     RUN_TEST(set_timeout_2s_and_set_time_is_elapsed);
     RUN_TEST(set_longer_timeout_14s_and_set_time_is_elapsed);
     RUN_TEST(start_counter_for_14_seconds_and_stop_it_after_5_seconds);
-/*
     RUN_TEST(start_touchstone_engine_and_true_returned);
     RUN_TEST(start_and_stop_touchstone_engine_and_true_returned);
     RUN_TEST(call_settings_get_role_and_role_is_returned);
@@ -66,5 +66,13 @@ int main(void) {
     RUN_TEST(stop_instance_in_server_mode_and_it_is_successful_then_true_returned);*/
 
     //RUN_TEST(start_client_server_connection_and_stop_them_after_5s);
+
+    RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_true_returned);
+    RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_message_size_filed_is_set_to_128);
+    RUN_TEST(MessageModelTest_prepare_message_with_invalid_max_size_and_false_returned);
+    RUN_TEST(MessageModelTest_prepare_message_with_invalid_size_and_false_returned);
+    RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_buffer_has_128_bytes_allocated);
+    RUN_TEST(MessageModelTest_prepare_message_with_test_content_and_buffer_content_is_the_same);
+    RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_get_msg_size_returns_size_128_bytes);
     return UNITY_END();
 }

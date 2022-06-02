@@ -69,7 +69,7 @@ bool start_client(struct TouchstoNetClient* this) {
     return false;
   }
 
-  if (this->tnet_scoket_address_.set_address_family(&this->tnet_scoket_address_, AF_INET)) {
+  if (!this->tnet_scoket_address_.set_address_family(&this->tnet_scoket_address_, AF_INET)) {
 
     LOG_DEBUG("%s", "TouchstoNetClient: Failed to set address family for TouchstoNetSocketAddress in TouchstoNetServer");
     return false;

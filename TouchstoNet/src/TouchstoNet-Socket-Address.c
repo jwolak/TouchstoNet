@@ -52,7 +52,7 @@ bool set_address_family(struct TouchstoNetSocketAddress *this, int16_t address_f
 
   this->socket_address_.sin_family = address_family_to_set;
 
-  LOG_DEBUG("%s%d", "TouchstoNetSocketAddress set address family to AF_INET");
+  LOG_DEBUG("%s", "TouchstoNetSocketAddress set address family to AF_INET");
   return true;
 }
 

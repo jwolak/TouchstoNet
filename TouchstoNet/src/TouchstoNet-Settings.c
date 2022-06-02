@@ -50,6 +50,11 @@
 #define TNET_MAX_TEST_DURATION        3600
 #define TNET_MIN_TEST_DURATION        1
 
+#define TNET_DAFULT_ROLE              CLIENT
+#define TNET_DEFAULT_PORT_NUM         1025
+#define TNET_DEFAULT_MSG_SIZE         128
+#define TNET_TEST_DURATION            0
+
 
 enum tnet_role get_role(struct TouchstoNetSettings* this) {
 
@@ -157,6 +162,11 @@ static struct TouchstoNetSettings newSettings() {
     .set_ip_address = &set_ip_address,
     .set_test_duration = &set_test_duration,
     .set_msg_bytes_length = &set_msg_bytes_length,
+    .role_ = TNET_DAFULT_ROLE,
+    .port_number_ = TNET_DEFAULT_PORT_NUM,
+    .ip_address_ = INADDR_ANY,
+    .test_duration_ = TNET_TEST_DURATION,
+    .msg_bytes_length_ = TNET_DEFAULT_MSG_SIZE,
   };
 }
 const struct TouchstoNetSettingsClass TouchstoNetSettings = { .new = &newSettings };
