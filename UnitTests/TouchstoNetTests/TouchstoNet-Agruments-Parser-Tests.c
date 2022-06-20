@@ -46,6 +46,13 @@
 
 char kTestProgramName[] = "TestAppName";
 char* kEmptyCommandLineArgument[] = {kTestProgramName};
+char* kPrintHelpCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-h"};
+char* kServerCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-s"};
+char* kClientCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-c"};
+char* kValidPortCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-p 1026"};
+char* kInvalidZeroPortCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-p 0"};
+char* kInvalidMaxPortCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-p 65536"};
+char* kValidIpAddressCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-a 192.168.1.1"};
 
 void AgrumentsParserTest_inject_settings_with_set_port_number_and_it_is_set_in_arguments_parser() {
 
@@ -82,10 +89,79 @@ void AgrumentsParserTest_try_to_no_arguments_provide_and_false_returned() {
   TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 1, kEmptyCommandLineArgument));
 }
 
-/*void AgrumentsParserTest_() {
+void AgrumentsParserTest_provide_help_print_argument_and_true_returned() {
 
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+
+  TEST_ASSERT_TRUE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kPrintHelpCommandLineArgument));
 }
 
-void AgrumentsParserTest_() {
+void AgrumentsParserTest_provide_server_mode_argument_and_server_role_is_set() {
 
-}*/
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kServerCommandLineArgument);
+  TEST_ASSERT_EQUAL(tnet_arguments_parser.tnet_settings_->role_, SERVER);
+}
+
+void AgrumentsParserTest_no_role_provided_and_default_role_set_to_client_mode() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_EQUAL(tnet_arguments_parser.tnet_settings_->role_, CLIENT);
+}
+
+void AgrumentsParserTest_provide_client_mode_argument_and_client_role_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kClientCommandLineArgument);
+  TEST_ASSERT_EQUAL(tnet_arguments_parser.tnet_settings_->role_, CLIENT);
+}
+
+void AgrumentsParserTest_provide_valid_port_number_and_port_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidPortCommandLineArgument);
+  TEST_ASSERT_EQUAL(tnet_arguments_parser.tnet_settings_->port_number_, 1026);
+}
+
+void AgrumentsParserTest_try_set_invalid_zero_port_number_and_false_returned() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidZeroPortCommandLineArgument));
+}
+
+void AgrumentsParserTest_try_set_invalid_max_port_number_and_false_returned() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidMaxPortCommandLineArgument));
+}
+
+void AgrumentsParserTest_provide_valid_IP_address_and_IP_address_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidIpAddressCommandLineArgument);
+  TEST_ASSERT_EQUAL(inet_addr("192.168.1.1"), tnet_settings.ip_address_);
+  //printf("IP:%d\n", tnet_settings.ip_address_);
+}
+

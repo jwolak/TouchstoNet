@@ -77,6 +77,7 @@ static void print_help() {
       "\t No [--time] argument for client sets default max time: 3600[s]\n"
       "\t No [--port] argument for server and client sets default value to port 1024\n"
       "\t No [--bytes] argument for client sets default message size to 128 bytes\n"
+      "\t No [--address] argument for client sets default IP address to 0.0.0.0\n"
       "\n\t [IMPORTANT!] Server mode has only port number argument allowed\n";
 
   char copyrights_buffer [] =
@@ -130,11 +131,17 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
 
   if (argc < TNET_MIN_NUMBER_OF_ARGUMENTS) {
 
-    LOG_DEBUG("%s", "TouchstoNetAgrumentsParser: No arguments")
+    LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] No arguments")
     LOG_ERROR("%s", "No arguments provided");
     print_help();
     return false;
   }
+
+  printf("\n");
+  for (int i = 0; i < argc; ++i) {
+    LOG_DEBUG("[TouchstoNetAgrumentsParser] argv[%d]: %s", i, argv[i]);
+  }
+  printf("\n");
 
   while ((flag = getopt_long(argc, argv, "hscp:a:t:l:", longopts, NULL)) != -1) {
     switch (flag) {
@@ -145,7 +152,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s", "Server mode is set");
+      LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Server mode is set");
       break;
 
     case 'c':
@@ -155,7 +162,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s", "Client mode is set");
+      LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Client mode is set");
       break;
 
     case 'p':
@@ -167,7 +174,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%d", "Port number set:", portno);
+      LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Port number set: ", portno);
       break;
 
     case 'a':
@@ -179,7 +186,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%s", "IP address set:", address_parameter);
+      LOG_DEBUG("%s%s", "[TouchstoNetAgrumentsParser] IP address set:", address_parameter);
       break;
 
     case 't':
@@ -191,7 +198,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%d", "Test duration set to: ", test_time);
+      LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Test duration set to: ", test_time);
       break;
 
     case 'l':
@@ -203,17 +210,18 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%d", "Message length in bytes set to: ", msg_bytes_length);
+      LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Message length in bytes set to: ", msg_bytes_length);
       break;
 
     case 'h':
     default:
+      LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Help printed");
       print_help();
       break;
     }
   }
 
-  LOG_DEBUG("%s", "Parse settings successful");
+  LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Parse settings successful");
   return true;
 }
 
