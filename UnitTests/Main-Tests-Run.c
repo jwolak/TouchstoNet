@@ -79,7 +79,8 @@ int main(void) {
     RUN_TEST(AgrumentsParserTest_inject_settings_with_set_port_number_and_it_is_set_in_arguments_parser);
     RUN_TEST(AgrumentsParserTest_inject_settings_and_true_is_returned);
     RUN_TEST(AgrumentsParserTest_try_inject_settings_with_null_pointer_and_false_returned);
+    RUN_TEST(AgrumentsParserTest_try_to_no_arguments_provide_and_false_returned);
 
-    RUN_TEST(EngineTest_start_and_stop_touchstone_engine_and_true_returned);
+/*    RUN_TEST(EngineTest_start_and_stop_touchstone_engine_and_true_returned);*/
     return UNITY_END();
 }

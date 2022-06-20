@@ -44,6 +44,9 @@
 
 #define TEST_FAKE_PORT_NUMBER 7777
 
+char kTestProgramName[] = "TestAppName";
+char* kEmptyCommandLineArgument[] = {kTestProgramName};
+
 void AgrumentsParserTest_inject_settings_with_set_port_number_and_it_is_set_in_arguments_parser() {
 
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
@@ -71,11 +74,15 @@ void AgrumentsParserTest_try_inject_settings_with_null_pointer_and_false_returne
   TEST_ASSERT_FALSE(tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, tnet_null_settings));
 }
 
-/*void AgrumentsParserTest_() {
+void AgrumentsParserTest_try_to_no_arguments_provide_and_false_returned() {
 
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 1, kEmptyCommandLineArgument));
 }
 
-void AgrumentsParserTest_() {
+/*void AgrumentsParserTest_() {
 
 }
 
