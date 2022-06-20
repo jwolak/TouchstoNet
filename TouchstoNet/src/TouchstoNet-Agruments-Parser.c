@@ -48,26 +48,9 @@
 #define TNET_IP_ADDRESS_BUFFER_SIZE   16
 #define TNET_MIN_NUMBER_OF_ARGUMENTS  2
 
-#define TNET_HELP_BUFFER_SIZE         3096
-
 static void print_help() {
 
-  char help_buffer [TNET_HELP_BUFFER_SIZE];
-  char copyrights_buffer [] =
-                           "\t Copyrights: Janusz Wolak\n"
-                           "\t e-mail:     januszvdm@gmail.com\n"
-                           "\t web:        github.com/jwolak\n\n";
-  char logo_buffer [] =
-      "      _______               _         _                   _   _      _\n"
-      "     |__   __|             | |       | |                 | \\ | |    | |\n"
-      "        | | ___  _   _  ___| |__  ___| |_ ___  _ __   ___|  \\| | ___| |_\n"
-      "        | |/ _ \\| | | |/ __| '_ \\/ __| __/ _ \\| '_ \\ / _ \\ . ` |/ _ \\ __|\n"
-      "        | | (_) | |_| | (__| | | \\__ \\ || (_) | | | |  __/ |\\  |  __/ |_\n"
-      "        |_|\\___/ \\__,_|\\___|_| |_|___/\\__\\___/|_| |_|\\___|_| \\_|\\___|\\__|\n";
-
-  printf("%s", logo_buffer);
-
-  sprintf(help_buffer,
+  char help_buffer [] =
       "\n\t#Menu:\n"
       "\t [--help]    or [-h] print help\n"
       "\t [--server]  or [-s] enable server mode\n"
@@ -94,9 +77,22 @@ static void print_help() {
       "\t No [--time] argument for client sets default max time: 3600[s]\n"
       "\t No [--port] argument for server and client sets default value to port 1024\n"
       "\t No [--bytes] argument for client sets default message size to 128 bytes\n"
-      "\n\t [IMPORTANT!] Server mode has only port number argument allowed\n");
+      "\n\t [IMPORTANT!] Server mode has only port number argument allowed\n";
 
-  fprintf(stdout, "%s\n", help_buffer);
+  char copyrights_buffer [] =
+                           "\t Copyrights: Janusz Wolak\n"
+                           "\t e-mail:     januszvdm@gmail.com\n"
+                           "\t web:        github.com/jwolak\n\n";
+  char logo_buffer [] =
+      "      _______               _         _                   _   _      _\n"
+      "     |__   __|             | |       | |                 | \\ | |    | |\n"
+      "        | | ___  _   _  ___| |__  ___| |_ ___  _ __   ___|  \\| | ___| |_\n"
+      "        | |/ _ \\| | | |/ __| '_ \\/ __| __/ _ \\| '_ \\ / _ \\ . ` |/ _ \\ __|\n"
+      "        | | (_) | |_| | (__| | | \\__ \\ || (_) | | | |  __/ |\\  |  __/ |_\n"
+      "        |_|\\___/ \\__,_|\\___|_| |_|___/\\__\\___/|_| |_|\\___|_| \\_|\\___|\\__|\n";
+
+  printf("%s", logo_buffer);
+  printf("%s\n", help_buffer);
   printf("\n%s", copyrights_buffer);
 }
 
