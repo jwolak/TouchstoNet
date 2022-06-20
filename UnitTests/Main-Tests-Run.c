@@ -4,6 +4,7 @@
 #include "TouchstoNetTests/TouchstoNet-Instance-Tests.c"
 #include "TouchstoNetTests/TouchstoNet-Socket-Connection-Tests.c"
 #include "TouchstoNetTests/TouchstoNet-Message-Model-Tests.c"
+#include "TouchstoNetTests/TouchstoNet-Agruments-Parser-Tests.c"
 
 #include "unity.h"
 
@@ -74,6 +75,10 @@ int main(void) {
     RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_buffer_has_128_bytes_allocated);
     RUN_TEST(MessageModelTest_prepare_message_with_test_content_and_buffer_content_is_the_same);
     RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_get_msg_size_returns_size_128_bytes);
+
+    RUN_TEST(AgrumentsParserTest_inject_settings_with_set_port_number_and_it_is_set_in_arguments_parser);
+    RUN_TEST(AgrumentsParserTest_inject_settings_and_true_is_returned);
+    RUN_TEST(AgrumentsParserTest_try_inject_settings_with_null_pointer_and_false_returned);
 
     RUN_TEST(EngineTest_start_and_stop_touchstone_engine_and_true_returned);
     return UNITY_END();
