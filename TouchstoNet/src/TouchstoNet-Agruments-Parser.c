@@ -43,8 +43,59 @@
 #include <getopt.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define TNET_IP_ADDRESS_BUFFER_SIZE   16
+#define TNET_MIN_NUMBER_OF_ARGUMENTS  2
+
+static void print_help() {
+
+  char help_buffer [] =
+      "\n\t#Menu:\n"
+      "\t [--help]    or [-h] print help\n"
+      "\t [--server]  or [-s] enable server mode\n"
+      "\t [--client]  or [-c] enable client mode\n"
+      "\t [--port]    or [-p] port number\n"
+      "\t [--address] or [-a] server IP address\n"
+      "\t [--time]    or [-t] test duration in seconds\n"
+      "\t [--bytes]   or [-l] message size in bytes\n"
+      "\n"
+      "\t#Limitations:\n"
+      "\t Port range        for [--port]  is: 1 - 65535\n"
+      "\t Max test time     for [--time]  is: 3600 [s]\n"
+      "\t Message max size  for [--bytes] is: 1024 [bytes]\n"
+      "\n"
+      "\t#Examples of client and server set:\n"
+      "\t Client: TouchstoNet -c -p 1024 -a 192.168.0.1 -t 10 -l 64\n"
+      "\t Server: TouchstoNet -s -p 1024\n"
+      "\n"
+      "\t Client: TouchstoNet --client --port 1024 -address 192.168.0.1 -time 10 -bytes 64\n"
+      "\t Server: TouchstoNet --server --port 1024\n"
+      "\n"
+      "\t#Remarks:\n"
+      "\t No [--server] or [--client] argument sets default role to client\n"
+      "\t No [--time] argument for client sets default max time: 3600[s]\n"
+      "\t No [--port] argument for server and client sets default value to port 1024\n"
+      "\t No [--bytes] argument for client sets default message size to 128 bytes\n"
+      "\t No [--address] argument for client sets default IP address to 0.0.0.0\n"
+      "\n\t [IMPORTANT!] Server mode has only port number argument allowed\n";
+
+  char copyrights_buffer [] =
+                           "\t Copyrights: Janusz Wolak\n"
+                           "\t e-mail:     januszvdm@gmail.com\n"
+                           "\t web:        github.com/jwolak\n\n";
+  char logo_buffer [] =
+      "      _______               _         _                   _   _      _\n"
+      "     |__   __|             | |       | |                 | \\ | |    | |\n"
+      "        | | ___  _   _  ___| |__  ___| |_ ___  _ __   ___|  \\| | ___| |_\n"
+      "        | |/ _ \\| | | |/ __| '_ \\/ __| __/ _ \\| '_ \\ / _ \\ . ` |/ _ \\ __|\n"
+      "        | | (_) | |_| | (__| | | \\__ \\ || (_) | | | |  __/ |\\  |  __/ |_\n"
+      "        |_|\\___/ \\__,_|\\___|_| |_|___/\\__\\___/|_| |_|\\___|_| \\_|\\___|\\__|\n";
+
+  printf("%s", logo_buffer);
+  printf("%s\n", help_buffer);
+  printf("\n%s", copyrights_buffer);
+}
 
 bool inject_settings_to_args_parser(struct TouchstoNetAgrumentsParser* this, struct TouchstoNetSettings* tnet_settings_to_injected){
 
@@ -78,6 +129,20 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
       {"bytes",  required_argument, NULL, 'l'},
   };
 
+  if (argc < TNET_MIN_NUMBER_OF_ARGUMENTS) {
+
+    LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] No arguments")
+    LOG_ERROR("%s", "No arguments provided");
+    print_help();
+    return false;
+  }
+
+  printf("\n");
+  for (int i = 0; i < argc; ++i) {
+    LOG_DEBUG("[TouchstoNetAgrumentsParser] argv[%d]: %s", i, argv[i]);
+  }
+  printf("\n");
+
   while ((flag = getopt_long(argc, argv, "hscp:a:t:l:", longopts, NULL)) != -1) {
     switch (flag) {
     case 's':
@@ -87,7 +152,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s", "Server mode is set");
+      LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Server mode is set");
       break;
 
     case 'c':
@@ -97,7 +162,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s", "Client mode is set");
+      LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Client mode is set");
       break;
 
     case 'p':
@@ -109,7 +174,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%d", "Port number set:", portno);
+      LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Port number set: ", portno);
       break;
 
     case 'a':
@@ -121,7 +186,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%s", "IP address set:", address_parameter);
+      LOG_DEBUG("%s%s", "[TouchstoNetAgrumentsParser] IP address set:", address_parameter);
       break;
 
     case 't':
@@ -133,7 +198,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%d", "Test duration set to: ", test_time);
+      LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Test duration set to: ", test_time);
       break;
 
     case 'l':
@@ -145,17 +210,18 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%d", "Message length in bytes set to: ", msg_bytes_length);
+      LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Message length in bytes set to: ", msg_bytes_length);
       break;
 
     case 'h':
     default:
-     /* printf("%s","\nHelp:\n");*/
+      LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Help printed");
+      print_help();
       break;
     }
   }
 
-  LOG_DEBUG("%s", "Parse settings successful");
+  LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Parse settings successful");
   return true;
 }
 

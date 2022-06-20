@@ -4,6 +4,7 @@
 #include "TouchstoNetTests/TouchstoNet-Instance-Tests.c"
 #include "TouchstoNetTests/TouchstoNet-Socket-Connection-Tests.c"
 #include "TouchstoNetTests/TouchstoNet-Message-Model-Tests.c"
+#include "TouchstoNetTests/TouchstoNet-Agruments-Parser-Tests.c"
 
 #include "unity.h"
 
@@ -63,9 +64,9 @@ int main(void) {
     RUN_TEST(start_instance_in_client_mode_and_it_is_successful_then_true_returned);
     RUN_TEST(start_instance_in_server_mode_and_it_is_successful_then_true_returned);
     RUN_TEST(stop_instance_in_client_mode_and_it_is_successful_then_true_returned);
-    RUN_TEST(stop_instance_in_server_mode_and_it_is_successful_then_true_returned);*/
+    RUN_TEST(stop_instance_in_server_mode_and_it_is_successful_then_true_returned);
 
-    //RUN_TEST(start_client_server_connection_and_stop_them_after_5s);
+    RUN_TEST(start_client_server_connection_and_stop_them_after_5s);
 
     RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_true_returned);
     RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_message_size_filed_is_set_to_128);
@@ -75,6 +76,19 @@ int main(void) {
     RUN_TEST(MessageModelTest_prepare_message_with_test_content_and_buffer_content_is_the_same);
     RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_get_msg_size_returns_size_128_bytes);
 
-    RUN_TEST(EngineTest_start_and_stop_touchstone_engine_and_true_returned);
+    RUN_TEST(AgrumentsParserTest_inject_settings_with_set_port_number_and_it_is_set_in_arguments_parser);
+    RUN_TEST(AgrumentsParserTest_inject_settings_and_true_is_returned);
+    RUN_TEST(AgrumentsParserTest_try_inject_settings_with_null_pointer_and_false_returned);
+    RUN_TEST(AgrumentsParserTest_try_to_no_arguments_provide_and_false_returned);
+    RUN_TEST(AgrumentsParserTest_provide_help_print_argument_and_true_returned);
+    RUN_TEST(AgrumentsParserTest_provide_server_mode_argument_and_server_role_is_set);
+    RUN_TEST(AgrumentsParserTest_no_role_provided_and_default_role_set_to_client_mode);
+    RUN_TEST(AgrumentsParserTest_provide_client_mode_argument_and_client_role_is_set);
+    RUN_TEST(AgrumentsParserTest_provide_valid_port_number_and_port_is_set);
+    RUN_TEST(AgrumentsParserTest_try_set_invalid_zero_port_number_and_false_returned);
+    RUN_TEST(AgrumentsParserTest_try_set_invalid_max_port_number_and_false_returned); */
+    RUN_TEST(AgrumentsParserTest_provide_valid_IP_address_and_IP_address_is_set);
+
+/*    RUN_TEST(EngineTest_start_and_stop_touchstone_engine_and_true_returned);*/
     return UNITY_END();
 }

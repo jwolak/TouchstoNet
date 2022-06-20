@@ -44,6 +44,7 @@
 #include "LoggerC.h"
 
 #include <arpa/inet.h>
+#include <string.h>
 
 #define TNET_MAX_PORT_NUMBER          65535
 #define TNET_MIN_PORT_NUMBER          1
@@ -113,7 +114,7 @@ bool set_ip_address (struct TouchstoNetSettings* this, char* ip_address_to_set) 
 
   in_addr_t ip_address;
 
-  if ((ip_address = inet_addr(ip_address_to_set)) < 0) {
+  if ((ip_address = inet_addr(&ip_address_to_set[1])) < 0) {
 
     LOG_ERROR("%s", "Invalid IP address");
     return false;
