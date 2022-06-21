@@ -44,7 +44,7 @@
 
 
 /*
- * [IMPORTATNT]
+ * [IMPORTANT]
  *
  * Why before each test set optind = 0;
  * extern int optind to zero;
