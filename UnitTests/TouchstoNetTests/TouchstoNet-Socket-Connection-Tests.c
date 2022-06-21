@@ -96,7 +96,7 @@ void* test_server_thread(void *tnet_socket_connection) {
 }
 
 
-void start_client_server_connection_and_stop_them_after_5s() {
+void SocketConnectionTests_start_client_server_connection_and_stop_them_after_5s() {
 
   struct TouchstoNetSocketConnection tnet_socket_connection_for_client_thread = TouchstoNetSocketConnection.new();
   struct TouchstoNetSocketConnection tnet_socket_connection_for_server_thread = TouchstoNetSocketConnection.new();

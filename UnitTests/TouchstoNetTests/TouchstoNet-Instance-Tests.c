@@ -47,7 +47,7 @@
 #define TEST_PORT_NUMBER 77
 #define UNKNOWN_ROLE     7
 
-void inject_settings_to_instance_with_value_and_the_value_in_instance_is_the_same() {
+void InstanceTests_inject_settings_to_instance_with_value_and_the_value_in_instance_is_the_same() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
@@ -58,7 +58,7 @@ void inject_settings_to_instance_with_value_and_the_value_in_instance_is_the_sam
   TEST_ASSERT_EQUAL(TEST_PORT_NUMBER, tnet_instance.tnet_settings_->port_number_);
 }
 
-void inject_settings_to_instance_and_it_is_successful_and_true_returned() {
+void InstanceTests_inject_settings_to_instance_and_it_is_successful_and_true_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
@@ -66,7 +66,7 @@ void inject_settings_to_instance_and_it_is_successful_and_true_returned() {
   TEST_ASSERT_TRUE(tnet_instance.inject_settings_to_instance(&tnet_instance, &tnet_settings));
 }
 
-void try_inject_null_pointer_of_settings_to_instance_and_false_returned() {
+void InstanceTests_try_inject_null_pointer_of_settings_to_instance_and_false_returned() {
 
   struct TouchstoNetSettings* tnet_settings = NULL;
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
@@ -74,7 +74,7 @@ void try_inject_null_pointer_of_settings_to_instance_and_false_returned() {
   TEST_ASSERT_FALSE(tnet_instance.inject_settings_to_instance(&tnet_instance, tnet_settings));
 }
 
-void try_to_start_instance_with_null_pointer_of_settings_to_instance_and_false_returned() {
+void InstanceTests_try_to_start_instance_with_null_pointer_of_settings_to_instance_and_false_returned() {
 
   struct TouchstoNetSettings* tnet_settings = NULL;
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
@@ -82,7 +82,7 @@ void try_to_start_instance_with_null_pointer_of_settings_to_instance_and_false_r
   TEST_ASSERT_FALSE(tnet_instance.start_instance(&tnet_instance));
 }
 
-void try_to_start_instance_without_injeted_settings_and_false_returned() {
+void InstanceTests_try_to_start_instance_without_injeted_settings_and_false_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
@@ -90,7 +90,7 @@ void try_to_start_instance_without_injeted_settings_and_false_returned() {
   TEST_ASSERT_FALSE(tnet_instance.start_instance(&tnet_instance));
 }
 
-void start_instance_in_client_mode_and_it_is_successful_then_true_returned() {
+void InstanceTests_start_instance_in_client_mode_and_it_is_successful_then_true_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
@@ -101,7 +101,7 @@ void start_instance_in_client_mode_and_it_is_successful_then_true_returned() {
   TEST_ASSERT_TRUE(tnet_instance.start_instance(&tnet_instance));
 }
 
-void start_instance_in_server_mode_and_it_is_successful_then_true_returned() {
+void InstanceTests_start_instance_in_server_mode_and_it_is_successful_then_true_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
@@ -113,7 +113,7 @@ void start_instance_in_server_mode_and_it_is_successful_then_true_returned() {
 }
 
 
-void stop_instance_in_client_mode_and_it_is_successful_then_true_returned() {
+void InstanceTests_stop_instance_in_client_mode_and_it_is_successful_then_true_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
@@ -124,7 +124,7 @@ void stop_instance_in_client_mode_and_it_is_successful_then_true_returned() {
   TEST_ASSERT_TRUE(tnet_instance.stop_instance(&tnet_instance));
 }
 
-void stop_instance_in_server_mode_and_it_is_successful_then_true_returned() {
+void InstanceTests_stop_instance_in_server_mode_and_it_is_successful_then_true_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
