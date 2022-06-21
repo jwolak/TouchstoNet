@@ -86,8 +86,10 @@ int main(void) {
     RUN_TEST(AgrumentsParserTest_provide_client_mode_argument_and_client_role_is_set);
     RUN_TEST(AgrumentsParserTest_provide_valid_port_number_and_port_is_set);
     RUN_TEST(AgrumentsParserTest_try_set_invalid_zero_port_number_and_false_returned);
-    RUN_TEST(AgrumentsParserTest_try_set_invalid_max_port_number_and_false_returned); */
+    RUN_TEST(AgrumentsParserTest_try_set_invalid_max_port_number_and_false_returned);
     RUN_TEST(AgrumentsParserTest_provide_valid_IP_address_and_IP_address_is_set);
+    RUN_TEST(AgrumentsParserTest_provide_invalid_IP_address_and_false_is_returned); */
+    RUN_TEST(AgrumentsParserTest_provide_invalid_signs_in_IP_address_and_false_is_returned);
 
 /*    RUN_TEST(EngineTest_start_and_stop_touchstone_engine_and_true_returned);*/
     return UNITY_END();

@@ -53,6 +53,8 @@ char* kValidPortCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-p 102
 char* kInvalidZeroPortCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-p 0"};
 char* kInvalidMaxPortCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-p 65536"};
 char* kValidIpAddressCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-a 192.168.1.1"};
+char* kInvalidIpAddressCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-a 289.300.1.1"};
+char* kInvalidSignsInIpAddressCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-a @@.300.#.1"};
 
 void AgrumentsParserTest_inject_settings_with_set_port_number_and_it_is_set_in_arguments_parser() {
 
@@ -162,6 +164,23 @@ void AgrumentsParserTest_provide_valid_IP_address_and_IP_address_is_set() {
 
   tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidIpAddressCommandLineArgument);
   TEST_ASSERT_EQUAL(inet_addr("192.168.1.1"), tnet_settings.ip_address_);
-  //printf("IP:%d\n", tnet_settings.ip_address_);
+}
+
+void AgrumentsParserTest_provide_invalid_IP_address_and_false_is_returned() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidIpAddressCommandLineArgument));
+}
+
+void AgrumentsParserTest_provide_invalid_signs_in_IP_address_and_false_is_returned() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidSignsInIpAddressCommandLineArgument));
 }
 

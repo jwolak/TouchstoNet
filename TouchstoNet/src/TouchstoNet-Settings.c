@@ -112,15 +112,20 @@ bool set_port_number (struct TouchstoNetSettings* this, int32_t port_no_to_set) 
 
 bool set_ip_address (struct TouchstoNetSettings* this, char* ip_address_to_set) {
 
-  in_addr_t ip_address;
+  struct sockaddr_in serv_addr;
 
-  if ((ip_address = inet_addr(&ip_address_to_set[1])) < 0) {
+  LOG_DEBUG("%s%s", "[TouchstoNetSettings] Try set IPv4 address to:", ip_address_to_set);
 
-    LOG_ERROR("%s", "Invalid IP address");
+  if (inet_pton(AF_INET, &ip_address_to_set[1], &serv_addr.sin_addr) <= 0) {
+
+    LOG_DEBUG("%s", "[TouchstoNetSettings] Invalid IPv4 address");
+    LOG_ERROR("%s", "Invalid IPv4 address");
     return false;
   }
 
-  this->ip_address_ = ip_address;
+  this->ip_address_ = serv_addr.sin_addr.s_addr;
+
+  LOG_DEBUG("%s%s", "[TouchstoNetSettings] IPv4 address set to: ", ip_address_to_set);
   return true;
 }
 

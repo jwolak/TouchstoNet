@@ -182,11 +182,11 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
 
       if (!this->tnet_settings_->set_ip_address(this->tnet_settings_, address_parameter)) {
 
-        LOG_ERROR("%s", "IP address parse failed");
+        LOG_ERROR("%s", "IPv4 address parse failed");
         return false;
       }
 
-      LOG_DEBUG("%s%s", "[TouchstoNetAgrumentsParser] IP address set:", address_parameter);
+      LOG_DEBUG("%s%s", "[TouchstoNetAgrumentsParser] IP address that has been set:", address_parameter);
       break;
 
     case 't':
