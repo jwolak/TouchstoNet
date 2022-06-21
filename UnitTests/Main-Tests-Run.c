@@ -66,7 +66,7 @@ int main(void) {
     RUN_TEST(stop_instance_in_client_mode_and_it_is_successful_then_true_returned);
     RUN_TEST(stop_instance_in_server_mode_and_it_is_successful_then_true_returned);
 
-    RUN_TEST(start_client_server_connection_and_stop_them_after_5s);
+    RUN_TEST(start_client_server_connection_and_stop_them_after_5s); */
 
     RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_true_returned);
     RUN_TEST(MessageModelTest_prepare_message_with_size_128_bytes_and_message_size_filed_is_set_to_128);
@@ -82,28 +82,29 @@ int main(void) {
     RUN_TEST(AgrumentsParserTest_try_to_no_arguments_provide_and_false_returned);
     RUN_TEST(AgrumentsParserTest_provide_help_print_argument_and_true_returned);
     RUN_TEST(AgrumentsParserTest_provide_server_mode_argument_and_server_role_is_set);
-    RUN_TEST(AgrumentsParserTest_no_role_provided_and_default_role_set_to_client_mode);
-    RUN_TEST(AgrumentsParserTest_provide_client_mode_argument_and_client_role_is_set);
-    RUN_TEST(AgrumentsParserTest_provide_valid_port_number_and_port_is_set);
-    RUN_TEST(AgrumentsParserTest_try_set_invalid_zero_port_number_and_false_returned);
-    RUN_TEST(AgrumentsParserTest_try_set_invalid_max_port_number_and_false_returned);
-    RUN_TEST(AgrumentsParserTest_provide_valid_IP_address_and_IP_address_is_set);
-    RUN_TEST(AgrumentsParserTest_provide_invalid_IP_address_and_false_is_returned);
-    RUN_TEST(AgrumentsParserTest_provide_invalid_signs_in_IP_address_and_false_is_returned);
-    RUN_TEST(AgrumentsParserTest_provide_valid_test_time_and_it_is_set);
-    RUN_TEST(AgrumentsParserTest_provide_valid_test_time_and_true_is_returned);
-    RUN_TEST(AgrumentsParserTest_provide_invalid_minimum_test_time_and_it_is_set);
-    RUN_TEST(AgrumentsParserTest_provide_valid_minimum_test_time_and_it_is_set);
-    RUN_TEST(AgrumentsParserTest_provide_valid_maximum_test_time_and_it_is_set);
-    RUN_TEST(AgrumentsParserTest_provide_invalid_maximum_test_time_and_false_is_returned);
-    RUN_TEST(AgrumentsParserTest_provide_invalid_negative_test_time_and_false_is_returned);
-    RUN_TEST(AgrumentsParserTest_not_provided_test_time_for_client_and_zero_time_is_set);
-    RUN_TEST(AgrumentsParserTest_valid_message_size_provided_and_it_is_set);
-    RUN_TEST(AgrumentsParserTest_invalid_zero_message_size_provided_and_flase_returned);
-    RUN_TEST(AgrumentsParserTest_invalid_negative_message_size_provided_and_flase_returned);
-    RUN_TEST(AgrumentsParserTest_valid_maximum_message_size_provided_and_it_is_set);
-    RUN_TEST(AgrumentsParserTest_invalid_maximum_message_size_provided_and_it_is_set); */
-    RUN_TEST(AgrumentsParserTest_no_message_size_provided_and_it_is_set_to_default);
+
+//    RUN_TEST(AgrumentsParserTest_no_role_provided_and_default_role_set_to_client_mode);
+//    RUN_TEST(AgrumentsParserTest_provide_client_mode_argument_and_client_role_is_set);
+//    RUN_TEST(AgrumentsParserTest_provide_valid_port_number_and_port_is_set);
+//    RUN_TEST(AgrumentsParserTest_try_set_invalid_zero_port_number_and_false_returned);
+//    RUN_TEST(AgrumentsParserTest_try_set_invalid_max_port_number_and_false_returned);
+//    RUN_TEST(AgrumentsParserTest_provide_valid_IP_address_and_IP_address_is_set);
+//    RUN_TEST(AgrumentsParserTest_provide_invalid_IP_address_and_false_is_returned);
+//    RUN_TEST(AgrumentsParserTest_provide_invalid_signs_in_IP_address_and_false_is_returned);
+//    RUN_TEST(AgrumentsParserTest_provide_valid_test_time_and_it_is_set);
+//    RUN_TEST(AgrumentsParserTest_provide_valid_test_time_and_true_is_returned);
+//    RUN_TEST(AgrumentsParserTest_provide_invalid_minimum_test_time_and_it_is_set);
+//    RUN_TEST(AgrumentsParserTest_provide_valid_minimum_test_time_and_it_is_set);
+//    RUN_TEST(AgrumentsParserTest_provide_valid_maximum_test_time_and_it_is_set);
+//    RUN_TEST(AgrumentsParserTest_provide_invalid_maximum_test_time_and_false_is_returned);
+//    RUN_TEST(AgrumentsParserTest_provide_invalid_negative_test_time_and_false_is_returned);
+//    RUN_TEST(AgrumentsParserTest_not_provided_test_time_for_client_and_zero_time_is_set);
+//    RUN_TEST(AgrumentsParserTest_valid_message_size_provided_and_it_is_set);
+//    RUN_TEST(AgrumentsParserTest_invalid_zero_message_size_provided_and_flase_returned);
+//    RUN_TEST(AgrumentsParserTest_invalid_negative_message_size_provided_and_flase_returned);
+//    RUN_TEST(AgrumentsParserTest_valid_maximum_message_size_provided_and_it_is_set);
+//    RUN_TEST(AgrumentsParserTest_invalid_maximum_message_size_provided_and_it_is_set);
+//    RUN_TEST(AgrumentsParserTest_no_message_size_provided_and_it_is_set_to_default);
 
 /*    RUN_TEST(EngineTest_start_and_stop_touchstone_engine_and_true_returned);*/
     return UNITY_END();

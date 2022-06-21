@@ -101,32 +101,33 @@ bool inject_settings_to_args_parser(struct TouchstoNetAgrumentsParser* this, str
 
   if(!tnet_settings_to_injected) {
 
+    LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] settings pointer is null");
     LOG_ERROR("%s", "settings pointer is null");
     return false;
   }
 
   this->tnet_settings_ = tnet_settings_to_injected;
 
-  LOG_DEBUG("%s", "Settings injected successfully to ArgumentsParser");
+  LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Settings injected successfully to ArgumentsParser");
   return true;
 }
 
 bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char **argv) {
 
-  int flag;
+  int flag = 0;
   int32_t portno;
   char address_parameter[TNET_IP_ADDRESS_BUFFER_SIZE];
   uint32_t test_time;
   int32_t msg_bytes_length;
 
   static struct option longopts[] = {
-      {"help",    no_argument, NULL, 'h' },
-      {"server",  no_argument, NULL, 's' },
-      {"client",  no_argument, NULL, 'c' },
-      {"port",    required_argument, NULL, 'p'},
-      {"address", required_argument, NULL, 'a'},
-      {"time",    required_argument, NULL, 't'},
-      {"bytes",  required_argument, NULL, 'l'},
+      {"help",    no_argument,        NULL,  'h'},
+      {"server",  no_argument,        NULL,  's'},
+      {"client",  no_argument,        NULL,  'c'},
+      {"port",    required_argument,  NULL,  'p'},
+      {"address", required_argument,  NULL,  'a'},
+      {"time",    required_argument,  NULL,  't'},
+      {"bytes",   required_argument,  NULL,  'l'},
   };
 
   if (argc < TNET_MIN_NUMBER_OF_ARGUMENTS) {
@@ -144,11 +145,13 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
   printf("\n");
 
   while ((flag = getopt_long(argc, argv, "hscp:a:t:l:", longopts, NULL)) != -1) {
+    LOG_DEBUG("%s%d", "Flag: ", flag);
     switch (flag) {
     case 's':
       if (!this->tnet_settings_->set_role(this->tnet_settings_, SERVER)) {
 
-        LOG_ERROR("%s", "Role parse failed");
+        LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Server role parse failed");
+        LOG_ERROR("%s", "Server role parse failed");
         return false;
       }
 
@@ -158,7 +161,8 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
     case 'c':
       if (!this->tnet_settings_->set_role(this->tnet_settings_, CLIENT)) {
 
-        LOG_ERROR("%s", "Role parse failed");
+        LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Client role parse failed");
+        LOG_ERROR("%s", "Client role parse failed");
         return false;
       }
 
@@ -170,6 +174,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
 
       if (!this->tnet_settings_->set_port_number(this->tnet_settings_, portno)) {
 
+        LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Port number parse failed");
         LOG_ERROR("%s", "Port number parse failed");
         return false;
       }
@@ -182,6 +187,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
 
       if (!this->tnet_settings_->set_ip_address(this->tnet_settings_, address_parameter)) {
 
+        LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] IPv4 address parse failed");
         LOG_ERROR("%s", "IPv4 address parse failed");
         return false;
       }
