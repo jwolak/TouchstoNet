@@ -156,7 +156,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
       break;
 
     case 'c':
-      if (this->tnet_settings_->set_role(this->tnet_settings_, CLIENT)) {
+      if (!this->tnet_settings_->set_role(this->tnet_settings_, CLIENT)) {
 
         LOG_ERROR("%s", "Role parse failed");
         return false;
@@ -207,7 +207,8 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
 
       if (!this->tnet_settings_->set_msg_bytes_length(this->tnet_settings_, msg_bytes_length)) {
 
-        LOG_ERROR("%s", "[TouchstoNetAgrumentsParser] Message length in bytes parse failed");
+        LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Message length in bytes parse failed");
+        LOG_ERROR("%s", "Message length in bytes parse failed");
         return false;
       }
 

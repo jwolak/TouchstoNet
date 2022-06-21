@@ -95,8 +95,15 @@ int main(void) {
     RUN_TEST(AgrumentsParserTest_provide_invalid_minimum_test_time_and_it_is_set);
     RUN_TEST(AgrumentsParserTest_provide_valid_minimum_test_time_and_it_is_set);
     RUN_TEST(AgrumentsParserTest_provide_valid_maximum_test_time_and_it_is_set);
-    RUN_TEST(AgrumentsParserTest_provide_invalid_maximum_test_time_and_false_is_returned); */
+    RUN_TEST(AgrumentsParserTest_provide_invalid_maximum_test_time_and_false_is_returned);
     RUN_TEST(AgrumentsParserTest_provide_invalid_negative_test_time_and_false_is_returned);
+    RUN_TEST(AgrumentsParserTest_not_provided_test_time_for_client_and_zero_time_is_set);
+    RUN_TEST(AgrumentsParserTest_valid_message_size_provided_and_it_is_set);
+    RUN_TEST(AgrumentsParserTest_invalid_zero_message_size_provided_and_flase_returned);
+    RUN_TEST(AgrumentsParserTest_invalid_negative_message_size_provided_and_flase_returned);
+    RUN_TEST(AgrumentsParserTest_valid_maximum_message_size_provided_and_it_is_set);
+    RUN_TEST(AgrumentsParserTest_invalid_maximum_message_size_provided_and_it_is_set); */
+    RUN_TEST(AgrumentsParserTest_no_message_size_provided_and_it_is_set_to_default);
 
 /*    RUN_TEST(EngineTest_start_and_stop_touchstone_engine_and_true_returned);*/
     return UNITY_END();

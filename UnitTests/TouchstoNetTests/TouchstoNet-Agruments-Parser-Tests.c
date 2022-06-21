@@ -61,6 +61,11 @@ char* kValidMaximumTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (ch
 char* kInvalidMinumumTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-t 0"};
 char* kInvalidMaximumTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-t 3601"};
 char* kInvalidNegativeTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-t -36"};
+char* kValidMessageSizeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-l 256"};
+char* kInvalidMessageSizeZeroCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-l 0"};
+char* kInvalidNegativeMessageSizeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-l -16"};
+char* kValidMaxMessageSizeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-l 1024"};
+char* kInvalidMaxMessageSizeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-l 1025"};
 
 void AgrumentsParserTest_inject_settings_with_set_port_number_and_it_is_set_in_arguments_parser() {
 
@@ -255,4 +260,75 @@ void AgrumentsParserTest_provide_invalid_negative_test_time_and_false_is_returne
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
 
   TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidNegativeTestTimeCommandLineArgument));
+}
+
+void AgrumentsParserTest_not_provided_test_time_for_client_and_zero_time_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kClientCommandLineArgument);
+
+  TEST_ASSERT_EQUAL(0, tnet_arguments_parser.tnet_settings_->test_duration_);
+}
+
+void AgrumentsParserTest_valid_message_size_provided_and_it_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidMessageSizeCommandLineArgument);
+
+  TEST_ASSERT_EQUAL(128, tnet_arguments_parser.tnet_settings_->msg_bytes_length_);
+}
+
+void AgrumentsParserTest_invalid_zero_message_size_provided_and_flase_returned() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidMessageSizeZeroCommandLineArgument));
+}
+
+void AgrumentsParserTest_invalid_negative_message_size_provided_and_flase_returned() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidNegativeMessageSizeCommandLineArgument));
+}
+
+void AgrumentsParserTest_valid_maximum_message_size_provided_and_it_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidMaxMessageSizeCommandLineArgument);
+
+  TEST_ASSERT_EQUAL(1024, tnet_arguments_parser.tnet_settings_->msg_bytes_length_);
+}
+
+void AgrumentsParserTest_invalid_maximum_message_size_provided_and_it_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidMaxMessageSizeCommandLineArgument));
+}
+
+void AgrumentsParserTest_no_message_size_provided_and_it_is_set_to_default() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kClientCommandLineArgument);
+
+  TEST_ASSERT_EQUAL(128, tnet_arguments_parser.tnet_settings_->msg_bytes_length_);
 }

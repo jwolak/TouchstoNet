@@ -147,13 +147,17 @@ bool set_test_duration(struct TouchstoNetSettings *this, int32_t test_duration_t
 
 bool set_msg_bytes_length(struct TouchstoNetSettings* this, int32_t msg_bytes_length_to_set) {
 
-  if (MESSAGE_MODEL_BUFFER_SIZE > msg_bytes_length_to_set || msg_bytes_length_to_set <= 0) {
+  LOG_DEBUG("%s%d", "[TouchstoNetSettings] Number of bytes to be set: ", msg_bytes_length_to_set);
 
-    LOG_ERROR("%s", "Number of bytes to sent exceeded");
+  if (MESSAGE_MODEL_BUFFER_SIZE < msg_bytes_length_to_set || msg_bytes_length_to_set <= 0) {
+
+    LOG_DEBUG("%s", "[TouchstoNetSettings] Number of bytes to sent exceeded");
+    LOG_ERROR("%s", "Number of bytes to be sent exceeded");
     return false;
   }
 
   this->msg_bytes_length_ = msg_bytes_length_to_set;
+  LOG_DEBUG("%s%d", "[TouchstoNetSettings] Number of bytes set: ", msg_bytes_length_to_set);
 
   return true;
 }
