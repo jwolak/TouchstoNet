@@ -133,13 +133,15 @@ bool set_test_duration(struct TouchstoNetSettings *this, int32_t test_duration_t
 
   if (test_duration_to_set < TNET_MIN_TEST_DURATION || test_duration_to_set > TNET_MAX_TEST_DURATION) {
 
-    LOG_ERROR("%s%d%s%d%s%d", "Invalid test duration: ", test_duration_to_set, "Minimum time is: ", TNET_MIN_TEST_DURATION, "Maximum is:",
-              TNET_MAX_TEST_DURATION);
+    LOG_DEBUG("%s%d%s%d%s%d%s", "[TouchstoNetSettings] Invalid test duration: ", test_duration_to_set, "[s] Minimum time is: ", TNET_MIN_TEST_DURATION, "[s] Maximum is: ",
+              TNET_MAX_TEST_DURATION, "[s]");
+    LOG_ERROR("%s%d%s%d%s%d%s", "Invalid test duration: ", test_duration_to_set, "[s]. Minimum time is: ", TNET_MIN_TEST_DURATION, "[s] Maximum is: ",
+              TNET_MAX_TEST_DURATION, "[s]");
     return false;
   }
 
   this->test_duration_ = test_duration_to_set;
-  LOG_DEBUG("%s%d%s", "Test duration set to: ", test_duration_to_set, " [s]");
+  LOG_DEBUG("%s%d%s", "[TouchstoNetSettings] Test duration set to: ", test_duration_to_set, " [s]");
   return true;
 }
 

@@ -194,6 +194,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
 
       if (!this->tnet_settings_->set_test_duration(this->tnet_settings_, test_time)) {
 
+        LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Test duration time parse failed");
         LOG_ERROR("%s", "Test duration time parse failed");
         return false;
       }
@@ -206,7 +207,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
 
       if (!this->tnet_settings_->set_msg_bytes_length(this->tnet_settings_, msg_bytes_length)) {
 
-        LOG_ERROR("%s", "TouchstoNetAgrumentsParser: Message length in bytes parse failed");
+        LOG_ERROR("%s", "[TouchstoNetAgrumentsParser] Message length in bytes parse failed");
         return false;
       }
 

@@ -55,6 +55,12 @@ char* kInvalidMaxPortCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-
 char* kValidIpAddressCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-a 192.168.1.1"};
 char* kInvalidIpAddressCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-a 289.300.1.1"};
 char* kInvalidSignsInIpAddressCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-a @@.300.#.1"};
+char* kValidTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-t 26"};
+char* kValidMinumumTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-t 1"};
+char* kValidMaximumTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-t 3600"};
+char* kInvalidMinumumTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-t 0"};
+char* kInvalidMaximumTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-t 3601"};
+char* kInvalidNegativeTestTimeCommandLineArgument[] = {(char*)kTestProgramName, (char*)"-t -36"};
 
 void AgrumentsParserTest_inject_settings_with_set_port_number_and_it_is_set_in_arguments_parser() {
 
@@ -184,3 +190,69 @@ void AgrumentsParserTest_provide_invalid_signs_in_IP_address_and_false_is_return
   TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidSignsInIpAddressCommandLineArgument));
 }
 
+void AgrumentsParserTest_provide_valid_test_time_and_it_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidTestTimeCommandLineArgument);
+
+  TEST_ASSERT_EQUAL(26, tnet_arguments_parser.tnet_settings_->test_duration_);
+}
+
+void AgrumentsParserTest_provide_valid_test_time_and_true_is_returned() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_TRUE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidTestTimeCommandLineArgument));
+}
+
+void AgrumentsParserTest_provide_valid_minimum_test_time_and_it_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidMinumumTestTimeCommandLineArgument);
+  TEST_ASSERT_EQUAL(1, tnet_arguments_parser.tnet_settings_->test_duration_);
+}
+
+void AgrumentsParserTest_provide_invalid_minimum_test_time_and_it_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidMinumumTestTimeCommandLineArgument));
+}
+
+void AgrumentsParserTest_provide_valid_maximum_test_time_and_it_is_set() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidMaximumTestTimeCommandLineArgument);
+  TEST_ASSERT_EQUAL(3600, tnet_arguments_parser.tnet_settings_->test_duration_);
+}
+
+void AgrumentsParserTest_provide_invalid_maximum_test_time_and_false_is_returned() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidMaximumTestTimeCommandLineArgument));
+}
+
+void AgrumentsParserTest_provide_invalid_negative_test_time_and_false_is_returned() {
+
+  struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
+  struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
+  tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
+
+  TEST_ASSERT_FALSE(tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kInvalidNegativeTestTimeCommandLineArgument));
+}
