@@ -66,7 +66,7 @@ bool test_callback(void* tnet_instance) {
   return true;
 }
 
-void set_callback_and_callback_function_is_called_after_2s_timeout() {
+void TimeCounterTests_set_callback_and_callback_function_is_called_after_2s_timeout() {
 
   struct TouchstoNetInstance tnet_instance = TouchstoNetInstance.new();
   struct TouchstoNetTimeCounter tnet_time_counter = TouchstoNetTimeCounter.new();
@@ -76,7 +76,7 @@ void set_callback_and_callback_function_is_called_after_2s_timeout() {
   TEST_ASSERT_EQUAL(global_counter, COUNTER_SET_VALUE);
 }
 
-void set_timeout_2s_and_set_time_is_elapsed() {
+void TimeCounterTests_set_timeout_2s_and_set_time_is_elapsed() {
 
   time_t time_start;
   time_t time_end;
@@ -95,7 +95,7 @@ void set_timeout_2s_and_set_time_is_elapsed() {
   TEST_ASSERT_EQUAL((int)time_diff, TEST_TIME);
 }
 
-void set_longer_timeout_14s_and_set_time_is_elapsed() {
+void TimeCounterTests_set_longer_timeout_14s_and_set_time_is_elapsed() {
 
   time_t time_start;
   time_t time_end;
@@ -129,7 +129,7 @@ void *call_stop_counter_after_5_seconds(void* tc) {
 
 }
 
-void start_counter_for_14_seconds_and_stop_it_after_5_seconds() {
+void TimeCounterTests_start_counter_for_14_seconds_and_stop_it_after_5_seconds() {
 
   time_t time_start;
   time_t time_end;

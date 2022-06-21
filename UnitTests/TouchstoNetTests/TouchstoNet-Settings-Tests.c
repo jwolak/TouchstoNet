@@ -59,7 +59,7 @@
 #define TEST_INVALID_MIN_TEST_DURATION          TEST_MIN_TEST_DURATION - 1
 
 
-void call_settings_get_role_and_role_is_returned() {
+void SettingsTests_call_settings_get_role_and_role_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.role_ = SERVER;
@@ -67,7 +67,7 @@ void call_settings_get_role_and_role_is_returned() {
   TEST_ASSERT_EQUAL(SERVER, tnet_settings.get_role(&tnet_settings));
 }
 
-void call_settings_get_port_number_and_port_number_is_returned() {
+void SettingsTests_call_settings_get_port_number_and_port_number_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.port_number_ = TEST_PORT_NUMBER;
@@ -76,7 +76,7 @@ void call_settings_get_port_number_and_port_number_is_returned() {
 }
 
 
-void call_settings_get_ip_address_and_ip_address_is_returned() {
+void SettingsTests_call_settings_get_ip_address_and_ip_address_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.ip_address_ = TEST_IP_ADDRESS;
@@ -84,7 +84,7 @@ void call_settings_get_ip_address_and_ip_address_is_returned() {
   TEST_ASSERT_EQUAL(TEST_IP_ADDRESS, tnet_settings.get_ip_address(&tnet_settings));
 }
 
-void call_settings_get_test_duration_and_test_duration_is_returned() {
+void SettingsTests_call_settings_get_test_duration_and_test_duration_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.test_duration_ = TEST_DURATION;
@@ -92,7 +92,7 @@ void call_settings_get_test_duration_and_test_duration_is_returned() {
   TEST_ASSERT_EQUAL(TEST_DURATION, tnet_settings.get_test_duration(&tnet_settings));
 }
 
-void call_set_role_with_server_mode_and_server_mode_is_set() {
+void SettingsTests_call_set_role_with_server_mode_and_server_mode_is_set() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.set_role(&tnet_settings, SERVER);
@@ -100,13 +100,13 @@ void call_set_role_with_server_mode_and_server_mode_is_set() {
   TEST_ASSERT_EQUAL(tnet_settings.role_, SERVER);
 }
 
-void call_set_role_with_server_mode_and_true_is_returned() {
+void SettingsTests_call_set_role_with_server_mode_and_true_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_TRUE(tnet_settings.set_role(&tnet_settings, SERVER));
 }
 
-void call_set_role_with_client_mode_and_server_mode_is_set() {
+void SettingsTests_call_set_role_with_client_mode_and_server_mode_is_set() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.set_role(&tnet_settings, CLIENT);
@@ -114,19 +114,19 @@ void call_set_role_with_client_mode_and_server_mode_is_set() {
   TEST_ASSERT_EQUAL(tnet_settings.role_, CLIENT);
 }
 
-void call_set_role_with_client_mode_and_true_is_returned() {
+void SettingsTests_call_set_role_with_client_mode_and_true_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_TRUE(tnet_settings.set_role(&tnet_settings, CLIENT));
 }
 
-void try_call_set_role_with_invalid_mode_and_false_is_returned() {
+void SettingsTests_try_call_set_role_with_invalid_mode_and_false_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_FALSE(tnet_settings.set_role(&tnet_settings, TEST_INVALID_ROLE));
 }
 
-void call_set_port_number_and_port_number_is_set() {
+void SettingsTests_call_set_port_number_and_port_number_is_set() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.set_port_number(&tnet_settings, TEST_VALID_PORT_NUMBER);
@@ -134,25 +134,25 @@ void call_set_port_number_and_port_number_is_set() {
   TEST_ASSERT_EQUAL(TEST_VALID_PORT_NUMBER, tnet_settings.port_number_);
 }
 
-void call_set_port_number_and_true_is_returned() {
+void SettingsTests_call_set_port_number_and_true_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_TRUE(tnet_settings.set_port_number(&tnet_settings, TEST_VALID_PORT_NUMBER));
 }
 
-void try_set_port_number_with_invalid_to_big_value_and_false_is_returned() {
+void SettingsTests_try_set_port_number_with_invalid_to_big_value_and_false_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_FALSE(tnet_settings.set_port_number(&tnet_settings, TEST_INVALID_MORE_THEN_MAX_PORT));
 }
 
-void try_set_port_number_with_invalid_negative_value_and_false_is_returned() {
+void SettingsTests_try_set_port_number_with_invalid_negative_value_and_false_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_FALSE(tnet_settings.set_port_number(&tnet_settings, TEST_INVALID_NEGATIVE_PORT));
 }
 
-void call_set_port_number_with_max_value_and_port_number_is_set() {
+void SettingsTests_call_set_port_number_with_max_value_and_port_number_is_set() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.set_port_number(&tnet_settings, TEST_MAX_PORT_NUMBER);
@@ -160,7 +160,7 @@ void call_set_port_number_with_max_value_and_port_number_is_set() {
   TEST_ASSERT_EQUAL(TEST_MAX_PORT_NUMBER, tnet_settings.port_number_);
 }
 
-void call_set_port_number_with_min_value_and_port_number_is_set() {
+void SettingsTests_call_set_port_number_with_min_value_and_port_number_is_set() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.set_port_number(&tnet_settings, TEST_MIN_PORT_NUMBER);
@@ -168,19 +168,19 @@ void call_set_port_number_with_min_value_and_port_number_is_set() {
   TEST_ASSERT_EQUAL(TEST_MIN_PORT_NUMBER, tnet_settings.port_number_);
 }
 
-void call_set_ip_address_with_valid_address_and_true_is_returned() {
+void SettingsTests_call_set_ip_address_with_valid_address_and_true_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_TRUE(tnet_settings.set_ip_address(&tnet_settings, TEST_VALID_IP_ADDRESS));
 }
 
-void call_set_ip_address_with_invalid_address_and_false_is_returned() {
+void SettingsTests_call_set_ip_address_with_invalid_address_and_false_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_FALSE(tnet_settings.set_ip_address(&tnet_settings, TEST_INVALID_IP_ADDRESS));
 }
 
-void call_set_test_duration_value_and_test_duration_is_set() {
+void SettingsTests_call_set_test_duration_value_and_test_duration_is_set() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.set_test_duration(&tnet_settings, TEST_VALID_TEST_DURATION);
@@ -188,14 +188,14 @@ void call_set_test_duration_value_and_test_duration_is_set() {
   TEST_ASSERT_EQUAL(TEST_VALID_TEST_DURATION, tnet_settings.test_duration_);
 }
 
-void call_set_test_duration_value_and_true_is_returned() {
+void SettingsTests_call_set_test_duration_value_and_true_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
 
   TEST_ASSERT_TRUE(tnet_settings.set_test_duration(&tnet_settings, TEST_VALID_TEST_DURATION));
 }
 
-void call_set_test_duration_with_max_value_and_max_duration_is_set() {
+void SettingsTests_call_set_test_duration_with_max_value_and_max_duration_is_set() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.set_test_duration(&tnet_settings, TEST_MAX_TEST_DURATION);
@@ -203,13 +203,13 @@ void call_set_test_duration_with_max_value_and_max_duration_is_set() {
   TEST_ASSERT_EQUAL(TEST_MAX_TEST_DURATION, tnet_settings.test_duration_);
 }
 
-void call_set_test_duration_with_max_value_and_true_is_returned() {
+void SettingsTests_call_set_test_duration_with_max_value_and_true_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_TRUE(tnet_settings.set_test_duration(&tnet_settings, TEST_MAX_TEST_DURATION));
 }
 
-void call_set_test_duration_with_min_value_and_min_duration_is_set() {
+void SettingsTests_call_set_test_duration_with_min_value_and_min_duration_is_set() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_settings.set_test_duration(&tnet_settings, TEST_MIN_TEST_DURATION);
@@ -217,19 +217,19 @@ void call_set_test_duration_with_min_value_and_min_duration_is_set() {
   TEST_ASSERT_EQUAL(TEST_MIN_TEST_DURATION, tnet_settings.test_duration_);
 }
 
-void call_set_test_duration_with_min_value_and_true_is_returned() {
+void SettingsTests_call_set_test_duration_with_min_value_and_true_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_TRUE(tnet_settings.set_test_duration(&tnet_settings, TEST_MIN_TEST_DURATION));
 }
 
-void call_set_test_duration_with_invalid_max_value_and_false_is_returned() {
+void SettingsTests_call_set_test_duration_with_invalid_max_value_and_false_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_FALSE(tnet_settings.set_test_duration(&tnet_settings, TEST_INVALID_MAX_TEST_DURATION));
 }
 
-void call_set_test_duration_with_invalid_min_value_and_false_is_returned() {
+void SettingsTests_call_set_test_duration_with_invalid_min_value_and_false_is_returned() {
 
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   TEST_ASSERT_FALSE(tnet_settings.set_test_duration(&tnet_settings, TEST_INVALID_MIN_TEST_DURATION));

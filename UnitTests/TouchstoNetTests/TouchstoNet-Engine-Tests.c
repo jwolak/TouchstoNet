@@ -53,7 +53,7 @@ void *start_wrapper(void *arg) {
   tnet_engine->start(tnet_engine, kNumberOfArgumentsSetToOne, kEmptyCommandLineArgument);
 }
 
-void EngineTest_start_and_stop_touchstone_engine_and_true_returned() {
+void EngineTests_start_and_stop_touchstone_engine_and_true_returned() {
 
   pthread_t thread_id;
   struct TouchstoNetEngine tnet_engine = TouchstoNetEngine.new();

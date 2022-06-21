@@ -112,15 +112,20 @@ bool set_port_number (struct TouchstoNetSettings* this, int32_t port_no_to_set) 
 
 bool set_ip_address (struct TouchstoNetSettings* this, char* ip_address_to_set) {
 
-  in_addr_t ip_address;
+  struct sockaddr_in serv_addr;
 
-  if ((ip_address = inet_addr(&ip_address_to_set[1])) < 0) {
+  LOG_DEBUG("%s%s", "[TouchstoNetSettings] Try set IPv4 address to:", ip_address_to_set);
 
-    LOG_ERROR("%s", "Invalid IP address");
+  if (inet_pton(AF_INET, &ip_address_to_set[1], &serv_addr.sin_addr) <= 0) {
+
+    LOG_DEBUG("%s", "[TouchstoNetSettings] Invalid IPv4 address");
+    LOG_ERROR("%s", "Invalid IPv4 address");
     return false;
   }
 
-  this->ip_address_ = ip_address;
+  this->ip_address_ = serv_addr.sin_addr.s_addr;
+
+  LOG_DEBUG("%s%s", "[TouchstoNetSettings] IPv4 address set to: ", ip_address_to_set);
   return true;
 }
 
@@ -128,25 +133,31 @@ bool set_test_duration(struct TouchstoNetSettings *this, int32_t test_duration_t
 
   if (test_duration_to_set < TNET_MIN_TEST_DURATION || test_duration_to_set > TNET_MAX_TEST_DURATION) {
 
-    LOG_ERROR("%s%d%s%d%s%d", "Invalid test duration: ", test_duration_to_set, "Minimum time is: ", TNET_MIN_TEST_DURATION, "Maximum is:",
-              TNET_MAX_TEST_DURATION);
+    LOG_DEBUG("%s%d%s%d%s%d%s", "[TouchstoNetSettings] Invalid test duration: ", test_duration_to_set, "[s] Minimum time is: ", TNET_MIN_TEST_DURATION, "[s] Maximum is: ",
+              TNET_MAX_TEST_DURATION, "[s]");
+    LOG_ERROR("%s%d%s%d%s%d%s", "Invalid test duration: ", test_duration_to_set, "[s]. Minimum time is: ", TNET_MIN_TEST_DURATION, "[s] Maximum is: ",
+              TNET_MAX_TEST_DURATION, "[s]");
     return false;
   }
 
   this->test_duration_ = test_duration_to_set;
-  LOG_DEBUG("%s%d%s", "Test duration set to: ", test_duration_to_set, " [s]");
+  LOG_DEBUG("%s%d%s", "[TouchstoNetSettings] Test duration set to: ", test_duration_to_set, " [s]");
   return true;
 }
 
 bool set_msg_bytes_length(struct TouchstoNetSettings* this, int32_t msg_bytes_length_to_set) {
 
-  if (MESSAGE_MODEL_BUFFER_SIZE > msg_bytes_length_to_set || msg_bytes_length_to_set <= 0) {
+  LOG_DEBUG("%s%d", "[TouchstoNetSettings] Number of bytes to be set: ", msg_bytes_length_to_set);
 
-    LOG_ERROR("%s", "Number of bytes to sent exceeded");
+  if (MESSAGE_MODEL_BUFFER_SIZE < msg_bytes_length_to_set || msg_bytes_length_to_set <= 0) {
+
+    LOG_DEBUG("%s", "[TouchstoNetSettings] Number of bytes to sent exceeded");
+    LOG_ERROR("%s", "Number of bytes to be sent exceeded");
     return false;
   }
 
   this->msg_bytes_length_ = msg_bytes_length_to_set;
+  LOG_DEBUG("%s%d", "[TouchstoNetSettings] Number of bytes set: ", msg_bytes_length_to_set);
 
   return true;
 }

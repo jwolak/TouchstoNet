@@ -1,0 +1,5 @@
+[Tue Jun 21 12:57:19 2022] [DEBUG]: Settings injected successfully to ArgumentsParser
+[Tue Jun 21 12:57:19 2022] [DEBUG]: [TouchstoNetAgrumentsParser] argv[0]: TestAppName
+[Tue Jun 21 12:57:19 2022] [DEBUG]: [TouchstoNetAgrumentsParser] argv[1]: -c
+[Tue Jun 21 12:57:19 2022] [DEBUG]: Role set to: client
+[Tue Jun 21 12:57:19 2022] [ERROR]: Role parse failed
