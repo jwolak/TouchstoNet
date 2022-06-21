@@ -42,6 +42,16 @@
 
 /*#include "../../TouchstoNet/src/TouchstoNet-Agruments-Parser.c"*/ /* file already included in TouchstoNet-Engine-Tests.c */
 
+
+/*
+ * [IMPORTATNT]
+ *
+ * Why before each test set optind = 0;
+ * extern int optind to zero;
+ * The variable optind is the index of the next element to be processed in argv.
+ * The system initializes this value to 1. The caller can reset it to 1 to restart scanning of the same argv, or when scanning a new argument vector.
+ */
+
 #define TEST_FAKE_PORT_NUMBER 7777
 
 char kTestProgramName[] = "TestAppName";
@@ -96,6 +106,13 @@ void AgrumentsParserTest_try_inject_settings_with_null_pointer_and_false_returne
 
 void AgrumentsParserTest_try_to_no_arguments_provide_and_false_returned() {
 
+/*
+ * Why before each test set optind = 0;
+ * extern int optind to zero;
+ * The variable optind is the index of the next element to be processed in argv.
+ * The system initializes this value to 1. The caller can reset it to 1 to restart scanning of the same argv, or when scanning a new argument vector.
+ */
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
 
@@ -104,6 +121,7 @@ void AgrumentsParserTest_try_to_no_arguments_provide_and_false_returned() {
 
 void AgrumentsParserTest_provide_help_print_argument_and_true_returned() {
 
+  optind = 0; /*The variable optind is the index of the next element to be processed in argv.*/
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
 
@@ -112,6 +130,7 @@ void AgrumentsParserTest_provide_help_print_argument_and_true_returned() {
 
 void AgrumentsParserTest_provide_server_mode_argument_and_server_role_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -122,6 +141,7 @@ void AgrumentsParserTest_provide_server_mode_argument_and_server_role_is_set() {
 
 void AgrumentsParserTest_no_role_provided_and_default_role_set_to_client_mode() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -131,6 +151,7 @@ void AgrumentsParserTest_no_role_provided_and_default_role_set_to_client_mode() 
 
 void AgrumentsParserTest_provide_client_mode_argument_and_client_role_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -141,6 +162,7 @@ void AgrumentsParserTest_provide_client_mode_argument_and_client_role_is_set() {
 
 void AgrumentsParserTest_provide_valid_port_number_and_port_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -151,6 +173,7 @@ void AgrumentsParserTest_provide_valid_port_number_and_port_is_set() {
 
 void AgrumentsParserTest_try_set_invalid_zero_port_number_and_false_returned() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -160,6 +183,7 @@ void AgrumentsParserTest_try_set_invalid_zero_port_number_and_false_returned() {
 
 void AgrumentsParserTest_try_set_invalid_max_port_number_and_false_returned() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -169,6 +193,7 @@ void AgrumentsParserTest_try_set_invalid_max_port_number_and_false_returned() {
 
 void AgrumentsParserTest_provide_valid_IP_address_and_IP_address_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -179,6 +204,7 @@ void AgrumentsParserTest_provide_valid_IP_address_and_IP_address_is_set() {
 
 void AgrumentsParserTest_provide_invalid_IP_address_and_false_is_returned() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -188,6 +214,7 @@ void AgrumentsParserTest_provide_invalid_IP_address_and_false_is_returned() {
 
 void AgrumentsParserTest_provide_invalid_signs_in_IP_address_and_false_is_returned() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -197,6 +224,7 @@ void AgrumentsParserTest_provide_invalid_signs_in_IP_address_and_false_is_return
 
 void AgrumentsParserTest_provide_valid_test_time_and_it_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -208,6 +236,7 @@ void AgrumentsParserTest_provide_valid_test_time_and_it_is_set() {
 
 void AgrumentsParserTest_provide_valid_test_time_and_true_is_returned() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -217,6 +246,7 @@ void AgrumentsParserTest_provide_valid_test_time_and_true_is_returned() {
 
 void AgrumentsParserTest_provide_valid_minimum_test_time_and_it_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -227,6 +257,7 @@ void AgrumentsParserTest_provide_valid_minimum_test_time_and_it_is_set() {
 
 void AgrumentsParserTest_provide_invalid_minimum_test_time_and_it_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -236,6 +267,7 @@ void AgrumentsParserTest_provide_invalid_minimum_test_time_and_it_is_set() {
 
 void AgrumentsParserTest_provide_valid_maximum_test_time_and_it_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -246,6 +278,7 @@ void AgrumentsParserTest_provide_valid_maximum_test_time_and_it_is_set() {
 
 void AgrumentsParserTest_provide_invalid_maximum_test_time_and_false_is_returned() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -255,6 +288,7 @@ void AgrumentsParserTest_provide_invalid_maximum_test_time_and_false_is_returned
 
 void AgrumentsParserTest_provide_invalid_negative_test_time_and_false_is_returned() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -264,6 +298,7 @@ void AgrumentsParserTest_provide_invalid_negative_test_time_and_false_is_returne
 
 void AgrumentsParserTest_not_provided_test_time_for_client_and_zero_time_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -275,17 +310,19 @@ void AgrumentsParserTest_not_provided_test_time_for_client_and_zero_time_is_set(
 
 void AgrumentsParserTest_valid_message_size_provided_and_it_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
 
   tnet_arguments_parser.parse_arguments(&tnet_arguments_parser, 2, kValidMessageSizeCommandLineArgument);
 
-  TEST_ASSERT_EQUAL(128, tnet_arguments_parser.tnet_settings_->msg_bytes_length_);
+  TEST_ASSERT_EQUAL(256, tnet_arguments_parser.tnet_settings_->msg_bytes_length_);
 }
 
 void AgrumentsParserTest_invalid_zero_message_size_provided_and_flase_returned() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -295,6 +332,7 @@ void AgrumentsParserTest_invalid_zero_message_size_provided_and_flase_returned()
 
 void AgrumentsParserTest_invalid_negative_message_size_provided_and_flase_returned() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -304,6 +342,7 @@ void AgrumentsParserTest_invalid_negative_message_size_provided_and_flase_return
 
 void AgrumentsParserTest_valid_maximum_message_size_provided_and_it_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -315,6 +354,7 @@ void AgrumentsParserTest_valid_maximum_message_size_provided_and_it_is_set() {
 
 void AgrumentsParserTest_invalid_maximum_message_size_provided_and_it_is_set() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
@@ -324,6 +364,7 @@ void AgrumentsParserTest_invalid_maximum_message_size_provided_and_it_is_set() {
 
 void AgrumentsParserTest_no_message_size_provided_and_it_is_set_to_default() {
 
+  optind = 0;
   struct TouchstoNetAgrumentsParser tnet_arguments_parser = TouchstoNetAgrumentsParser.new();
   struct TouchstoNetSettings tnet_settings = TouchstoNetSettings.new();
   tnet_arguments_parser.inject_settings_to_args_parser(&tnet_arguments_parser, &tnet_settings);
