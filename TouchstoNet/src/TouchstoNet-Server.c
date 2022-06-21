@@ -57,13 +57,13 @@ bool inject_settings_to_server(struct TouchstoNetServer* this, struct TouchstoNe
 
 bool start_server(struct TouchstoNetServer* this) {
 
-  if (this->tnet_socket_connection_.inject_settings_to_socket_connection(&this->tnet_socket_connection_, this->tnet_settings_)) {
+  if (!this->tnet_socket_connection_.inject_settings_to_socket_connection(&this->tnet_socket_connection_, this->tnet_settings_)) {
 
     LOG_DEBUG("%s", "Setting injection to TouchstoNetSocketConnection failed");
     return false;
   }
 
-  if (this->tnet_scoket_address_.set_address_family(&this->tnet_scoket_address_, AF_INET)) {
+  if (!this->tnet_scoket_address_.set_address_family(&this->tnet_scoket_address_, AF_INET)) {
 
     LOG_DEBUG("%s", "Failed to set address family for TouchstoNetSocketAddress in TouchstoNetServer");
     return false;

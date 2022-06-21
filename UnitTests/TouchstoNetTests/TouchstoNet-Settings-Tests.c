@@ -51,7 +51,7 @@
 #define TEST_MAX_PORT_NUMBER                    65535
 #define TEST_MIN_PORT_NUMBER                    1
 #define TEST_VALID_IP_ADDRESS                   "127.0.0.1"
-#define TEST_INVALID_IP_ADDRESS                 "256.168.0.0"
+#define TEST_INVALID_IP_ADDRESS                 " 259.169.0.0"
 #define TEST_VALID_TEST_DURATION                77
 #define TEST_MAX_TEST_DURATION                  3600
 #define TEST_MIN_TEST_DURATION                  1
