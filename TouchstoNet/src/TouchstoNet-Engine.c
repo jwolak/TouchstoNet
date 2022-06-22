@@ -42,25 +42,30 @@
 
 bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
 
+  LOG_DEBUG("%s", "[TouchstoNetEngine] NetEngine is starting...");
+
   if (!this->tnet_parser_.inject_settings_to_args_parser(&this->tnet_parser_, &this->tnet_settings_)) {
 
-    LOG_DEBUG("%s", "Settings injection to arguments parser failed");
+    LOG_DEBUG("%s", "[TouchstoNetEngine] Settings injection to arguments parser failed");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetEngine] Settings injection to arguments parser is successful");
 
   if (!this->tnet_intsnace_.inject_settings_to_instance(&this->tnet_intsnace_,  &this->tnet_settings_)) {
 
-    LOG_DEBUG("%s", "Settings injection to TouchstoNet instance failed");
+    LOG_DEBUG("%s", "[TouchstoNetEngine] Settings injection to TouchstoNet instance failed");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetEngine] Settings injection to TouchstoNet instance is successful");
 
   if (!this->tnet_intsnace_.start_instance(&this->tnet_intsnace_)) {
 
+    LOG_DEBUG("%s", "[TouchstoNetEngine] Failed to start TouchstoNet test instance");
     LOG_ERROR("%s", "Failed to start TouchstoNet test instance");
     return false;
   }
 
-  LOG_DEBUG("%s", "Start TouchstoNet engine successful");
+  LOG_DEBUG("%s", "[TouchstoNetEngine] Start TouchstoNet engine successful");
   return true;
 }
 

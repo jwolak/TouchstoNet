@@ -55,6 +55,7 @@ int main(int argc, char **argv) {
 		}
 
 		LOG_WARNING("%s", "TouchstoNet engine interrupted by user");
+		exit(1);
 	}
 
   if (!touchstonet_engine.start(&touchstonet_engine, argc, argv)) {
@@ -63,6 +64,7 @@ int main(int argc, char **argv) {
     exit(1);
   } else {
     LOG_DEBUG("%s", "TouchstoNet run session successful");
+    exit(1);
   }
 
 
