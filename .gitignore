@@ -66,3 +66,7 @@ UnitTests/build/CMakeFiles/
 UnitTests/build/Makefile
 UnitTests/build/cmake_install.cmake
 
+UnitTests/UnityTestFramework/Unity/*
+
+EquinoxC-Logger
+
