@@ -1,7 +1,0 @@
-/home/janusz/Downloads/Unity/CMakeFiles/install/strip.dir
-/home/janusz/Downloads/Unity/CMakeFiles/install.dir
-/home/janusz/Downloads/Unity/CMakeFiles/list_install_components.dir
-/home/janusz/Downloads/Unity/CMakeFiles/rebuild_cache.dir
-/home/janusz/Downloads/Unity/CMakeFiles/edit_cache.dir
-/home/janusz/Downloads/Unity/CMakeFiles/install/local.dir
-/home/janusz/Downloads/Unity/CMakeFiles/unity.dir
