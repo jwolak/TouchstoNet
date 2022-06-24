@@ -46,13 +46,14 @@ bool set_address_family(struct TouchstoNetSocketAddress *this, int16_t address_f
 
   if (AF_INET != address_family_to_set) {
 
-    LOG_ERROR("%s", "Invalid address family for TouchstoNetSocketAddress");
+    LOG_DEBUG("%s", "[TouchstoNetSocketAddress] Invalid address family to be set");
+    LOG_ERROR("%s", "Invalid address family to be set");
     return false;
   }
 
   this->socket_address_.sin_family = address_family_to_set;
 
-  LOG_DEBUG("%s", "TouchstoNetSocketAddress set address family to AF_INET");
+  LOG_DEBUG("%s", "[TouchstoNetSocketAddress] Set address family to AF_INET");
   return true;
 }
 
@@ -60,7 +61,7 @@ bool set_ip_port(struct TouchstoNetSocketAddress *this, uint16_t port_number_to_
 
   this->socket_address_.sin_port = port_number_to_set;
 
-  LOG_DEBUG("%s%d", "Port number for TouchstoNetSocketAddress set to: ", port_number_to_set);
+  LOG_DEBUG("%s%d", "[TouchstoNetSocketAddress] Port number set to: ", port_number_to_set);
   return true;
 }
 
@@ -68,7 +69,7 @@ bool set_inet_address(struct TouchstoNetSocketAddress *this, in_addr_t inet_addr
 
   this->socket_address_.sin_addr.s_addr = inet_address_to_set;
 
-  LOG_DEBUG("%s%d", "IP address for TouchstoNetSocketAddress set to: ", inet_address_to_set);
+  LOG_DEBUG("%s%d", "[TouchstoNetSocketAddress] IP address set to: ", inet_address_to_set);
   return true;
 }
 
