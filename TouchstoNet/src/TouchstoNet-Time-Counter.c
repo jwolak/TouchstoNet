@@ -51,12 +51,12 @@ struct ThreadLoopArgs {
   bool *stop_flag;
 };
 
-static void *timer_loop_thread(void* settings) {
+static void *timer_loop_thread(void *settings) {
 
   int32_t seconds_counter = 0;
   int32_t time_period = ((struct ThreadLoopArgs*)settings)->period;
 
-  LOG_DEBUG("%s%d%s", "Timer loop thread launched for: ", time_period, " [s]");
+  LOG_DEBUG("%s%d%s", "[TouchstoNetTimeCounter] Timer loop thread launched for: ", time_period, " [s]");
 
   while (seconds_counter < time_period && !(*((struct ThreadLoopArgs*)settings)->stop_flag)) {
     /*no high resolution time needed*/
@@ -64,10 +64,10 @@ static void *timer_loop_thread(void* settings) {
     ++seconds_counter;
   }
 
-  LOG_DEBUG("%s", "Timer loop thread stopped");
+  LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Timer loop thread stopped");
 }
 
-bool start_timer(struct TouchstoNetTimeCounter *this, void* tnet_instance, int32_t time_period) {
+bool start_timer(struct TouchstoNetTimeCounter *this, void *tnet_instance, int32_t time_period) {
 
   struct ThreadLoopArgs thread_loop_args;
   thread_loop_args.period = time_period;
@@ -75,13 +75,14 @@ bool start_timer(struct TouchstoNetTimeCounter *this, void* tnet_instance, int32
 
   if (time_period == 0) {
 
-    LOG_WARNING("%s%d%s", "TouchstoNetTimeCounter: Time period not provided or set to zero. Set maximum value: ", TNET_MAX_TIME_PERIOD, " [s]");
+    LOG_DEBUG("%s%d%s", "[TouchstoNetTimeCounter] Time period not provided or set to zero. Set maximum value: ", TNET_MAX_TIME_PERIOD, " [s]");
+    LOG_WARNING("%s%d%s", "Time period not provided or set to zero. Set maximum value: ", TNET_MAX_TIME_PERIOD, " [s]");
     time_period = TNET_MAX_TIME_PERIOD;
   }
 
   if (pthread_create(&this->thread_id_, NULL, timer_loop_thread, &thread_loop_args) != 0) {
 
-    LOG_DEBUG("%s", "TouchstoNetTimeCounter: Failed to launch timer_loop_thread");
+    LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Failed to launch timer_loop_thread");
     return false;
   }
 
@@ -89,28 +90,30 @@ bool start_timer(struct TouchstoNetTimeCounter *this, void* tnet_instance, int32
 
   if (!this->timer_stop_callback(tnet_instance)) {
 
+    LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Filed to call callback after time is elapsed");
     LOG_ERROR("%s", "Filed to call callback after time is elapsed");
     return false;
   }
 
-  LOG_DEBUG("%s", "Time has elapsed");
+  LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Time has elapsed");
   return true;
 }
 
 bool stop_timer(struct TouchstoNetTimeCounter *this) {
 
-  LOG_DEBUG("%s", "Time counting has been interrupted");
+  LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Time counting has been interrupted");
 
   this->stop_timer_flag_ = true;
   pthread_cancel(this->thread_id_);
 
+  LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Stop timer flag set to TRUE");
   return true;
 }
 
-bool set_stop_callback (struct TouchstoNetTimeCounter* this, bool(*callback)(void* tnet_instance)) {
+bool set_stop_callback (struct TouchstoNetTimeCounter *this, bool(*callback)(void *tnet_instance)) {
 
   this->timer_stop_callback = callback;
-  LOG_DEBUG("%s", "Callback set successfully for TimeCounter");
+  LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Callback set successfully for TimeCounter");
   return true;
 }
 
