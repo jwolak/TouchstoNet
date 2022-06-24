@@ -57,60 +57,62 @@
 #define TNET_TEST_DURATION            0
 
 
-enum tnet_role get_role(struct TouchstoNetSettings* this) {
+enum tnet_role get_role(struct TouchstoNetSettings *this) {
 
   return this->role_;
 }
 
-int32_t get_port_number (struct TouchstoNetSettings* this) {
+int32_t get_port_number (struct TouchstoNetSettings *this) {
 
   return this->port_number_;
 }
 
-in_addr_t get_ip_address (struct TouchstoNetSettings* this) {
+in_addr_t get_ip_address (struct TouchstoNetSettings *this) {
 
   return this->ip_address_;
 }
 
-int32_t get_test_duration (struct TouchstoNetSettings* this) {
+int32_t get_test_duration (struct TouchstoNetSettings *this) {
 
   return this->test_duration_;
 }
 
-int32_t get_msg_bytes_length(struct TouchstoNetSettings* this) {
+int32_t get_msg_bytes_length(struct TouchstoNetSettings *this) {
 
   return this->msg_bytes_length_;
 }
 
-bool set_role (struct TouchstoNetSettings* this, enum tnet_role role_to_set) {
+bool set_role (struct TouchstoNetSettings *this, enum tnet_role role_to_set) {
 
   if (role_to_set > SERVER || role_to_set < CLIENT) {
 
+    LOG_DEBUG("%s", "[TouchstoNetSettings] Invalid role provided");
     LOG_ERROR("%s", "Invalid role provided");
     return false;
   }
 
   this->role_ = role_to_set;
 
-  LOG_DEBUG("%s%s", "Role set to: ", role_to_set ? "server" : "client");
+  LOG_DEBUG("%s%s", "[TouchstoNetSettings] Role set to: ", role_to_set ? "server" : "client");
   return true;
 }
 
-bool set_port_number (struct TouchstoNetSettings* this, int32_t port_no_to_set) {
+bool set_port_number (struct TouchstoNetSettings *this, int32_t port_no_to_set) {
 
   if (port_no_to_set < TNET_MIN_PORT_NUMBER || port_no_to_set > TNET_MAX_PORT_NUMBER) {
 
+    LOG_DEBUG("%s%d", "[TouchstoNetSettings] Invalid port number: ", port_no_to_set);
     LOG_ERROR("%s%d", "Invalid port number: ", port_no_to_set);
     return false;
   }
 
   this->port_number_ = port_no_to_set;
 
-  LOG_DEBUG("%s%d", "port number set to: ", port_no_to_set);
+  LOG_DEBUG("%s%d", "[TouchstoNetSettings] Port number set to: ", port_no_to_set);
   return true;
 }
 
-bool set_ip_address (struct TouchstoNetSettings* this, char* ip_address_to_set) {
+bool set_ip_address (struct TouchstoNetSettings *this, char *ip_address_to_set) {
 
   struct sockaddr_in serv_addr;
 
@@ -145,14 +147,14 @@ bool set_test_duration(struct TouchstoNetSettings *this, int32_t test_duration_t
   return true;
 }
 
-bool set_msg_bytes_length(struct TouchstoNetSettings* this, int32_t msg_bytes_length_to_set) {
+bool set_msg_bytes_length(struct TouchstoNetSettings *this, int32_t msg_bytes_length_to_set) {
 
   LOG_DEBUG("%s%d", "[TouchstoNetSettings] Number of bytes to be set: ", msg_bytes_length_to_set);
 
   if (MESSAGE_MODEL_BUFFER_SIZE < msg_bytes_length_to_set || msg_bytes_length_to_set <= 0) {
 
-    LOG_DEBUG("%s", "[TouchstoNetSettings] Number of bytes to sent exceeded");
-    LOG_ERROR("%s", "Number of bytes to be sent exceeded");
+    LOG_DEBUG("%s", "[TouchstoNetSettings] Maximum number of bytes to sent exceeded");
+    LOG_ERROR("%s", "Maximum number of bytes to sent exceeded");
     return false;
   }
 
