@@ -47,19 +47,20 @@ bool prepare_message (struct TouchstoNetMessageModel *this, int32_t msg_size) {
 
   if (msg_size > MESSAGE_MODEL_BUFFER_SIZE || msg_size < 0) {
 
-    LOG_ERROR("%s", "TouchstoNetMessageModel: Message size invalid");
+    LOG_DEBUG("%s", "[TouchstoNetMessageModel] Message size invalid");
+    LOG_ERROR("%s", "Message size invalid");
     return false;
   }
 
   if (!memset(this->message_model_buffer_, 0x1, msg_size)) {
 
-    LOG_DEBUG("%s", "TouchstoNetMessageModel: Failed to allocate message buffer");
+    LOG_DEBUG("%s", "[TouchstoNetMessageModel] Failed to allocate message buffer");
     return false;
   }
 
   this->message_size_ = msg_size;
 
-  LOG_DEBUG("%s%d", "TouchstoNetMessageModel: Prepared message with size: ", msg_size);
+  LOG_DEBUG("%s%d", "[TouchstoNetMessageModel] Prepared message with size: ", msg_size);
   return true;
 }
 
