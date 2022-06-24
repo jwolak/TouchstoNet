@@ -87,7 +87,7 @@ bool start_instance(struct TouchstoNetInstance *this) {
     LOG_DEBUG("%s", "[TouchstoNetInstance] Start server successful");
   }
 
-  LOG_DEBUG("%s", "Instance started successfully");
+  LOG_DEBUG("%s", "[TouchstoNetInstance] Instance started successfully");
   return true;
 }
 

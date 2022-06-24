@@ -49,12 +49,16 @@
 struct ThreadLoopArgs {
   int32_t period;
   bool *stop_flag;
+  bool(*callback_arg)(void* tnet_instance);
+  void *tnet_instance_arg;
 };
 
 static void *timer_loop_thread(void *settings) {
 
   int32_t seconds_counter = 0;
   int32_t time_period = ((struct ThreadLoopArgs*)settings)->period;
+  bool(*callback_fun)(void* tnet_instance) = ((struct ThreadLoopArgs*)settings)->callback_arg;
+  void *tnet_instance = ((struct ThreadLoopArgs*)settings)->tnet_instance_arg;
 
   LOG_DEBUG("%s%d%s", "[TouchstoNetTimeCounter] Timer loop thread launched for: ", time_period, " [s]");
 
@@ -64,6 +68,14 @@ static void *timer_loop_thread(void *settings) {
     ++seconds_counter;
   }
 
+  if (!callback_fun(tnet_instance)) {
+
+    LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Filed to call callback after time is elapsed");
+    LOG_ERROR("%s", "Filed to call callback after time is elapsed");
+    return false;
+  }
+
+  LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Time has elapsed");
   LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Timer loop thread stopped");
 }
 
@@ -72,6 +84,8 @@ bool start_timer(struct TouchstoNetTimeCounter *this, void *tnet_instance, int32
   struct ThreadLoopArgs thread_loop_args;
   thread_loop_args.period = time_period;
   thread_loop_args.stop_flag = &this->stop_timer_flag_;
+  thread_loop_args.callback_arg = this->timer_stop_callback;
+  thread_loop_args.tnet_instance_arg = tnet_instance;
 
   if (time_period == 0) {
 
@@ -85,17 +99,15 @@ bool start_timer(struct TouchstoNetTimeCounter *this, void *tnet_instance, int32
     LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Failed to launch timer_loop_thread");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Launch timer_loop_thread successful");
 
-  pthread_join(this->thread_id_, NULL);
+  if (pthread_detach(this->thread_id_) != 0) {
 
-  if (!this->timer_stop_callback(tnet_instance)) {
-
-    LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Filed to call callback after time is elapsed");
-    LOG_ERROR("%s", "Filed to call callback after time is elapsed");
+    LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Filed to detached timer thread");
     return false;
   }
 
-  LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Time has elapsed");
+  LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Detach timer thread successful");
   return true;
 }
 

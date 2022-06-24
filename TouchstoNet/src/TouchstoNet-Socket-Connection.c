@@ -174,6 +174,9 @@ bool create_server_thread(struct TouchstoNetSocketConnection *this, struct socka
     LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Failed to launch server_recv_and_reply_msg_loop_thread");
     return false;
   }
+  LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread id of server_recv_and_reply_msg_loop_thread: [",this->thread_id_, "]")
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Launched server_recv_and_reply_msg_loop_thread successfully");
+
   pthread_join(this->thread_id_, NULL);
 
   return true;
@@ -200,6 +203,8 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
     LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Failed to launch client_send_and_recv_msg_loop_thread");
     return false;
   }
+  LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread id of client_send_and_recv_msg_loop_thread: [",this->thread_id_, "]");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Launched client_send_and_recv_msg_loop_thread successfully");
 
   pthread_join(this->thread_id_, NULL);
 
@@ -212,7 +217,7 @@ bool stop_working_thread(struct TouchstoNetSocketConnection *this) {
   LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Working thread has been stopped");
   pthread_cancel(this->thread_id_);
 
-  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Thread has been cancelled");
+  LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread: [",this->thread_id_, "] has been cancelled");
   return true;
 }
 

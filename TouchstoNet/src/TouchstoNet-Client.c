@@ -106,13 +106,6 @@ bool start_client(struct TouchstoNetClient* this) {
   }
   LOG_DEBUG("%s", "[TouchstoNetClient] Prepare massage to be send successful");
 
-  if (!this->tnet_socket_connection_.create_client_thread(&this->tnet_socket_connection_, this->tnet_message_model_.get_buffer(&this->tnet_message_model_) , this->tnet_message_model_.get_msg_size(&this->tnet_message_model_), this->tnet_scoket_address_.get_socket_address(&this->tnet_scoket_address_))) {
-
-    LOG_DEBUG("%s", "[TouchstoNetClient] Create client thread failed");
-    return false;
-  }
-  LOG_DEBUG("%s", "[TouchstoNetClient] Create client thread successful");
-
   /*set callback and start timer for client*/
   if (!this->tnet_time_counter_.set_stop_callback(&this->tnet_time_counter_, &stop_client_wrapper)) {
 
@@ -127,6 +120,13 @@ bool start_client(struct TouchstoNetClient* this) {
     return false;
   }
   LOG_DEBUG("%s", "[TouchstoNetClient] Start time counter successful");
+
+  if (!this->tnet_socket_connection_.create_client_thread(&this->tnet_socket_connection_, this->tnet_message_model_.get_buffer(&this->tnet_message_model_) , this->tnet_message_model_.get_msg_size(&this->tnet_message_model_), this->tnet_scoket_address_.get_socket_address(&this->tnet_scoket_address_))) {
+
+    LOG_DEBUG("%s", "[TouchstoNetClient] Create client thread failed");
+    return false;
+  }
+  LOG_DEBUG("%s", "[TouchstoNetClient] Create client thread successful");
 
   LOG_DEBUG("%s", "[TouchstoNetClient] Start client successful");
   return true;
