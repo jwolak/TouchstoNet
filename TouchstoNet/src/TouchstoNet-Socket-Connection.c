@@ -38,14 +38,12 @@
  */
 
 #include "TouchstoNet-Socket-Connection.h"
+#include "TouchstoNet-Message-Model.h"
 
 #include "LoggerC.h"
 
 #include <string.h>
-
 #include <signal.h>
-
-#include "TouchstoNet-Message-Model.h"
 
 struct SendRecvMsgLoopArgs {
   int sock_fd;
@@ -56,9 +54,9 @@ struct SendRecvMsgLoopArgs {
   bool *interrrupt_thread;
 };
 
-static void *server_recv_and_reply_msg_loop_thread(void* recv_msg_args) {
+static void *server_recv_and_reply_msg_loop_thread(void *recv_msg_args) {
 
-  LOG_DEBUG("%s", "Receive messages loop thread started");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Receive messages loop thread started");
 
   char recived_msg_buffer[MESSAGE_MODEL_BUFFER_SIZE];
 
@@ -77,9 +75,9 @@ static void *server_recv_and_reply_msg_loop_thread(void* recv_msg_args) {
   }
 }
 
-static void *client_send_and_recv_msg_loop_thread(void* send_msg_args) {
+static void *client_send_and_recv_msg_loop_thread(void *send_msg_args) {
 
-  LOG_DEBUG("%s", "Send messages loop thread started");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Send messages loop thread started");
 
   char recived_msg_buffer[MESSAGE_MODEL_BUFFER_SIZE];
 
@@ -98,17 +96,17 @@ static void *client_send_and_recv_msg_loop_thread(void* send_msg_args) {
   }
 }
 
-bool inject_settings_to_socket_connection(struct TouchstoNetSocketConnection *this, struct TouchstoNetSettings* tnet_settings_to_injected) {
+bool inject_settings_to_socket_connection(struct TouchstoNetSocketConnection *this, struct TouchstoNetSettings *tnet_settings_to_injected) {
 
   if (!tnet_settings_to_injected) {
 
-    LOG_DEBUG("%s", "Pointer to settings for TouchstoNetSocketConnection is null");
+    LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Pointer to settings is null");
     return false;
   }
 
   this->tnet_settings_ = tnet_settings_to_injected;
 
-  LOG_DEBUG("%s", "Settings injected successfully to SocketConnection");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Settings injected successfully");
   return true;
 }
 
@@ -116,18 +114,19 @@ bool bind_to_socket(struct TouchstoNetSocketConnection *this, struct sockaddr_in
 
   if (!socket_address_to_bind) {
 
-    LOG_DEBUG("%s", "Struct sockaddr pointer for TouchstoNetSocketConnection is null");
+    LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Struct sockaddr pointer is null");
     return false;
   }
 
   if ( bind(this->tnet_socket_.get_socket(&this->tnet_socket_), (const struct sockaddr*)socket_address_to_bind,
           sizeof((*socket_address_to_bind))) < 0 )
   {
-      LOG_ERROR("%s", "TouchstoNetSocketConnection bind to socket failed");
+      LOG_DEBUG("%s", "[TouchstoNetSocketConnection] bind to socket failed");
+      LOG_ERROR("%s", "Bind to socket failed");
       return false;
   }
 
-  LOG_DEBUG("%s", "TouchstoNetSocketConnection bind to socket successful");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Bind to socket successful");
   return true;
 }
 
@@ -135,11 +134,11 @@ bool open_socket (struct TouchstoNetSocketConnection *this) {
 
   if (!this->tnet_socket_.create_udp(&this->tnet_socket_)) {
 
-    LOG_DEBUG("%s", "TouchstoNetSocketConnection: Failed to open UDP socket");
+    LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Failed to open UDP socket");
     return false;
   }
 
-  LOG_DEBUG("%s", "TouchstoNetSocketConnection: Open UDP socket successful");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Open UDP socket successful");
   return true;
 }
 
@@ -147,18 +146,18 @@ bool close_connection(struct TouchstoNetSocketConnection *this) {
 
   if (!this->tnet_socket_.close_socket(&this->tnet_socket_)) {
 
-    LOG_DEBUG("%s", "TouchstoNetSocketConnection: Close socket failed");
+    LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Close socket failed");
     return false;
   }
 
-  LOG_DEBUG("%s", "TouchstoNetSocketConnection: Close socket successful");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Close socket successful");
   return true;
 }
 
 bool create_server_thread(struct TouchstoNetSocketConnection *this, struct sockaddr_in *socket_server_address) {
 
   /*create in thread*/
-  LOG_DEBUG("%s", "TouchstoNetSocketConnection: receive_msg() launched");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] receive_msg() launched");
 
   int len = 0;
   struct SendRecvMsgLoopArgs send_recv_msg_loop_args;
@@ -172,7 +171,7 @@ bool create_server_thread(struct TouchstoNetSocketConnection *this, struct socka
 
   if (pthread_create(&this->thread_id_, NULL, server_recv_and_reply_msg_loop_thread, &send_recv_msg_loop_args) != 0) {
 
-    LOG_DEBUG("%s", "Failed to launch server_recv_and_reply_msg_loop_thread");
+    LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Failed to launch server_recv_and_reply_msg_loop_thread");
     return false;
   }
   pthread_join(this->thread_id_, NULL);
@@ -183,7 +182,7 @@ bool create_server_thread(struct TouchstoNetSocketConnection *this, struct socka
 bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to_send_buffer, int32_t msg_send_size, struct sockaddr_in *socket_client_address) {
 
   /*create in thread*/
-  LOG_DEBUG("%s", "TouchstoNetSocketConnection: send_msg() launched");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] send_msg() is launched");
 
   int len = 0;
   struct SendRecvMsgLoopArgs send_recv_msg_loop_args;
@@ -198,7 +197,7 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
 
   if(pthread_create(&this->thread_id_, NULL, client_send_and_recv_msg_loop_thread, &send_recv_msg_loop_args) != 0){
 
-    LOG_DEBUG("%s", "Failed to launch client_send_and_recv_msg_loop_thread");
+    LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Failed to launch client_send_and_recv_msg_loop_thread");
     return false;
   }
 
@@ -210,10 +209,10 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
 bool stop_working_thread(struct TouchstoNetSocketConnection *this) {
 
   this->stop_thread_ = true;
-  LOG_DEBUG("%s", "TouchstoNetSocketConnection working thread has been stopped");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Working thread has been stopped");
   pthread_cancel(this->thread_id_);
 
-  LOG_DEBUG("%s", "TouchstoNetSocketConnection thread has been cancelled");
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Thread has been cancelled");
   return true;
 }
 
