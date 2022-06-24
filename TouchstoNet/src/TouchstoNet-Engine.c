@@ -73,11 +73,12 @@ bool stop(struct TouchstoNetEngine* this) {
 
   if (!this->tnet_intsnace_.stop_instance(&this->tnet_intsnace_)) {
 
+    LOG_DEBUG("%s", "[TouchstoNetEngine] Stop TouchstoNet engine failed");
     LOG_ERROR("%s", "Stop TouchstoNet engine failed");
     return false;
   }
 
-  LOG_DEBUG("%s", "Stop TouchstoNet engine successful");
+  LOG_DEBUG("%s", "[TouchstoNetEngine] Stop TouchstoNet engine successful");
   return true;
 }
 

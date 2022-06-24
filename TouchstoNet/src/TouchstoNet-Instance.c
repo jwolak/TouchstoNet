@@ -44,41 +44,47 @@ bool start_instance(struct TouchstoNetInstance *this) {
 
   if (!this->tnet_settings_) {
 
-    LOG_DEBUG("%s", "Instance's pointer to Settings is NULL");
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Instance's pointer to Settings is NULL");
     return false;
   }
 
   if (this->tnet_settings_->get_role(this->tnet_settings_) == CLIENT) {
 
-    LOG_DEBUG("%s", "Client instance is started");
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Client instance is starting...");
 
     if (!this->tnet_client_.inject_settings_to_client(&this->tnet_client_, this->tnet_settings_)) {
 
-      LOG_DEBUG("%s", "Failed to inject settings to client");
+      LOG_DEBUG("%s", "[TouchstoNetInstance] Failed to inject settings to client");
       return false;
     }
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Inject settings to client successful");
 
     if (!this->tnet_client_.start_client(&this->tnet_client_)) {
 
+      LOG_DEBUG("%s", "[TouchstoNetInstance] Failed to start client");
       LOG_ERROR("%s", "Failed to start client");
       return false;
     }
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Start client successful");
 
   } else {
 
-    LOG_DEBUG("%s", "Server instance is started");
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Server instance is starting...");
 
     if (!this->tnet_server_.inject_settings_to_server(&this->tnet_server_, this->tnet_settings_)) {
 
-      LOG_DEBUG("%s", "Failed to inject settings to server");
+      LOG_DEBUG("%s", "[TouchstoNetInstance] Failed to inject settings to server");
       return false;
     }
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Inject settings to server successful");
 
     if (!this->tnet_server_.start_server(&this->tnet_server_)) {
 
+      LOG_DEBUG("%s", "[TouchstoNetInstance] Failed to start server");
       LOG_ERROR("%s", "Failed to start server");
       return false;
     }
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Start server successful");
   }
 
   LOG_DEBUG("%s", "Instance started successfully");
@@ -95,25 +101,28 @@ bool stop_instance(struct TouchstoNetInstance *this) {
 
   if (this->tnet_settings_->get_role(this->tnet_settings_) == CLIENT) {
 
-    LOG_DEBUG("%s", "Client instance is stopped");
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Client instance is stopped");
 
     if (!this->tnet_client_.stop_client(&this->tnet_client_)) {
 
+      LOG_DEBUG("%s", "[TouchstoNetInstance] Failed to stop client");
       LOG_ERROR("%s", "Failed to stop client");
       return false;
     }
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Stop client successful");
 
   } else {
 
     if (!this->tnet_server_.stop_server(&this->tnet_server_)) {
 
+      LOG_DEBUG("%s", "[TouchstoNetInstance] Failed to stop server");
       LOG_ERROR("%s", "Failed to stop server");
       return false;
     }
-
-    LOG_DEBUG("%s", "Server instance is stopped");
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Stop server successful");
   }
 
+  LOG_DEBUG("%s", "[TouchstoNetInstance] Instance stopped successfully");
   return true;
 }
 
@@ -121,12 +130,12 @@ bool inject_settings_to_instance(struct TouchstoNetInstance *this, struct Touchs
 
   if (!tnet_settings_to_injected) {
 
-    LOG_DEBUG("%s", "Pointer to settings for TouchstoNetInstance is null");
+    LOG_DEBUG("%s", "[TouchstoNetInstance] Pointer to settings for TouchstoNetInstance is null");
     return false;
   }
 
   this->tnet_settings_ = tnet_settings_to_injected;
-  LOG_DEBUG("%s", "Settings injected successfully to Instance");
+  LOG_DEBUG("%s", "[TouchstoNetInstance] Settings injected successfully to Instance");
   return true;
 }
 
