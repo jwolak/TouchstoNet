@@ -45,7 +45,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define TNET_IP_ADDRESS_BUFFER_SIZE   16
+#define TNET_IP_ADDRESS_BUFFER_SIZE   INET_ADDRSTRLEN
 #define TNET_MIN_NUMBER_OF_ARGUMENTS  2
 
 static void print_help() {
@@ -145,7 +145,6 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
   printf("\n");
 
   while ((flag = getopt_long(argc, argv, "hscp:a:t:l:", longopts, NULL)) != -1) {
-    LOG_DEBUG("%s%d", "Flag: ", flag);
     switch (flag) {
     case 's':
       if (!this->tnet_settings_->set_role(this->tnet_settings_, SERVER)) {
@@ -192,7 +191,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%s", "[TouchstoNetAgrumentsParser] IP address that has been set:", address_parameter);
+      LOG_DEBUG("%s%s", "[TouchstoNetAgrumentsParser] IP address that has been set: ", address_parameter);
       break;
 
     case 't':

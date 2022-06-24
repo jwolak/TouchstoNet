@@ -116,7 +116,7 @@ bool set_ip_address (struct TouchstoNetSettings *this, char *ip_address_to_set) 
 
   struct sockaddr_in serv_addr;
 
-  LOG_DEBUG("%s%s", "[TouchstoNetSettings] Try set IPv4 address to:", ip_address_to_set);
+  LOG_DEBUG("%s%s", "[TouchstoNetSettings] Try set IPv4 address to: ", ip_address_to_set);
 
   if (inet_pton(AF_INET, &ip_address_to_set[1], &serv_addr.sin_addr) <= 0) {
 

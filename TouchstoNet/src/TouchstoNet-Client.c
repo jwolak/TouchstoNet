@@ -73,24 +73,24 @@ bool start_client(struct TouchstoNetClient* this) {
 
   if (!this->tnet_scoket_address_.set_address_family(&this->tnet_scoket_address_, AF_INET)) {
 
-    LOG_DEBUG("%s", "[TouchstoNetClient] Failed to set address family for TouchstoNetSocketAddress in TouchstoNetServer");
+    LOG_DEBUG("%s", "[TouchstoNetClient] Failed to set address family for TouchstoNetSocketAddress");
     return false;
   }
   LOG_DEBUG("%s", "[TouchstoNetClient] Set address family for TouchstoNetSocketAddress in TouchstoNetServer successful");
 
-  if (!this->tnet_scoket_address_.set_inet_address(&this->tnet_scoket_address_, INADDR_ANY)) {
+  if (!this->tnet_scoket_address_.set_inet_address(&this->tnet_scoket_address_, this->tnet_settings_->get_ip_address(this->tnet_settings_))) {
 
-    LOG_DEBUG("%s", "[TouchstoNetClient] Failed to set socket address for TouchstoNetSocketAddress in TouchstoNetServer");
+    LOG_DEBUG("%s", "[TouchstoNetClient] Failed to set socket address for TouchstoNetSocketAddress");
     return false;
   }
   LOG_DEBUG("%s", "[TouchstoNetClient] Set socket address for TouchstoNetSocketAddress in TouchstoNetServer successful");
 
   if (!this->tnet_scoket_address_.set_ip_port(&this->tnet_scoket_address_, this->tnet_settings_->get_port_number(this->tnet_settings_))) {
 
-    LOG_DEBUG("%s", "[TouchstoNetClient] Failed to set port number for TouchstoNetSocketAddress in TouchstoNetServer");
+    LOG_DEBUG("%s", "[TouchstoNetClient] Failed to set port number for TouchstoNetSocketAddress");
     return false;
   }
-  LOG_DEBUG("%s", "[TouchstoNetClient] Set port number for TouchstoNetSocketAddress in TouchstoNetServer successful");
+  LOG_DEBUG("%s", "[TouchstoNetClient] Set port number for TouchstoNetSocketAddress successful");
 
   if (!this->tnet_socket_connection_.open_socket(&this->tnet_socket_connection_)) {
 

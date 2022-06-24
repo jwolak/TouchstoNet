@@ -51,6 +51,13 @@ bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
   }
   LOG_DEBUG("%s", "[TouchstoNetEngine] Settings injection to arguments parser is successful");
 
+  if (!this->tnet_parser_.parse_arguments(&this->tnet_parser_, argc, argv)) {
+
+    LOG_DEBUG("%s", "[TouchstoNetEngine] Failed to parse command line arguments");
+    return false;
+  }
+  LOG_DEBUG("%s", "[TouchstoNetEngine] Parse command line arguments successful");
+
   if (!this->tnet_intsnace_.inject_settings_to_instance(&this->tnet_intsnace_,  &this->tnet_settings_)) {
 
     LOG_DEBUG("%s", "[TouchstoNetEngine] Settings injection to TouchstoNet instance failed");

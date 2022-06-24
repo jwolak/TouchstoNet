@@ -41,6 +41,8 @@
 
 #include "LoggerC.h"
 
+#include <arpa/inet.h>
+
 
 bool set_address_family(struct TouchstoNetSocketAddress *this, int16_t address_family_to_set) {
 
@@ -67,9 +69,10 @@ bool set_ip_port(struct TouchstoNetSocketAddress *this, uint16_t port_number_to_
 
 bool set_inet_address(struct TouchstoNetSocketAddress *this, in_addr_t inet_address_to_set) {
 
+  char text_address_buffer[INET_ADDRSTRLEN];
   this->socket_address_.sin_addr.s_addr = inet_address_to_set;
 
-  LOG_DEBUG("%s%d", "[TouchstoNetSocketAddress] IP address set to: ", inet_address_to_set);
+  LOG_DEBUG("%s%s", "[TouchstoNetSocketAddress] IP address set to: ", inet_ntop(AF_INET, &this->socket_address_.sin_addr, text_address_buffer, INET_ADDRSTRLEN));
   return true;
 }
 
