@@ -38,6 +38,7 @@
  */
 
 #include "TouchstoNet-Engine.h"
+#include "TouchstoNet-Info-And-Graphics.h"
 #include "LoggerC.h"
 
 bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
@@ -57,6 +58,9 @@ bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
     return false;
   }
   LOG_DEBUG("%s", "[TouchstoNetEngine] Parse command line arguments successful");
+
+  printf("%s\n\n", logo_buffer);
+  printf("%s\n", copyrights_buffer);
 
   if (!this->tnet_intsnace_.inject_settings_to_instance(&this->tnet_intsnace_,  &this->tnet_settings_)) {
 
