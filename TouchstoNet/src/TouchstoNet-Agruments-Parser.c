@@ -224,7 +224,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
     default:
       LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Help printed");
       print_help();
-      break;
+      exit(1);
     }
   }
 
