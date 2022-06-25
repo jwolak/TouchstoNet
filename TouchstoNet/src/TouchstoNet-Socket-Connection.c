@@ -44,6 +44,7 @@
 
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 
 struct SendRecvMsgLoopArgs {
   int sock_fd;
@@ -52,7 +53,38 @@ struct SendRecvMsgLoopArgs {
   struct sockaddr_in *server_sock_addr;
   int *recv_addr_len;
   bool *interrrupt_thread;
+  size_t *amount_of_bytes_sent_by_client;
+  int32_t msg_size;
 };
+
+void *statistic_thread(void *recv_msg_args) {
+
+  bool *stop_thread_flag = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->interrrupt_thread;
+  size_t *no_of_sent_msgs_by_client = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->amount_of_bytes_sent_by_client;
+  int32_t message_bytes_size = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->msg_size;
+
+
+  printf("%s\n", "Statistic thread");
+  int count_time = 0;
+
+  while(!(*stop_thread_flag)) {
+
+    sleep(1);
+    ++count_time;
+    fflush(stdout);
+    //printf("\r%s%d%s", "Time:", count, " [s]");
+    //printf("\r%zd", *no_of_sent_msgs_by_client);
+    //printf("\r%s%zd%s","Pkts throughput: ", (size_t)(*no_of_sent_msgs_by_client)/count, " [pkts/sec]");
+    printf("\r "
+        "%s%zd "
+        "%s%zd%s "
+        "%s%zd%s",
+        "Pkts sent: [", *no_of_sent_msgs_by_client,
+        "][pkts] |\t Pkts throughput: ", (size_t)((*no_of_sent_msgs_by_client)/count_time), " [pkts/sec]",
+        "Bytes throughput: ", (size_t)((((*no_of_sent_msgs_by_client) * message_bytes_size)/1024)/count_time), " [kB/sec]");
+  }
+}
+
 
 static void *server_recv_and_reply_msg_loop_thread(void *recv_msg_args) {
 
@@ -87,12 +119,15 @@ static void *client_send_and_recv_msg_loop_thread(void *send_msg_args) {
   struct sockaddr_in *server_addr = ((struct SendRecvMsgLoopArgs*)send_msg_args)->server_sock_addr;
   bool *stop_thread_flag = ((struct SendRecvMsgLoopArgs*)send_msg_args)->interrrupt_thread;
   int *len = ((struct SendRecvMsgLoopArgs*)send_msg_args)->recv_addr_len;
+  size_t *pkts_counter = ((struct SendRecvMsgLoopArgs*)send_msg_args)->amount_of_bytes_sent_by_client;
+
   ssize_t no_of_recv_msgs_by_client = 0;
   ssize_t no_of_sent_msgs_by_client = 0;
 
   while (!(*stop_thread_flag)) {
     no_of_sent_msgs_by_client = sendto(sockfd, (const char *)buffer_to_send, buffer_to_send_size, MSG_CONFIRM, (const struct sockaddr *) server_addr, sizeof(*server_addr)/**len*/);
-    no_of_sent_msgs_by_client = recvfrom(sockfd, (char *)recived_msg_buffer, MAXLINE,  MSG_WAITALL, (struct sockaddr *) server_addr, len);
+    no_of_recv_msgs_by_client = recvfrom(sockfd, (char *)recived_msg_buffer, MAXLINE,  MSG_WAITALL, (struct sockaddr *) server_addr, len);
+    (*pkts_counter)++;
   }
 }
 
@@ -191,12 +226,16 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
   struct SendRecvMsgLoopArgs send_recv_msg_loop_args;
   this->stop_thread_ = false;
 
+  size_t sent_pkts_counter = 0;
+
   send_recv_msg_loop_args.sock_fd = this->tnet_socket_.get_socket(&this->tnet_socket_);
   send_recv_msg_loop_args.server_sock_addr = socket_client_address;
   send_recv_msg_loop_args.buffer = msg_to_send_buffer;
   send_recv_msg_loop_args.buffer_size = msg_send_size;
   send_recv_msg_loop_args.recv_addr_len = &len;
   send_recv_msg_loop_args.interrrupt_thread = &this->stop_thread_;
+  send_recv_msg_loop_args.amount_of_bytes_sent_by_client = &sent_pkts_counter;
+  send_recv_msg_loop_args.msg_size = this->tnet_settings_->msg_bytes_length_;
 
   if(pthread_create(&this->thread_id_, NULL, client_send_and_recv_msg_loop_thread, &send_recv_msg_loop_args) != 0){
 
@@ -206,8 +245,11 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
   LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread id of client_send_and_recv_msg_loop_thread: [",this->thread_id_, "]");
   LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Launched client_send_and_recv_msg_loop_thread successfully");
 
-  pthread_join(this->thread_id_, NULL);
+  pthread_t t_id__;
+  pthread_create(&t_id__, NULL, statistic_thread, &send_recv_msg_loop_args);
 
+  pthread_join(this->thread_id_, NULL);
+  pthread_join(t_id__, NULL);
   return true;
 }
 
