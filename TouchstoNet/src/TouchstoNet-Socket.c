@@ -47,43 +47,46 @@
 
 bool create_udp(struct TouchstoNetSocket *this) {
 
-  LOG_DEBUG("%s", "TouchstoNetSocket creates UDP socket");
+  LOG_DEBUG("%s", "[TouchstoNetSocket] TouchstoNetSocket creates UDP socket");
 
   if ((this->socket_fd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 
-    LOG_ERROR("%s", "TouchstoNetSocket UDP socket create failed");
+    LOG_DEBUG("%s", "[TouchstoNetSocket] UDP socket create failed");
+    LOG_ERROR("%s", "UDP socket create failed");
     return false;
   }
 
-  LOG_DEBUG("%s", "TouchstoNetSocket UDP socket create successful");
+  LOG_DEBUG("%s", "[TouchstoNetSocket] TouchstoNetSocket UDP socket create successful");
   return true;
 }
 
 bool create_tcp(struct TouchstoNetSocket *this) {
 
-  LOG_DEBUG("%s", "TouchstoNetSocket creates TCP socket");
+  LOG_DEBUG("%s", "[TouchstoNetSocket] Creates TCP socket");
 
   if ((this->socket_fd_ = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 
-    LOG_ERROR("%s", "TouchstoNetSocket TCP socket create failed");
+    LOG_DEBUG("%s", "[TouchstoNetSocket] TCP socket create failed");
+    LOG_ERROR("%s", "TCP socket create failed");
     return false;
   }
 
-  LOG_DEBUG("%s", "TouchstoNetSocket TCP socket create successful");
+  LOG_DEBUG("%s", "[TouchstoNetSocket] TCP socket create successful");
   return true;
 }
 
 bool close_socket(struct TouchstoNetSocket *this) {
 
-  LOG_DEBUG("%s", "TouchstoNetSocket closes socket");
+  LOG_DEBUG("%s", "[TouchstoNetSocket] Closes socket");
 
   if (close(this->socket_fd_) != 0) {
 
-    LOG_ERROR("%s", "TouchstoNetSocket socket to close failed");
+    LOG_DEBUG("%s", "[TouchstoNetSocket] Socket to close failed");
+    LOG_ERROR("%s", "Socket close failed");
     return false;
   }
 
-  LOG_DEBUG("%s", "TouchstoNetSocket socket closed successful");
+  LOG_DEBUG("%s", "[TouchstoNetSocket] socket closed successful");
   return true;
 }
 

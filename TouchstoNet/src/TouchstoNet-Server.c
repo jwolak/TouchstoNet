@@ -41,17 +41,17 @@
 
 #include "LoggerC.h"
 
-bool inject_settings_to_server(struct TouchstoNetServer* this, struct TouchstoNetSettings* tnet_settings_to_injected) {
+bool inject_settings_to_server(struct TouchstoNetServer *this, struct TouchstoNetSettings *tnet_settings_to_injected) {
 
   if (!tnet_settings_to_injected) {
 
-    LOG_DEBUG("%s", "Settings pointer for TouchstoNetServer is null");
+    LOG_DEBUG("%s", "[TouchstoNetServer] Settings pointer for TouchstoNetServer is null");
     return false;
   }
 
   this->tnet_settings_ = tnet_settings_to_injected;
 
-  LOG_DEBUG("%s", "Settings injected to TouchstoNetServer successfully");
+  LOG_DEBUG("%s", "[TouchstoNetServer] Settings injected to TouchstoNetServer successfully");
   return true;
 }
 
@@ -59,46 +59,54 @@ bool start_server(struct TouchstoNetServer* this) {
 
   if (!this->tnet_socket_connection_.inject_settings_to_socket_connection(&this->tnet_socket_connection_, this->tnet_settings_)) {
 
-    LOG_DEBUG("%s", "Setting injection to TouchstoNetSocketConnection failed");
+    LOG_DEBUG("%s", "[TouchstoNetServer] Setting injection to TouchstoNetSocketConnection failed");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetServer] Setting injection to TouchstoNetSocketConnection successful");
 
   if (!this->tnet_scoket_address_.set_address_family(&this->tnet_scoket_address_, AF_INET)) {
 
-    LOG_DEBUG("%s", "Failed to set address family for TouchstoNetSocketAddress in TouchstoNetServer");
+    LOG_DEBUG("%s", "[TouchstoNetServer] Failed to set address family for TouchstoNetSocketAddress in TouchstoNetServer");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetServer] Set address family for TouchstoNetSocketAddress in TouchstoNetServer successful");
 
   if (!this->tnet_scoket_address_.set_inet_address(&this->tnet_scoket_address_, INADDR_ANY)) {
 
-    LOG_DEBUG("%s", "Failed to set socket address for TouchstoNetSocketAddress in TouchstoNetServer");
+    LOG_DEBUG("%s", "[TouchstoNetServer] Failed to set socket address for TouchstoNetSocketAddress in TouchstoNetServer");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetServer] Set socket address for TouchstoNetSocketAddress in TouchstoNetServer successful");
 
   if (!this->tnet_scoket_address_.set_ip_port(&this->tnet_scoket_address_, this->tnet_settings_->get_port_number(this->tnet_settings_))) {
 
-    LOG_DEBUG("%s", "Failed to set port number for TouchstoNetSocketAddress in TouchstoNetServer");
+    LOG_DEBUG("%s", "[TouchstoNetServer] Failed to set port number for TouchstoNetSocketAddress in TouchstoNetServer");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetServer] Set port number for TouchstoNetSocketAddress in TouchstoNetServer successful");
 
   if (!this->tnet_socket_connection_.open_socket(&this->tnet_socket_connection_)) {
 
-    LOG_DEBUG("%s", "TouchstoNetServer: Open socket failed");
+    LOG_DEBUG("%s", "[TouchstoNetServer] TouchstoNetServer: Open socket failed");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetServer] TouchstoNetServer: Open socket successful");
 
   if(!this->tnet_socket_connection_.bind_to_socket(&this->tnet_socket_connection_, this->tnet_scoket_address_.get_socket_address(&this->tnet_scoket_address_))) {
 
+    LOG_DEBUG("%s", "[TouchstoNetServer] Server failed bind to the socket");
     LOG_ERROR("%s", "Server failed bind to the socket");
     return false;
   }
 
   if (!this->tnet_socket_connection_.create_server_thread(&this->tnet_socket_connection_, &this->tnet_scoket_address_.socket_address_)) {
 
-    LOG_DEBUG("%s", "TouchstoNetServer: Create server thread failed");
+    LOG_DEBUG("%s", "[TouchstoNetServer] Create server thread failed");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetServer] Create server thread successful");
 
+  LOG_DEBUG("%s", "[TouchstoNetServer] Start server successful");
   return true;
 }
 
@@ -106,17 +114,19 @@ bool stop_server(struct TouchstoNetServer* this) {
 
   if (!this->tnet_socket_connection_.stop_working_thread(&this->tnet_socket_connection_)) {
 
-    LOG_DEBUG("%s", "TouchstoNetServer: Stop server thread failed");
+    LOG_DEBUG("%s", "[TouchstoNetServer] Stop server thread failed");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetServer] Stop server thread successful");
 
   if (!this->tnet_socket_connection_.close_connection(&this->tnet_socket_connection_)) {
 
-    LOG_DEBUG("%s", "TouchstoNetServer: Close socket failed");
+    LOG_DEBUG("%s", "[TouchstoNetServer] Close socket failed");
     return false;
   }
+  LOG_DEBUG("%s", "[TouchstoNetServer] Close socket successful");
 
-  LOG_DEBUG("%s", "TouchstoNetServer: Stop server successful");
+  LOG_DEBUG("%s", "[TouchstoNetServer] Stop server successful");
   return true;
 }
 

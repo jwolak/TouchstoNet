@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Message-Model.c
+ * TouchstoNet-Info-And-Graphics.c
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,49 +37,23 @@
  *
  */
 
-#include "TouchstoNet-Message-Model.h"
+#ifndef SRC_TOUCHSTONET_INFO_AND_GRAPHICS_C_
+#define SRC_TOUCHSTONET_INFO_AND_GRAPHICS_C_
 
-#include "LoggerC.h"
 
-#include <string.h>
+static char copyrights_buffer [] =
+                         "\t Copyrights: Janusz Wolak\n"
+                         "\t e-mail:     januszvdm@gmail.com\n"
+                         "\t web:        github.com/jwolak\n\n";
 
-bool prepare_message (struct TouchstoNetMessageModel *this, int32_t msg_size) {
+static char logo_buffer [] =
+    "      _______               _         _                   _   _      _\n"
+    "     |__   __|             | |       | |                 | \\ | |    | |\n"
+    "        | | ___  _   _  ___| |__  ___| |_ ___  _ __   ___|  \\| | ___| |_\n"
+    "        | |/ _ \\| | | |/ __| '_ \\/ __| __/ _ \\| '_ \\ / _ \\ . ` |/ _ \\ __|\n"
+    "        | | (_) | |_| | (__| | | \\__ \\ || (_) | | | |  __/ |\\  |  __/ |_\n"
+    "        |_|\\___/ \\__,_|\\___|_| |_|___/\\__\\___/|_| |_|\\___|_| \\_|\\___|\\__|\n";
 
-  if (msg_size > MESSAGE_MODEL_BUFFER_SIZE || msg_size < 0) {
 
-    LOG_DEBUG("%s%d%s", "[TouchstoNetMessageModel] Message size:", msg_size, " [bytes] is invalid");
-    LOG_ERROR("%s%d%s", "Message size:", msg_size, " [bytes] is invalid");
-    return false;
-  }
 
-  if (!memset(this->message_model_buffer_, 0x1, msg_size)) {
-
-    LOG_DEBUG("%s", "[TouchstoNetMessageModel] Failed to allocate message buffer");
-    return false;
-  }
-
-  this->message_size_ = msg_size;
-
-  LOG_DEBUG("%s%d%s", "[TouchstoNetMessageModel] Prepared message with size: ", msg_size, " [bytes]");
-  return true;
-}
-
-char *get_buffer (struct TouchstoNetMessageModel *this) {
-
-  return this->message_model_buffer_;
-}
-
-int32_t get_msg_size (struct TouchstoNetMessageModel *this) {
-
-  return this->message_size_;
-}
-
-static struct TouchstoNetMessageModel newMessageModel() {
-  return (struct TouchstoNetMessageModel) {
-    .prepare_message = &prepare_message,
-    .get_buffer = &get_buffer,
-    .get_msg_size = &get_msg_size,
-  };
-}
-
-const struct TouchstoNetMessageModelClass TouchstoNetMessageModel = { .new = &newMessageModel };
+#endif /* SRC_TOUCHSTONET_INFO_AND_GRAPHICS_C_ */

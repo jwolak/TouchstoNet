@@ -51,22 +51,23 @@ int main(int argc, char **argv) {
 	if (setjmp(sigend_jmp_buf)){
 
 		if (!touchstonet_engine.stop(&touchstonet_engine)) {
+		  LOG_DEBUG("%s", "[Main] Failed to stop TouchstoNet engine");
 		  LOG_WARNING("%s", "Failed to stop TouchstoNet engine");
 		}
 
+	  LOG_DEBUG("%s", "[Main] TouchstoNet engine interrupted by user");
 		LOG_WARNING("%s", "TouchstoNet engine interrupted by user");
 		exit(1);
 	}
 
   if (!touchstonet_engine.start(&touchstonet_engine, argc, argv)) {
 
+    LOG_DEBUG("%s", "[Main] Failed to start TouchstoNet engine");
     LOG_ERROR("%s", "Failed to start TouchstoNet engine");
     exit(1);
   } else {
-    LOG_DEBUG("%s", "TouchstoNet run session successful");
-    exit(1);
+    LOG_DEBUG("%s", "[Main] TouchstoNet run session successful");
   }
-
 
     return 0;
 }

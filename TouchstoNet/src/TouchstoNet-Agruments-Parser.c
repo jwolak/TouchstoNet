@@ -45,7 +45,9 @@
 #include <string.h>
 #include <stdio.h>
 
-#define TNET_IP_ADDRESS_BUFFER_SIZE   16
+#include "TouchstoNet-Info-And-Graphics.h"
+
+#define TNET_IP_ADDRESS_BUFFER_SIZE   INET_ADDRSTRLEN
 #define TNET_MIN_NUMBER_OF_ARGUMENTS  2
 
 static void print_help() {
@@ -79,18 +81,6 @@ static void print_help() {
       "\t No [--bytes] argument for client sets default message size to 128 bytes\n"
       "\t No [--address] argument for client sets default IP address to 0.0.0.0\n"
       "\n\t [IMPORTANT!] Server mode has only port number argument allowed\n";
-
-  char copyrights_buffer [] =
-                           "\t Copyrights: Janusz Wolak\n"
-                           "\t e-mail:     januszvdm@gmail.com\n"
-                           "\t web:        github.com/jwolak\n\n";
-  char logo_buffer [] =
-      "      _______               _         _                   _   _      _\n"
-      "     |__   __|             | |       | |                 | \\ | |    | |\n"
-      "        | | ___  _   _  ___| |__  ___| |_ ___  _ __   ___|  \\| | ___| |_\n"
-      "        | |/ _ \\| | | |/ __| '_ \\/ __| __/ _ \\| '_ \\ / _ \\ . ` |/ _ \\ __|\n"
-      "        | | (_) | |_| | (__| | | \\__ \\ || (_) | | | |  __/ |\\  |  __/ |_\n"
-      "        |_|\\___/ \\__,_|\\___|_| |_|___/\\__\\___/|_| |_|\\___|_| \\_|\\___|\\__|\n";
 
   printf("%s", logo_buffer);
   printf("%s\n", help_buffer);
@@ -145,7 +135,6 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
   printf("\n");
 
   while ((flag = getopt_long(argc, argv, "hscp:a:t:l:", longopts, NULL)) != -1) {
-    LOG_DEBUG("%s%d", "Flag: ", flag);
     switch (flag) {
     case 's':
       if (!this->tnet_settings_->set_role(this->tnet_settings_, SERVER)) {
@@ -192,7 +181,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
-      LOG_DEBUG("%s%s", "[TouchstoNetAgrumentsParser] IP address that has been set:", address_parameter);
+      LOG_DEBUG("%s%s", "[TouchstoNetAgrumentsParser] IP address that has been set: ", address_parameter);
       break;
 
     case 't':
@@ -225,7 +214,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
     default:
       LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Help printed");
       print_help();
-      break;
+      exit(1);
     }
   }
 

@@ -38,6 +38,7 @@
  */
 
 #include "TouchstoNet-Engine.h"
+#include "TouchstoNet-Info-And-Graphics.h"
 #include "LoggerC.h"
 
 bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
@@ -50,6 +51,16 @@ bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
     return false;
   }
   LOG_DEBUG("%s", "[TouchstoNetEngine] Settings injection to arguments parser is successful");
+
+  if (!this->tnet_parser_.parse_arguments(&this->tnet_parser_, argc, argv)) {
+
+    LOG_DEBUG("%s", "[TouchstoNetEngine] Failed to parse command line arguments");
+    return false;
+  }
+  LOG_DEBUG("%s", "[TouchstoNetEngine] Parse command line arguments successful");
+
+  printf("%s\n\n", logo_buffer);
+  printf("%s\n", copyrights_buffer);
 
   if (!this->tnet_intsnace_.inject_settings_to_instance(&this->tnet_intsnace_,  &this->tnet_settings_)) {
 
@@ -73,11 +84,12 @@ bool stop(struct TouchstoNetEngine* this) {
 
   if (!this->tnet_intsnace_.stop_instance(&this->tnet_intsnace_)) {
 
+    LOG_DEBUG("%s", "[TouchstoNetEngine] Stop TouchstoNet engine failed");
     LOG_ERROR("%s", "Stop TouchstoNet engine failed");
     return false;
   }
 
-  LOG_DEBUG("%s", "Stop TouchstoNet engine successful");
+  LOG_DEBUG("%s", "[TouchstoNetEngine] Stop TouchstoNet engine successful");
   return true;
 }
 
