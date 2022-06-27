@@ -269,6 +269,7 @@ bool stop_working_thread(struct TouchstoNetSocketConnection *this) {
   LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Statistic thread has been stopped");
 
   LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread: [",this->thread_id_, "] has been cancelled");
+  printf("%s", "\n"); /* new line after [Instant figures] */
   return true;
 }
 

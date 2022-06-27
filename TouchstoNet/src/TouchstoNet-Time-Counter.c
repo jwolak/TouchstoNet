@@ -46,13 +46,6 @@
 #define TIME_IN_SEC_PATTERN     1
 #define TNET_MAX_TIME_PERIOD    3600 /* [s] */
 
-struct ThreadLoopArgs {
-  int32_t period;
-  bool *stop_flag;
-  bool(*callback_arg)(void* tnet_instance);
-  void *tnet_instance_arg;
-};
-
 static void *timer_loop_thread(void *settings) {
 
   int32_t seconds_counter = 0;
@@ -81,11 +74,12 @@ static void *timer_loop_thread(void *settings) {
 
 bool start_timer(struct TouchstoNetTimeCounter *this, void *tnet_instance, int32_t time_period) {
 
-  struct ThreadLoopArgs thread_loop_args;
-  thread_loop_args.period = time_period;
-  thread_loop_args.stop_flag = &this->stop_timer_flag_;
-  thread_loop_args.callback_arg = this->timer_stop_callback;
-  thread_loop_args.tnet_instance_arg = tnet_instance;
+  LOG_DEBUG("%s%d\n", "[TouchstoNetTimeCounter] Time period to be set: ", time_period );
+
+  this->thread_loop_args_.period = time_period;
+  this->thread_loop_args_.stop_flag = &this->stop_timer_flag_;
+  this->thread_loop_args_.callback_arg = this->timer_stop_callback;
+  this->thread_loop_args_.tnet_instance_arg = tnet_instance;
 
   if (time_period == 0) {
 
@@ -94,7 +88,7 @@ bool start_timer(struct TouchstoNetTimeCounter *this, void *tnet_instance, int32
     time_period = TNET_MAX_TIME_PERIOD;
   }
 
-  if (pthread_create(&this->thread_id_, NULL, timer_loop_thread, &thread_loop_args) != 0) {
+  if (pthread_create(&this->thread_id_, NULL, timer_loop_thread, &this->thread_loop_args_) != 0) {
 
     LOG_DEBUG("%s", "[TouchstoNetTimeCounter] Failed to launch timer_loop_thread");
     return false;
