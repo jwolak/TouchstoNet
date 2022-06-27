@@ -46,6 +46,8 @@
 #include <signal.h>
 #include <unistd.h>
 
+#define ONE_KILO  1024
+
 struct SendRecvMsgLoopArgs {
   int sock_fd;
   void *buffer;
@@ -57,31 +59,36 @@ struct SendRecvMsgLoopArgs {
   int32_t msg_size;
 };
 
-void *statistic_thread(void *recv_msg_args) {
+void *client_statistic_thread(void *recv_msg_args) {
 
   bool *stop_thread_flag = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->interrrupt_thread;
   size_t *no_of_sent_msgs_by_client = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->amount_of_bytes_sent_by_client;
   int32_t message_bytes_size = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->msg_size;
 
-
-  printf("%s\n", "Statistic thread");
   int count_time = 0;
+  size_t bytes_throughput_per_second = 0;
+  size_t packet_throughput_per_second = 0;
+  size_t number_of_sent_packets = 0;
+
+  printf("\n%s\n", "[Instant figures:]");
 
   while(!(*stop_thread_flag)) {
 
     sleep(1);
     ++count_time;
     fflush(stdout);
-    //printf("\r%s%d%s", "Time:", count, " [s]");
-    //printf("\r%zd", *no_of_sent_msgs_by_client);
-    //printf("\r%s%zd%s","Pkts throughput: ", (size_t)(*no_of_sent_msgs_by_client)/count, " [pkts/sec]");
+    bytes_throughput_per_second = (size_t)((((*no_of_sent_msgs_by_client) * message_bytes_size)/1024)/count_time);
+    packet_throughput_per_second = (size_t)(((*no_of_sent_msgs_by_client)/count_time));
+    number_of_sent_packets = *no_of_sent_msgs_by_client;
     printf("\r "
-        "%s%zd "
-        "%s%zd%s "
-        "%s%zd%s",
-        "Pkts sent: [", *no_of_sent_msgs_by_client,
-        "][pkts] |\t Pkts throughput: ", (size_t)((*no_of_sent_msgs_by_client)/count_time), " [pkts/sec]",
-        "Bytes throughput: ", (size_t)((((*no_of_sent_msgs_by_client) * message_bytes_size)/1024)/count_time), " [kB/sec]");
+        "%s%4d%s"
+        "%zu%s"
+        "%zu%s"
+        "%s%zu%s",
+        "Time:", count_time, " [s] "
+        "  Pkts sent: ", number_of_sent_packets, " [pkts]"
+        "  Pkts throughput: ", packet_throughput_per_second , " [pkts/sec]",
+        "  Bytes throughput: ", bytes_throughput_per_second > ONE_KILO ? (size_t)(bytes_throughput_per_second / ONE_KILO) : bytes_throughput_per_second , bytes_throughput_per_second > ONE_KILO ? " [MB/sec]" : " [kB/sec]");
   }
 }
 
@@ -245,11 +252,10 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
   LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread id of client_send_and_recv_msg_loop_thread: [",this->thread_id_, "]");
   LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Launched client_send_and_recv_msg_loop_thread successfully");
 
-  pthread_t t_id__;
-  pthread_create(&t_id__, NULL, statistic_thread, &send_recv_msg_loop_args);
+  pthread_create(&this->statistic_thread_id_, NULL, client_statistic_thread, &send_recv_msg_loop_args);
 
   pthread_join(this->thread_id_, NULL);
-  pthread_join(t_id__, NULL);
+  pthread_join(this->statistic_thread_id_, NULL);
   return true;
 }
 
@@ -258,6 +264,9 @@ bool stop_working_thread(struct TouchstoNetSocketConnection *this) {
   this->stop_thread_ = true;
   LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Working thread has been stopped");
   pthread_cancel(this->thread_id_);
+
+  pthread_cancel(this->statistic_thread_id_);
+  LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Statistic thread has been stopped");
 
   LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread: [",this->thread_id_, "] has been cancelled");
   return true;

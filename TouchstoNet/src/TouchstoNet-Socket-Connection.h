@@ -67,6 +67,7 @@ struct TouchstoNetSocketConnection {
   /* always one thread for now, so no mutex needed */
   bool stop_thread_;
   pthread_t thread_id_;
+  pthread_t statistic_thread_id_;
 };
 
 extern const struct TouchstoNetSocketConnectionClass {
