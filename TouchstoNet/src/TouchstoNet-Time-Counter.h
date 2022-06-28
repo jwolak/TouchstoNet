@@ -45,6 +45,13 @@
 
 #include <pthread.h>
 
+struct ThreadLoopArgs {
+  int32_t period;
+  bool *stop_flag;
+  bool(*callback_arg)(void* tnet_instance);
+  void *tnet_instance_arg;
+};
+
 struct TouchstoNetTimeCounter {
 
   /*public*/
@@ -57,6 +64,7 @@ struct TouchstoNetTimeCounter {
   /*no mutex needed*/
   bool stop_timer_flag_;
   pthread_t thread_id_;
+  struct ThreadLoopArgs thread_loop_args_;
 };
 
 extern const struct TouchstoNetTimeCounterClass {
