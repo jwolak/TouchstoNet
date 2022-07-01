@@ -52,7 +52,7 @@
 #define TNET_MIN_TEST_DURATION        1
 
 #define TNET_DAFULT_ROLE              CLIENT
-#define TNET_DEFAULT_PORT_NUM         1025
+#define TNET_DEFAULT_PORT_NUM         2025
 #define TNET_DEFAULT_MSG_SIZE         128
 #define TNET_TEST_DURATION            0
 
@@ -181,6 +181,7 @@ static struct TouchstoNetSettings newSettings() {
     .ip_address_ = INADDR_ANY,
     .test_duration_ = TNET_TEST_DURATION,
     .msg_bytes_length_ = TNET_DEFAULT_MSG_SIZE,
+    .tnet_setting_flags_ = TouchstoNetSettingFlags.new(),
   };
 }
 const struct TouchstoNetSettingsClass TouchstoNetSettings = { .new = &newSettings };

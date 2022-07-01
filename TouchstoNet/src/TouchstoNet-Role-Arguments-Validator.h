@@ -1,5 +1,5 @@
 /*
- * TouchstoNet-Settings.h
+ * TouchstoNet-Role-Arguments-Validator.h
  *
  *  Created on: 2022
  *      Author: Janusz Wolak
@@ -37,47 +37,22 @@
  *
  */
 
-#ifndef SRC_TOUCHSTONET_SETTINGS_H_
-#define SRC_TOUCHSTONET_SETTINGS_H_
-
-#include "TouchstoNet-Setting-Flags.h"
+#ifndef SRC_TOUCHSTONET_ROLE_ARGUMENTS_VALIDATOR_H_
+#define SRC_TOUCHSTONET_ROLE_ARGUMENTS_VALIDATOR_H_
 
 #include <stdbool.h>
-#include <stdint.h>
 
-#include <netinet/in.h>
+#include "TouchstoNet-Settings.h"
 
-enum tnet_role {
-  CLIENT = 0,
-  SERVER = 1
-};
-
-struct TouchstoNetSettings {
+struct TouchstoNetRoleArgumentsValidator {
 
   /*public*/
-  enum tnet_role(*get_role)(struct TouchstoNetSettings* this);
-  int32_t(*get_port_number)(struct TouchstoNetSettings* this);
-  in_addr_t(*get_ip_address)(struct TouchstoNetSettings* this);
-  int32_t(*get_test_duration)(struct TouchstoNetSettings* this);
-  int32_t(*get_msg_bytes_length)(struct TouchstoNetSettings* this);
-
-  bool(*set_role)(struct TouchstoNetSettings* this, enum tnet_role role_to_set);
-  bool(*set_port_number)(struct TouchstoNetSettings* this, int32_t port_no_to_set);
-  bool(*set_ip_address)(struct TouchstoNetSettings* this, char* ip_address_to_set);
-  bool(*set_test_duration)(struct TouchstoNetSettings* this, int32_t test_duration_to_set);
-  bool(*set_msg_bytes_length)(struct TouchstoNetSettings* this, int32_t msg_bytes_length_to_set);
-
- /* private*/
-  struct TouchstoNetSettingFlags tnet_setting_flags_;
-  enum tnet_role role_;
-  int32_t        port_number_;
-  in_addr_t      ip_address_;
-  int32_t        test_duration_;
-  int32_t        msg_bytes_length_;
+  bool(*validate_arguments_for_role)(struct TouchstoNetSettings *tnet_settings);
 };
 
-extern const struct TouchstoNetSettingsClass {
-  struct TouchstoNetSettings (*new)();
-} TouchstoNetSettings;
+extern const struct TouchstoNetRoleArgumentsValidatorClass {
+  struct TouchstoNetRoleArgumentsValidator (*new)();
+} TouchstoNetRoleArgumentsValidator;
 
-#endif /* SRC_TOUCHSTONET_SETTINGS_H_ */
+
+#endif /* SRC_TOUCHSTONET_ROLE_ARGUMENTS_VALIDATOR_H_ */
