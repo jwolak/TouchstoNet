@@ -19,6 +19,8 @@ ${SOURCE_FILES_DIR}/TouchstoNet-Socket.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Socket-Address.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Socket-Connection.c
 ${SOURCE_FILES_DIR}/TouchstoNet-Message-Model.c
+${SOURCE_FILES_DIR}/TouchstoNet-Role-Arguments-Validator.c
+${SOURCE_FILES_DIR}/TouchstoNet-Setting-Flags.c
 #${SOURCE_FILES_DIR}/
 #${SOURCE_FILES_DIR}/
 #${SOURCE_FILES_DIR}/

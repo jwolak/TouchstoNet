@@ -40,6 +40,8 @@
 
 #include "unity.h"
 
+#include "../../TouchstoNet/src/TouchstoNet-Setting-Flags.c"
+#include "../../TouchstoNet/src/TouchstoNet-Role-Arguments-Validator.c"
 /*#include "../../TouchstoNet/src/TouchstoNet-Agruments-Parser.c"*/ /* file already included in TouchstoNet-Engine-Tests.c */
 
 

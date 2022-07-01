@@ -47,6 +47,7 @@
 #include "TouchstoNet-Agruments-Parser.h"
 #include "TouchstoNet-Time-Counter.h"
 #include "TouchstoNet-Instance.h"
+#include "TouchstoNet-Role-Arguments-Validator.h"
 
 struct TouchstoNetEngine {
 
@@ -59,6 +60,7 @@ struct TouchstoNetEngine {
   struct TouchstoNetSettings tnet_settings_;
   struct TouchstoNetAgrumentsParser tnet_parser_;
   struct TouchstoNetInstance tnet_intsnace_;
+  struct TouchstoNetRoleArgumentsValidator tnet_role_args_validator_;
 };
 
 extern const struct TouchstoNetEngineClass {

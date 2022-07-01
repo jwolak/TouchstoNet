@@ -59,6 +59,14 @@ bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
   }
   LOG_DEBUG("%s", "[TouchstoNetEngine] Parse command line arguments successful");
 
+  if (!this->tnet_role_args_validator_.validate_arguments_for_role(&this->tnet_settings_)) {
+
+    LOG_DEBUG("%s", "[TouchstoNetEngine] Invalid command line arguments");
+    LOG_ERROR("%s", "Invalid command line argument(s)");
+    return false;
+  }
+  LOG_DEBUG("%s", "[TouchstoNetEngine] Valid command line arguments");
+
   printf("%s\n\n", logo_buffer);
   printf("%s\n", copyrights_buffer);
 
@@ -100,6 +108,7 @@ static struct TouchstoNetEngine newEngine() {
     .tnet_settings_ = TouchstoNetSettings.new(),
     .tnet_parser_ = TouchstoNetAgrumentsParser.new(),
     .tnet_intsnace_ = TouchstoNetInstance.new(),
+    .tnet_role_args_validator_ = TouchstoNetRoleArgumentsValidator.new(),
   };
 }
 const struct TouchstoNetEngineClass TouchstoNetEngine = { .new = &newEngine };

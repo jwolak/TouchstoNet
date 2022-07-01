@@ -168,6 +168,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
+      this->tnet_settings_->tnet_setting_flags_.set_port_number_as_set(&this->tnet_settings_->tnet_setting_flags_);
       LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Port number set: ", portno);
       break;
 
@@ -181,6 +182,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
+      this->tnet_settings_->tnet_setting_flags_.set_ip_address_as_set(&this->tnet_settings_->tnet_setting_flags_);
       LOG_DEBUG("%s%s", "[TouchstoNetAgrumentsParser] IP address that has been set: ", address_parameter);
       break;
 
@@ -194,6 +196,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
+      this->tnet_settings_->tnet_setting_flags_.set_test_duration_as_set(&this->tnet_settings_->tnet_setting_flags_);
       LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Test duration set to: ", test_time);
       break;
 
@@ -207,6 +210,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
         return false;
       }
 
+      this->tnet_settings_->tnet_setting_flags_.set_msg_bytes_length_as_set(&this->tnet_settings_->tnet_setting_flags_);
       LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Message length in bytes set to: ", msg_bytes_length);
       break;
 
@@ -225,7 +229,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
 static struct TouchstoNetAgrumentsParser newArgumentsParser() {
   return (struct TouchstoNetAgrumentsParser) {
     .parse_arguments = &parse_arguments,
-    .inject_settings_to_args_parser = &inject_settings_to_args_parser
+    .inject_settings_to_args_parser = &inject_settings_to_args_parser,
   };
 }
 const struct TouchstoNetAgrumentsParserClass TouchstoNetAgrumentsParser = { .new = &newArgumentsParser };
