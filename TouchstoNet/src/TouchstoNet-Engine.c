@@ -41,6 +41,8 @@
 #include "TouchstoNet-Info-And-Graphics.h"
 #include "LoggerC.h"
 
+#include <stdio.h>
+
 bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
 
   LOG_DEBUG("%s", "[TouchstoNetEngine] NetEngine is starting...");

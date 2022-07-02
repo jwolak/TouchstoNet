@@ -45,6 +45,9 @@
 #include <string.h>
 #include <signal.h>
 #include <unistd.h>
+#include <stdio.h>
+
+#include <arpa/inet.h>
 
 #define ONE_KILO  1024
 
@@ -55,14 +58,37 @@ struct SendRecvMsgLoopArgs {
   struct sockaddr_in *server_sock_addr;
   int *recv_addr_len;
   bool *interrrupt_thread;
-  size_t *amount_of_bytes_sent_by_client;
+  size_t *amount_of_packets_sent_by_client;
   int32_t msg_size;
+  int32_t* real_test_time;
 };
+
+static void print_summary(struct TouchstoNetSocketConnection *this) {
+
+  char text_address_buffer[INET_ADDRSTRLEN];
+  int32_t real_test_time = this->real_test_time_;
+  size_t total_packets_sent = this->sent_pkts_counter_;
+  size_t pkts_per_second_ratio = (size_t)(this->sent_pkts_counter_ / real_test_time);
+  int32_t packet_size = this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_);
+  size_t sent_bytes_ratio = (size_t)(this->sent_pkts_counter_ * this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_));
+  size_t bytes_per_second_ratio = (size_t)((this->sent_pkts_counter_ * this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_)) / real_test_time);
+  in_addr_t server_ip_address = this->tnet_settings_->get_ip_address(this->tnet_settings_);
+
+  printf("\n\n%s\n",       "[Test summary      ]: ");
+  printf("%s%24s\n",       "[Server IP         ]: ",   inet_ntop(AF_INET, &server_ip_address, text_address_buffer, INET_ADDRSTRLEN));
+  printf("%s%16d%s\n",     "[Total time        ]: ",   real_test_time,            " [s]");
+  printf("%s%16d%s\n",     "[Packet size       ]: ",   packet_size,           " [kB]");
+  printf("%s%16zu%s\n",    "[Total packets sent]: ",   total_packets_sent,    " [pkts]");
+  printf("%s%16zu%s\n",    "[Packet throughput ]: ",   pkts_per_second_ratio, " [pkts/sec]");
+  printf("%s%16zu%s\n",    "[Bytes sent        ]: ",   sent_bytes_ratio,      " [Bytes]");
+  printf("%s%16zu%s\n",    "[Bytes throughput  ]: ",   bytes_per_second_ratio," [Bytes/sec]");
+  printf("%s", "\n\n");
+}
 
 void *client_statistic_thread(void *recv_msg_args) {
 
   bool *stop_thread_flag = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->interrrupt_thread;
-  size_t *no_of_sent_msgs_by_client = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->amount_of_bytes_sent_by_client;
+  size_t *no_of_sent_msgs_by_client = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->amount_of_packets_sent_by_client;
   int32_t message_bytes_size = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->msg_size;
 
   int count_time = 0;
@@ -80,6 +106,7 @@ void *client_statistic_thread(void *recv_msg_args) {
     bytes_throughput_per_second = (size_t)((((*no_of_sent_msgs_by_client) * message_bytes_size)/1024)/count_time);
     packet_throughput_per_second = (size_t)(((*no_of_sent_msgs_by_client)/count_time));
     number_of_sent_packets = *no_of_sent_msgs_by_client;
+    *(((struct SendRecvMsgLoopArgs*)recv_msg_args)->real_test_time) = count_time;
     printf("\r "
         "%s%4d%s"
         "%zu%s"
@@ -126,7 +153,7 @@ static void *client_send_and_recv_msg_loop_thread(void *send_msg_args) {
   struct sockaddr_in *server_addr = ((struct SendRecvMsgLoopArgs*)send_msg_args)->server_sock_addr;
   bool *stop_thread_flag = ((struct SendRecvMsgLoopArgs*)send_msg_args)->interrrupt_thread;
   int *len = ((struct SendRecvMsgLoopArgs*)send_msg_args)->recv_addr_len;
-  size_t *pkts_counter = ((struct SendRecvMsgLoopArgs*)send_msg_args)->amount_of_bytes_sent_by_client;
+  size_t *pkts_counter = ((struct SendRecvMsgLoopArgs*)send_msg_args)->amount_of_packets_sent_by_client;
 
   ssize_t no_of_recv_msgs_by_client = 0;
   ssize_t no_of_sent_msgs_by_client = 0;
@@ -232,8 +259,8 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
   int len = 0;
   struct SendRecvMsgLoopArgs send_recv_msg_loop_args;
   this->stop_thread_ = false;
-
-  size_t sent_pkts_counter = 0;
+  this->sent_pkts_counter_ = 0;
+  this->real_test_time_ = 0;
 
   send_recv_msg_loop_args.sock_fd = this->tnet_socket_.get_socket(&this->tnet_socket_);
   send_recv_msg_loop_args.server_sock_addr = socket_client_address;
@@ -241,8 +268,9 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
   send_recv_msg_loop_args.buffer_size = msg_send_size;
   send_recv_msg_loop_args.recv_addr_len = &len;
   send_recv_msg_loop_args.interrrupt_thread = &this->stop_thread_;
-  send_recv_msg_loop_args.amount_of_bytes_sent_by_client = &sent_pkts_counter;
+  send_recv_msg_loop_args.amount_of_packets_sent_by_client = &this->sent_pkts_counter_;
   send_recv_msg_loop_args.msg_size = this->tnet_settings_->msg_bytes_length_;
+  send_recv_msg_loop_args.real_test_time = &this->real_test_time_;
 
   if(pthread_create(&this->thread_id_, NULL, client_send_and_recv_msg_loop_thread, &send_recv_msg_loop_args) != 0){
 
@@ -256,6 +284,9 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
 
   pthread_join(this->thread_id_, NULL);
   pthread_join(this->statistic_thread_id_, NULL);
+
+  print_summary(this);
+
   return true;
 }
 
@@ -270,6 +301,8 @@ bool stop_working_thread(struct TouchstoNetSocketConnection *this) {
 
   LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread: [",this->thread_id_, "] has been cancelled");
   printf("%s", "\n"); /* new line after [Instant figures] */
+
+  print_summary(this);
   return true;
 }
 
@@ -284,6 +317,8 @@ static struct TouchstoNetSocketConnection newSocketConnection() {
     .stop_working_thread = &stop_working_thread,
     .tnet_socket_ = TouchstoNetSocket.new(),
     .tnet_sock_address_ = TouchstoNetSocketAddress.new(),
+    .sent_pkts_counter_ = 0,
+    .real_test_time_ = 0,
   };
 }
 
