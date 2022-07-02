@@ -68,6 +68,8 @@ struct TouchstoNetSocketConnection {
   bool stop_thread_;
   pthread_t thread_id_;
   pthread_t statistic_thread_id_;
+  size_t sent_pkts_counter_;
+  int32_t real_test_time_;
 };
 
 extern const struct TouchstoNetSocketConnectionClass {
