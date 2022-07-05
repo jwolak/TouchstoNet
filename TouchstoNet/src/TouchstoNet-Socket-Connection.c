@@ -68,6 +68,7 @@ static void print_summary(struct TouchstoNetSocketConnection *this) {
   char text_address_buffer[INET_ADDRSTRLEN];
   int32_t real_test_time = this->real_test_time_;
   size_t total_packets_sent = this->sent_pkts_counter_;
+  size_t total_packets_sent_in_kilo = (size_t)(this->sent_pkts_counter_ / ONE_KILO);
   size_t pkts_per_second_ratio = (size_t)(this->sent_pkts_counter_ / real_test_time);
   int32_t packet_size = this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_);
   size_t sent_bytes_ratio = (size_t)(this->sent_pkts_counter_ * this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_));
@@ -76,7 +77,7 @@ static void print_summary(struct TouchstoNetSocketConnection *this) {
 
   printf("\n\n%s\n",       "[Test summary      ]: ");
   printf("%s%24s\n",       "[Server IP         ]: ",   inet_ntop(AF_INET, &server_ip_address, text_address_buffer, INET_ADDRSTRLEN));
-  printf("%s%16d%s\n",     "[Total time        ]: ",   real_test_time,            " [s]");
+  printf("%s%16d%s\n",     "[Real test time    ]: ",   real_test_time,        " [s]");
   printf("%s%16d%s\n",     "[Packet size       ]: ",   packet_size,           " [kB]");
   printf("%s%16zu%s\n",    "[Total packets sent]: ",   total_packets_sent,    " [pkts]");
   printf("%s%16zu%s\n",    "[Packet throughput ]: ",   pkts_per_second_ratio, " [pkts/sec]");
@@ -284,8 +285,6 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
 
   pthread_join(this->thread_id_, NULL);
   pthread_join(this->statistic_thread_id_, NULL);
-
-  print_summary(this);
 
   return true;
 }
