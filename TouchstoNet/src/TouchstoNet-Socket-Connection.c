@@ -70,18 +70,22 @@ static void print_summary(struct TouchstoNetSocketConnection *this) {
   size_t total_packets_sent = this->sent_pkts_counter_;
   size_t total_packets_sent_in_kilo = (size_t)(this->sent_pkts_counter_ / ONE_KILO);
   size_t pkts_per_second_ratio = (size_t)(this->sent_pkts_counter_ / real_test_time);
+  size_t pkts_per_second_ratio_in_kilo = (size_t)((this->sent_pkts_counter_ / real_test_time) / ONE_KILO);
   int32_t packet_size = this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_);
   size_t sent_bytes_ratio = (size_t)(this->sent_pkts_counter_ * this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_));
+  size_t sent_bytes_ratio_in_kilo = (size_t)((this->sent_pkts_counter_ * this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_) / ONE_KILO));
+  size_t sent_bytes_ratio_in_mega = (size_t)(((this->sent_pkts_counter_ * this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_) / ONE_KILO)) / ONE_KILO);
   size_t bytes_per_second_ratio = (size_t)((this->sent_pkts_counter_ * this->tnet_settings_->get_msg_bytes_length(this->tnet_settings_)) / real_test_time);
   in_addr_t server_ip_address = this->tnet_settings_->get_ip_address(this->tnet_settings_);
 
+  printf("%s", "\n\n\n");
   printf("\n\n%s\n",       "[Test summary      ]: ");
   printf("%s%24s\n",       "[Server IP         ]: ",   inet_ntop(AF_INET, &server_ip_address, text_address_buffer, INET_ADDRSTRLEN));
   printf("%s%16d%s\n",     "[Real test time    ]: ",   real_test_time,        " [s]");
   printf("%s%16d%s\n",     "[Packet size       ]: ",   packet_size,           " [kB]");
-  printf("%s%16zu%s\n",    "[Total packets sent]: ",   total_packets_sent,    " [pkts]");
-  printf("%s%16zu%s\n",    "[Packet throughput ]: ",   pkts_per_second_ratio, " [pkts/sec]");
-  printf("%s%16zu%s\n",    "[Bytes sent        ]: ",   sent_bytes_ratio,      " [Bytes]");
+  printf("%s%16zu%s\t%24zu%s%s\n",    "[Total packets sent]: ",   total_packets_sent,    " [pkts]", total_packets_sent_in_kilo, "k", " [pkts]");
+  printf("%s%16zu%s\t%16zu%s%s\n",    "[Packet throughput ]: ",   pkts_per_second_ratio, " [pkts/sec]", pkts_per_second_ratio_in_kilo, "k", " [pkts/sec]" );
+  printf("%s%16zu%s\t%24zu%s%s\t%24zu%s%s\n",    "[Bytes sent        ]: ",   sent_bytes_ratio,      " [Bytes]", sent_bytes_ratio_in_kilo, "k", " [Bytes]", sent_bytes_ratio_in_mega, "M", " [Bytes]");
   printf("%s%16zu%s\n",    "[Bytes throughput  ]: ",   bytes_per_second_ratio," [Bytes/sec]");
   printf("%s", "\n\n");
 }
