@@ -42,6 +42,7 @@
 
 
 static char copyrights_buffer [] =
+                         "\t Version:    1.0\n"
                          "\t Copyrights: Janusz Wolak\n"
                          "\t e-mail:     januszvdm@gmail.com\n"
                          "\t web:        github.com/jwolak\n\n";
