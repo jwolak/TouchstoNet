@@ -45,10 +45,13 @@
 
 bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
 
-  LOG_DEBUG("%s", "[TouchstoNetEngine] NetEngine is starting...");
-
   if (!this->tnet_parser_.inject_settings_to_args_parser(&this->tnet_parser_, &this->tnet_settings_)) {
 
+    /* workaround to perform logs when it fails here */
+    SET_LOG_LEVEL(DEBUG);
+    SET_LOG_LOGGER_OUTPUT(OUT_FILE);
+
+    LOG_DEBUG("%s", "[TouchstoNetEngine] Failed to parse command line arguments");
     LOG_DEBUG("%s", "[TouchstoNetEngine] Settings injection to arguments parser failed");
     return false;
   }
@@ -56,10 +59,23 @@ bool start(struct TouchstoNetEngine* this, int32_t argc, char **argv) {
 
   if (!this->tnet_parser_.parse_arguments(&this->tnet_parser_, argc, argv)) {
 
+    /* workaround to perform logs when it fails here */
+    SET_LOG_LEVEL(DEBUG);
+    SET_LOG_LOGGER_OUTPUT(OUT_FILE);
+
     LOG_DEBUG("%s", "[TouchstoNetEngine] Failed to parse command line arguments");
     return false;
   }
+
+  if (this->tnet_settings_.tnet_setting_flags_.get_debug_mode_status(&this->tnet_settings_.tnet_setting_flags_)) {
+    /*enable default log level*/
+    SET_LOG_LEVEL(ERROR);
+    SET_LOG_LOGGER_OUTPUT(OUT_FILE);
+  }
+
   LOG_DEBUG("%s", "[TouchstoNetEngine] Parse command line arguments successful");
+
+  LOG_DEBUG("%s", "[TouchstoNetEngine] NetEngine is starting...");
 
   if (!this->tnet_role_args_validator_.validate_arguments_for_role(&this->tnet_settings_)) {
 
