@@ -42,8 +42,7 @@ static void tnet_catch_sigend(void (*handler)(int))
 
 int main(int argc, char **argv) {
 
-  SET_LOG_LEVEL(DEBUG);
-  SET_LOG_LOGGER_OUTPUT(CONSOLE_AND_FILE);
+  SET_LOG_LEVEL(DISABLED);
 
   struct TouchstoNetEngine touchstonet_engine =  TouchstoNetEngine.new();
 

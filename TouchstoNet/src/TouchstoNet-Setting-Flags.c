@@ -44,61 +44,75 @@
   void set_port_number_as_set(struct TouchstoNetSettingFlags *this) {
 
     LOG_DEBUG("%s", "[TouchstoNetSettingFlags] Port number set flag enabled");
-    this->port_number_is_set = true;
+    this->port_number_is_set_ = true;
   }
 
   void set_ip_address_as_set(struct TouchstoNetSettingFlags *this) {
 
     LOG_DEBUG("%s", "[TouchstoNetSettingFlags] IP address set flag enabled");
-    this->ip_addres_is_set = true;
+    this->ip_addres_is_set_ = true;
   }
 
   void set_test_duration_as_set(struct TouchstoNetSettingFlags *this) {
 
     LOG_DEBUG("%s", "[TouchstoNetSettingFlags] Test duration time set flag enabled");
-    this->test_duration_is_set = true;
+    this->test_duration_is_set_ = true;
   }
 
   void set_msg_bytes_length_as_set(struct TouchstoNetSettingFlags *this) {
 
     LOG_DEBUG("%s", "[TouchstoNetSettingFlags] Message bytes length set flag enabled");
-    this->msg_bytes_length_is_set = true;
+    this->msg_bytes_length_is_set_ = true;
+  }
+
+  void set_debug_mode_as_set (struct TouchstoNetSettingFlags *this) {
+
+    LOG_DEBUG("%s", "[TouchstoNetSettingFlags] Debug mode set flag enabled");
+    this->debug_mode_is_set_ = true;
   }
 
   bool get_port_number_status(struct TouchstoNetSettingFlags *this) {
 
-    return this->port_number_is_set;
+    return this->port_number_is_set_;
   }
 
   bool get_ip_address_status(struct TouchstoNetSettingFlags *this) {
 
-    return this->ip_addres_is_set;
+    return this->ip_addres_is_set_;
   }
 
   bool get_test_duration_status(struct TouchstoNetSettingFlags *this) {
 
-    return this->test_duration_is_set;
+    return this->test_duration_is_set_;
   }
 
   bool get_msg_bytes_length_status(struct TouchstoNetSettingFlags *this) {
 
-    return this->msg_bytes_length_is_set;
+    return this->msg_bytes_length_is_set_;
+  }
+
+  bool get_debug_mode_status(struct TouchstoNetSettingFlags *this) {
+
+    return this->debug_mode_is_set_;
   }
 
 static struct TouchstoNetSettingFlags newSettingFlags() {
   return (struct TouchstoNetSettingFlags) {
-    .port_number_is_set = false,
-    .ip_addres_is_set = false,
-    .test_duration_is_set = false,
-    .msg_bytes_length_is_set = false,
+    .port_number_is_set_ = false,
+    .ip_addres_is_set_ = false,
+    .test_duration_is_set_ = false,
+    .msg_bytes_length_is_set_ = false,
+    .debug_mode_is_set_ = false,
     .set_port_number_as_set = &set_port_number_as_set,
     .set_ip_address_as_set = &set_ip_address_as_set,
     .set_test_duration_as_set = &set_test_duration_as_set,
     .set_msg_bytes_length_as_set = &set_msg_bytes_length_as_set,
+    .set_debug_mode_as_set = &set_debug_mode_as_set,
     .get_port_number_status = &get_port_number_status,
     .get_ip_address_status = &get_ip_address_status,
     .get_test_duration_status = &get_test_duration_status,
     .get_msg_bytes_length_status = &get_msg_bytes_length_status,
+    .get_debug_mode_status = &get_debug_mode_status,
   };
 }
 const struct TouchstoNetSettingFlagsClass TouchstoNetSettingFlags = { .new = &newSettingFlags };

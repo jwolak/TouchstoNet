@@ -61,11 +61,13 @@ static void print_help() {
       "\t [--address] or [-a] server IP address\n"
       "\t [--time]    or [-t] test duration in seconds\n"
       "\t [--bytes]   or [-l] message size in bytes\n"
+      "\t [--debug]   or [-d] debug logs enabled\n"
       "\n"
       "\t#Limitations:\n"
       "\t Port range        for [--port]  is: 1 - 65535\n"
       "\t Max test time     for [--time]  is: 3600 [s]\n"
       "\t Message max size  for [--bytes] is: 1024 [bytes]\n"
+      "\t Debug logs        for [--debug] is: [f] to log into a file, [c] to console or [b] to both\n"
       "\n"
       "\t#Examples of client and server set:\n"
       "\t Client: TouchstoNet -c -p 1024 -a 192.168.0.1 -t 10 -l 64\n"
@@ -118,6 +120,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
       {"address", required_argument,  NULL,  'a'},
       {"time",    required_argument,  NULL,  't'},
       {"bytes",   required_argument,  NULL,  'l'},
+      {"debug",   required_argument,  NULL,  'd'},
   };
 
   if (argc < TNET_MIN_NUMBER_OF_ARGUMENTS) {
@@ -134,7 +137,7 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
   }
   printf("\n");
 
-  while ((flag = getopt_long(argc, argv, "hscp:a:t:l:", longopts, NULL)) != -1) {
+  while ((flag = getopt_long(argc, argv, "hscp:a:t:l:d:", longopts, NULL)) != -1) {
     switch (flag) {
     case 's':
       if (!this->tnet_settings_->set_role(this->tnet_settings_, SERVER)) {
@@ -212,6 +215,36 @@ bool parse_arguments(struct TouchstoNetAgrumentsParser* this, int32_t argc, char
 
       this->tnet_settings_->tnet_setting_flags_.set_msg_bytes_length_as_set(&this->tnet_settings_->tnet_setting_flags_);
       LOG_DEBUG("%s%d", "[TouchstoNetAgrumentsParser] Message length in bytes set to: ", msg_bytes_length);
+      break;
+
+    case 'd':
+      SET_LOG_LEVEL(DEBUG);
+      this->tnet_settings_->tnet_setting_flags_.set_debug_mode_as_set(&this->tnet_settings_->tnet_setting_flags_);
+      LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Debug mode is enabled");
+      LOG_WARNING("%s", "Debug mode enabled");
+      if(strncmp(optarg, "f", 2) == 0) {
+        SET_LOG_LOGGER_OUTPUT(OUT_FILE);
+        LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Debug logs to file enabled");
+        break;
+       }
+
+      if(strncmp(optarg, "c", 2) == 0) {
+        SET_LOG_LOGGER_OUTPUT(CONSOLE);
+        LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Debug logs to console enabled");
+        break;
+       }
+
+      if(strncmp(optarg, "b", 2) == 0) {
+        SET_LOG_LOGGER_OUTPUT(CONSOLE_AND_FILE);
+        LOG_DEBUG("%s", "[TouchstoNetAgrumentsParser] Debug logs to file and console enabled");
+        break;
+
+       }else {
+
+         LOG_ERROR("%s", "[TouchstoNetAgrumentsParser] Invalid debug output direction parameter provided");
+         LOG_ERROR("%s", "Invalid debug output direction parameter provided");
+         return false;
+       }
       break;
 
     case 'h':

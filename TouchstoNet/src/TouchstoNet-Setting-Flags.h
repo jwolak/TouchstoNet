@@ -49,16 +49,20 @@ struct TouchstoNetSettingFlags {
   void(*set_ip_address_as_set)(struct TouchstoNetSettingFlags *tnet_settings_flag);
   void(*set_test_duration_as_set)(struct TouchstoNetSettingFlags *tnet_settings_flag);
   void(*set_msg_bytes_length_as_set)(struct TouchstoNetSettingFlags *tnet_settings_flag);
+  void(*set_debug_mode_as_set)(struct TouchstoNetSettingFlags *tnet_settings_flag);
 
   bool(*get_port_number_status)(struct TouchstoNetSettingFlags *tnet_settings_flag);
   bool(*get_ip_address_status)(struct TouchstoNetSettingFlags *tnet_settings_flag);
   bool(*get_test_duration_status)(struct TouchstoNetSettingFlags *tnet_settings_flag);
   bool(*get_msg_bytes_length_status)(struct TouchstoNetSettingFlags *tnet_settings_flag);
+  bool(*get_debug_mode_status)(struct TouchstoNetSettingFlags *tnet_settings_flag);
 
-  bool port_number_is_set;
-  bool ip_addres_is_set;
-  bool test_duration_is_set;
-  bool msg_bytes_length_is_set;
+  /*private*/
+  bool port_number_is_set_;
+  bool ip_addres_is_set_;
+  bool test_duration_is_set_;
+  bool msg_bytes_length_is_set_;
+  bool debug_mode_is_set_;
 };
 
 extern const struct TouchstoNetSettingFlagsClass {
