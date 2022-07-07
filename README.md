@@ -4,7 +4,7 @@
 
 ## Features
 - client and server mode
-- message length option (up to 1kB)
+- packets length option (up to 1kB)
 - test time option (up to 1h)
 - port number
 - destination address
@@ -16,7 +16,7 @@
 
 [![N|Solid](https://github.com/jwolak/TouchstoNet/blob/development/help_print.PNG?raw=true)](https://nodesource.com/products/nsolid)
 
-- instant statistics [pkts, bytes throughput, time]
+- instant statistics [pkts and bytes throughput, time]
 
 [![N|Solid](https://github.com/jwolak/TouchstoNet/blob/development/instant_figures.PNG?raw=true)](https://nodesource.com/products/nsolid)
 
