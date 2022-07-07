@@ -13,12 +13,15 @@
 
 ## Examples:
 - Touchstonet help
+
 [![N|Solid](https://github.com/jwolak/TouchstoNet/blob/development/help_print.PNG?raw=true)](https://nodesource.com/products/nsolid)
 
 - instant statistics [pkts, bytes throughput, time]
+
 [![N|Solid](https://github.com/jwolak/TouchstoNet/blob/development/instant_figures.PNG?raw=true)](https://nodesource.com/products/nsolid)
 
 - Finished test summary
+
 [![N|Solid](https://github.com/jwolak/TouchstoNet/blob/development/summary_print.PNG?raw=true)](https://nodesource.com/products/nsolid)
 
 ## Building for source:
