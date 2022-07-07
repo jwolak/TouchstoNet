@@ -2,7 +2,7 @@
 
 **Network traffic generator and performance measurement tool**
 
-## Features
+## Features:
 - client and server mode
 - packets length option (up to 1kB)
 - test time option (up to 1h)
