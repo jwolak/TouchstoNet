@@ -10,7 +10,7 @@
 - destination address
 - debug mode
 - instant figures when test is running
-- summary print (also after test is interrupted by user [Ctr+C])
+- summary print (also after test is interrupted by user [Ctrl+C])
 
 ## Examples:
 - Touchstonet help:
