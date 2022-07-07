@@ -25,6 +25,9 @@
 
 [![N|Solid](https://github.com/jwolak/TouchstoNet/blob/development/summary_print.PNG?raw=true)](https://nodesource.com/products/nsolid)
 
+Server in debug mode: Touchstonet -s -p 777
+Client in debug mode: Touchstonet -c -p 777 -a 127.0.0.1 -t 10 -l 156 -d c
+
 ## Building for source:
 
 ###### For EquinoxLogger:
