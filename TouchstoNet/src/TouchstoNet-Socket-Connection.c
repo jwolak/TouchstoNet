@@ -51,18 +51,6 @@
 
 #define ONE_KILO  1024
 
-struct SendRecvMsgLoopArgs {
-  int sock_fd;
-  void *buffer;
-  int32_t buffer_size;
-  struct sockaddr_in *server_sock_addr;
-  int *recv_addr_len;
-  bool *interrrupt_thread;
-  size_t *amount_of_packets_sent_by_client;
-  int32_t msg_size;
-  int32_t* real_test_time;
-};
-
 static void print_summary(struct TouchstoNetSocketConnection *this) {
 
   char text_address_buffer[INET_ADDRSTRLEN];
@@ -94,9 +82,9 @@ static void print_summary(struct TouchstoNetSocketConnection *this) {
 
 void *client_statistic_thread(void *recv_msg_args) {
 
-  bool *stop_thread_flag = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->interrrupt_thread;
-  size_t *no_of_sent_msgs_by_client = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->amount_of_packets_sent_by_client;
-  int32_t message_bytes_size = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->msg_size;
+  bool *stop_thread_flag = ((struct TouchstoneNetSendRecvMsgLoopArgs*)recv_msg_args)->interrrupt_thread;
+  size_t *no_of_sent_msgs_by_client = ((struct TouchstoneNetSendRecvMsgLoopArgs*)recv_msg_args)->amount_of_packets_sent_by_client;
+  int32_t message_bytes_size = ((struct TouchstoneNetSendRecvMsgLoopArgs*)recv_msg_args)->msg_size;
 
   int count_time = 0;
   size_t bytes_throughput_per_second = 0;
@@ -113,7 +101,7 @@ void *client_statistic_thread(void *recv_msg_args) {
     bytes_throughput_per_second = (size_t)((((*no_of_sent_msgs_by_client) * message_bytes_size)/1024)/count_time);
     packet_throughput_per_second = (size_t)(((*no_of_sent_msgs_by_client)/count_time));
     number_of_sent_packets = *no_of_sent_msgs_by_client;
-    *(((struct SendRecvMsgLoopArgs*)recv_msg_args)->real_test_time) = count_time;
+    *(((struct TouchstoneNetSendRecvMsgLoopArgs*)recv_msg_args)->real_test_time) = count_time;
     printf("\r "
         "%s%4d%s"
         "%zu%s"
@@ -133,10 +121,10 @@ static void *server_recv_and_reply_msg_loop_thread(void *recv_msg_args) {
 
   char recived_msg_buffer[MESSAGE_MODEL_BUFFER_SIZE];
 
-  int sockfd = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->sock_fd;
-  struct sockaddr_in *client_addr = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->server_sock_addr;
-  int *len = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->recv_addr_len;
-  bool *stop_thread_flag = ((struct SendRecvMsgLoopArgs*)recv_msg_args)->interrrupt_thread;
+  int sockfd = ((struct TouchstoneNetSendRecvMsgLoopArgs*)recv_msg_args)->sock_fd;
+  struct sockaddr_in *client_addr = ((struct TouchstoneNetSendRecvMsgLoopArgs*)recv_msg_args)->server_sock_addr;
+  int *len = ((struct TouchstoneNetSendRecvMsgLoopArgs*)recv_msg_args)->recv_addr_len;
+  bool *stop_thread_flag = ((struct TouchstoneNetSendRecvMsgLoopArgs*)recv_msg_args)->interrrupt_thread;
   int n = 0;
   ssize_t no_of_recv_msgs_by_server = 0;
   ssize_t no_of_sent_msgs_by_server = 0;
@@ -154,13 +142,13 @@ static void *client_send_and_recv_msg_loop_thread(void *send_msg_args) {
 
   char recived_msg_buffer[MESSAGE_MODEL_BUFFER_SIZE];
 
-  int sockfd = ((struct SendRecvMsgLoopArgs*)send_msg_args)->sock_fd;
-  char *buffer_to_send = ((struct SendRecvMsgLoopArgs*)send_msg_args)->buffer;
-  int32_t buffer_to_send_size = ((struct SendRecvMsgLoopArgs*)send_msg_args)->buffer_size;
-  struct sockaddr_in *server_addr = ((struct SendRecvMsgLoopArgs*)send_msg_args)->server_sock_addr;
-  bool *stop_thread_flag = ((struct SendRecvMsgLoopArgs*)send_msg_args)->interrrupt_thread;
-  int *len = ((struct SendRecvMsgLoopArgs*)send_msg_args)->recv_addr_len;
-  size_t *pkts_counter = ((struct SendRecvMsgLoopArgs*)send_msg_args)->amount_of_packets_sent_by_client;
+  int sockfd = ((struct TouchstoneNetSendRecvMsgLoopArgs*)send_msg_args)->sock_fd;
+  char *buffer_to_send = ((struct TouchstoneNetSendRecvMsgLoopArgs*)send_msg_args)->buffer;
+  int32_t buffer_to_send_size = ((struct TouchstoneNetSendRecvMsgLoopArgs*)send_msg_args)->buffer_size;
+  struct sockaddr_in *server_addr = ((struct TouchstoneNetSendRecvMsgLoopArgs*)send_msg_args)->server_sock_addr;
+  bool *stop_thread_flag = ((struct TouchstoneNetSendRecvMsgLoopArgs*)send_msg_args)->interrrupt_thread;
+  int *len = ((struct TouchstoneNetSendRecvMsgLoopArgs*)send_msg_args)->recv_addr_len;
+  size_t *pkts_counter = ((struct TouchstoneNetSendRecvMsgLoopArgs*)send_msg_args)->amount_of_packets_sent_by_client;
 
   ssize_t no_of_recv_msgs_by_client = 0;
   ssize_t no_of_sent_msgs_by_client = 0;
@@ -235,17 +223,15 @@ bool create_server_thread(struct TouchstoNetSocketConnection *this, struct socka
   /*create in thread*/
   LOG_DEBUG("%s", "[TouchstoNetSocketConnection] receive_msg() launched");
 
-  int len = 0;
-  struct SendRecvMsgLoopArgs send_recv_msg_loop_args;
   this->stop_thread_ = false;
 
-  send_recv_msg_loop_args.sock_fd = this->tnet_socket_.get_socket(&this->tnet_socket_);
-  send_recv_msg_loop_args.server_sock_addr = socket_server_address;
-  send_recv_msg_loop_args.buffer = &this->recv_msg_buffer_;
-  send_recv_msg_loop_args.recv_addr_len = &len;
-  send_recv_msg_loop_args.interrrupt_thread = &this->stop_thread_;
+  this->tnet_send_recv_msg_loop_args_.sock_fd = this->tnet_socket_.get_socket(&this->tnet_socket_);
+  this->tnet_send_recv_msg_loop_args_.server_sock_addr = socket_server_address;
+  this->tnet_send_recv_msg_loop_args_.buffer = &this->recv_msg_buffer_;
+  this->tnet_send_recv_msg_loop_args_.recv_addr_len = &this->address_length_;
+  this->tnet_send_recv_msg_loop_args_.interrrupt_thread = &this->stop_thread_;
 
-  if (pthread_create(&this->thread_id_, NULL, server_recv_and_reply_msg_loop_thread, &send_recv_msg_loop_args) != 0) {
+  if (pthread_create(&this->thread_id_, NULL, server_recv_and_reply_msg_loop_thread, &this->tnet_send_recv_msg_loop_args_) != 0) {
 
     LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Failed to launch server_recv_and_reply_msg_loop_thread");
     return false;
@@ -263,23 +249,21 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
   /*create in thread*/
   LOG_DEBUG("%s", "[TouchstoNetSocketConnection] send_msg() is launched");
 
-  int len = 0;
-  struct SendRecvMsgLoopArgs send_recv_msg_loop_args;
   this->stop_thread_ = false;
   this->sent_pkts_counter_ = 0;
   this->real_test_time_ = 0;
 
-  send_recv_msg_loop_args.sock_fd = this->tnet_socket_.get_socket(&this->tnet_socket_);
-  send_recv_msg_loop_args.server_sock_addr = socket_client_address;
-  send_recv_msg_loop_args.buffer = msg_to_send_buffer;
-  send_recv_msg_loop_args.buffer_size = msg_send_size;
-  send_recv_msg_loop_args.recv_addr_len = &len;
-  send_recv_msg_loop_args.interrrupt_thread = &this->stop_thread_;
-  send_recv_msg_loop_args.amount_of_packets_sent_by_client = &this->sent_pkts_counter_;
-  send_recv_msg_loop_args.msg_size = this->tnet_settings_->msg_bytes_length_;
-  send_recv_msg_loop_args.real_test_time = &this->real_test_time_;
+  this->tnet_send_recv_msg_loop_args_.sock_fd = this->tnet_socket_.get_socket(&this->tnet_socket_);
+  this->tnet_send_recv_msg_loop_args_.server_sock_addr = socket_client_address;
+  this->tnet_send_recv_msg_loop_args_.buffer = msg_to_send_buffer;
+  this->tnet_send_recv_msg_loop_args_.buffer_size = msg_send_size;
+  this->tnet_send_recv_msg_loop_args_.recv_addr_len = &this->address_length_;
+  this->tnet_send_recv_msg_loop_args_.interrrupt_thread = &this->stop_thread_;
+  this->tnet_send_recv_msg_loop_args_.amount_of_packets_sent_by_client = &this->sent_pkts_counter_;
+  this->tnet_send_recv_msg_loop_args_.msg_size = this->tnet_settings_->msg_bytes_length_;
+  this->tnet_send_recv_msg_loop_args_.real_test_time = &this->real_test_time_;
 
-  if(pthread_create(&this->thread_id_, NULL, client_send_and_recv_msg_loop_thread, &send_recv_msg_loop_args) != 0){
+  if(pthread_create(&this->thread_id_, NULL, client_send_and_recv_msg_loop_thread, &this->tnet_send_recv_msg_loop_args_) != 0){
 
     LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Failed to launch client_send_and_recv_msg_loop_thread");
     return false;
@@ -287,7 +271,7 @@ bool create_client_thread(struct TouchstoNetSocketConnection *this, void *msg_to
   LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread id of client_send_and_recv_msg_loop_thread: [",this->thread_id_, "]");
   LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Launched client_send_and_recv_msg_loop_thread successfully");
 
-  pthread_create(&this->statistic_thread_id_, NULL, client_statistic_thread, &send_recv_msg_loop_args);
+  pthread_create(&this->statistic_thread_id_, NULL, client_statistic_thread, &this->tnet_send_recv_msg_loop_args_);
 
   pthread_join(this->thread_id_, NULL);
   pthread_join(this->statistic_thread_id_, NULL);
@@ -307,7 +291,12 @@ bool stop_working_thread(struct TouchstoNetSocketConnection *this) {
   LOG_DEBUG("%s%ld%s", "[TouchstoNetSocketConnection] Thread: [",this->thread_id_, "] has been cancelled");
   printf("%s", "\n"); /* new line after [Instant figures] */
 
-  print_summary(this);
+  if (this->tnet_settings_->get_role(this->tnet_settings_) == CLIENT) {
+
+    LOG_DEBUG("%s", "[TouchstoNetSocketConnection] Client mode - summary is printed")
+    print_summary(this);
+  }
+
   return true;
 }
 
@@ -324,6 +313,7 @@ static struct TouchstoNetSocketConnection newSocketConnection() {
     .tnet_sock_address_ = TouchstoNetSocketAddress.new(),
     .sent_pkts_counter_ = 0,
     .real_test_time_ = 0,
+    .address_length_ = 0,
   };
 }
 
