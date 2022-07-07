@@ -17,7 +17,7 @@
 
 [![N|Solid](https://github.com/jwolak/TouchstoNet/blob/development/help_print.PNG?raw=true)](https://nodesource.com/products/nsolid)
 
-- instant statistics [pkts and bytes throughput, time]
+- Instant statistics [pkts and bytes throughput, time]
 
 [![N|Solid](https://github.com/jwolak/TouchstoNet/blob/development/instant_figures.PNG?raw=true)](https://nodesource.com/products/nsolid)
 
