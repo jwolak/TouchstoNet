@@ -9,6 +9,7 @@
 - port number
 - destination address
 - debug mode
+- instant figures when test is running
 - summary print
 
 ## Examples:
