@@ -43,6 +43,7 @@
 #include "TouchstoNet-Settings.h"
 #include "TouchstoNet-Socket.h"
 #include "TouchstoNet-Socket-Address.h"
+#include "TouchstoNet-SendRecvMsgLoopArgs.h"
 
 #include <stdbool.h>
 
@@ -64,12 +65,14 @@ struct TouchstoNetSocketConnection {
   char recv_msg_buffer_[MAXLINE];
   struct TouchstoNetSocket tnet_socket_;
   struct TouchstoNetSocketAddress tnet_sock_address_;
+  struct TouchstoneNetSendRecvMsgLoopArgs tnet_send_recv_msg_loop_args_;
   /* always one thread for now, so no mutex needed */
   bool stop_thread_;
   pthread_t thread_id_;
   pthread_t statistic_thread_id_;
   size_t sent_pkts_counter_;
   int32_t real_test_time_;
+  int32_t address_length_;
 };
 
 extern const struct TouchstoNetSocketConnectionClass {
