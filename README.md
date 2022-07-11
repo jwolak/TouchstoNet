@@ -37,6 +37,7 @@ Client (debug mode): Touchstonet -c -p 777 -a 127.0.0.1 -t 10 -l 256 -d c
 ```sh
 cd TouchstoNet
 git clone git@github.com:jwolak/EquinoxC-Logger.git
+git checkout static_library_version
 cd Build/
 cmake CMakeLists.txt
 make
